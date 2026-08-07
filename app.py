@@ -41,7 +41,7 @@ from sklearn.svm import LinearSVC
 # config.py
 # =========================================================================
 BASE_DIR = Path(__file__).resolve().parent
-DATASET_PATH = BASE_DIR / "dataset" / "spam.csv"
+DATASET_PATH = BASE_DIR / "spam.csv"
 MODEL_DIR = BASE_DIR / "model"
 MODEL_PATH = MODEL_DIR / "spam_model.pkl"
 VECTORIZER_PATH = MODEL_DIR / "tfidf.pkl"
