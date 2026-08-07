@@ -48,7 +48,7 @@ VECTORIZER_PATH = MODEL_DIR / "tfidf.pkl"
 METRICS_PATH = MODEL_DIR / "metrics.json"
 HISTORY_PATH = BASE_DIR / "prediction_history.csv"
 RANDOM_STATE = 42
-LABELS = ["ham", "spam", "phishing"]
+LABELS = ["low", "medium", "high"]
 
 # =========================================================================
 # helpers.py / utils/helpers.py
@@ -95,7 +95,7 @@ def find_indicators(message: str) -> dict[str, Any]:
 
 def calculate_risk(probabilities: dict[str, float], indicators: dict[str, Any]) -> tuple[int, str]:
     """Calculate transparent 0–100 risk score from model and observed indicators."""
-    base = 100 * (probabilities.get("spam", 0) + probabilities.get("phishing", 0))
+    base = 100 * (probabilities.get("medium", 0) + probabilities.get("high", 0))
     keyword_count = sum(len(items) for items in indicators["keywords"].values())
     score = base + min(keyword_count * 4, 16) + (12 if indicators["urls"] else 0)
     score += min(len(indicators.get("suspicious_urls", [])) * 6, 18)
@@ -119,7 +119,7 @@ def explanation(prediction: str, indicators: dict[str, Any]) -> str:
         parts.append("a URL")
     if indicators["repeated_punctuation"]:
         parts.append("repeated punctuation")
-    if prediction == "ham" and not parts:
+    if prediction == "low" and not parts:
         return "No strong spam or phishing signals were detected."
     return "The message was flagged because it contains " + (", ".join(parts) or "patterns associated with unsafe messages") + "."
 
@@ -1030,9 +1030,9 @@ def analyze() -> None:
         return
 
     color = {
-        "ham": "✅",
-        "spam": "⚠️",
-        "phishing": "🚨"
+        "low": "✅",
+        "medium": "⚠️",
+        "high": "🚨"
     }[result["prediction"]]
 
     st.subheader(f"{color} {result['prediction'].title()}")
@@ -1133,7 +1133,7 @@ def about() -> None:
 
     st.markdown("## System Overview")
     cols = st.columns(3)
-    cols[0].metric("Detection Classes", "Safe · Spam · Phishing")
+    cols[0].metric("Detection Classes", "Low · Medium · High Risk")
     cols[1].metric("Best AI Model", metrics().get("best_model", "Train model"))
     cols[2].metric("Training Dataset", metrics().get("dataset_rows", "—"))
 
@@ -1145,7 +1145,7 @@ def about() -> None:
     **Home** — Learn about the purpose of Message Guard and view system information.
 
     **Analyze Message** — Paste an email or text message to detect whether it is
-    Safe, Spam, or Phishing. Shows prediction, confidence, risk score, explanation,
+    Low, Medium, or High risk. Shows prediction, confidence, risk score, explanation,
     suspicious keywords/URLs, and a downloadable PDF report.
 
     **Dashboard** — Dataset class distribution, model comparison, daily analysis
