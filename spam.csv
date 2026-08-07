@@ -1,993 +1,2187 @@
 message,label
-"Good morning, I hope you have a great day.",ham
-Can you send me the meeting schedule?,ham
-I will arrive at the office around 9 AM.,ham
-Please remember to bring the documents tomorrow.,ham
-The class starts at 10 o'clock today.,ham
-Thank you for helping me with my assignment.,ham
-I have completed the project report.,ham
-Are you free to discuss the project later?,ham
-Your order has been delivered successfully.,ham
-The package arrived this afternoon.,ham
-Let's meet at the library after lunch.,ham
-I will call you when I reach home.,ham
-Happy birthday! Wishing you all the best.,ham
-Please check the attached file for the details.,ham
-The exam timetable has been released.,ham
-Can you share the notes from yesterday's lecture?,ham
-Dinner is ready. Come home when you are free.,ham
-I have submitted the application form.,ham
-The appointment has been confirmed for Monday.,ham
-Thank you for your support and guidance.,ham
-The weather looks good today.,ham
-I am waiting near the main entrance.,ham
-Please update me when you finish the task.,ham
-Your food delivery is on the way.,ham
-The meeting room has been changed to Room B.,ham
-Don't forget to bring your charger.,ham
-I have uploaded the presentation slides.,ham
-Can we discuss the assignment requirements?,ham
-The train will arrive at 6 PM.,ham
-I will send the payment receipt later.,ham
-The team meeting starts tomorrow morning.,ham
-Please review my document when you have time.,ham
-I am going to the supermarket later.,ham
-The project deadline is next Friday.,ham
-Thanks for sharing the information.,ham
-I have received your message.,ham
-Let's work together on this problem.,ham
-The restaurant reservation is confirmed.,ham
-Your account balance has been updated.,ham
-Please contact me if you need any help.,ham
-The event will begin at 7 PM.,ham
-I finished my homework already.,ham
-Can you explain this question to me?,ham
-The classroom has moved to another location.,ham
-I will bring the laptop tomorrow.,ham
-The documents are ready for collection.,ham
-Thank you for attending the meeting.,ham
-The website update has been completed.,ham
-I will check the system later.,ham
-The invoice has been received.,ham
-Please send the final version of the report.,ham
-I am currently working on the assignment.,ham
-The bus will arrive in ten minutes.,ham
-Your reservation has been successfully confirmed.,ham
-Let's have lunch together tomorrow.,ham
-I will be unavailable this afternoon.,ham
-Please remind me about the appointment.,ham
-The new schedule has been shared.,ham
-I have fixed the issue you reported.,ham
-The presentation went well today.,ham
-Can you join the online meeting tonight?,ham
-I have completed the required training.,ham
-The file has been saved successfully.,ham
-Please check your email for the details.,ham
-I will send the information soon.,ham
-The teacher uploaded new materials.,ham
-The payment was completed successfully.,ham
-Your application is being processed.,ham
-I have arrived at the location.,ham
-The store opens at 9 AM.,ham
-Please confirm your attendance.,ham
-The team has approved the proposal.,ham
-I will prepare the report by tomorrow.,ham
-Thank you for your quick response.,ham
-The software update is complete.,ham
-I received the package safely.,ham
-Let's discuss this during the meeting.,ham
-Your appointment reminder has been scheduled.,ham
-The library closes at 8 PM.,ham
-I will help you with the project.,ham
-Please bring your identification card.,ham
-The event location has been updated.,ham
-I have sent the required documents.,ham
-The payment deadline is next week.,ham
-Can you review the code changes?,ham
-The problem has been solved.,ham
-I will wait for your reply.,ham
-The report looks good now.,ham
-The customer request has been completed.,ham
-Please check the attached information.,ham
-I am travelling home today.,ham
-The booking confirmation has arrived.,ham
-The meeting has been postponed.,ham
-Your subscription has been renewed successfully.,ham
-I will update the team later.,ham
-The delivery driver is nearby.,ham
-Please let me know your decision.,ham
-The assignment instructions are available online.,ham
-I have received the confirmation email.,ham
-The system is working normally.,ham
-See you tomorrow at campus.,ham
-"""Congratulations! You have won a free smartphone. Claim your prize now!""",spam
-"""Limited time offer! Get 70% discount on all products today.""",spam
-"""FREE voucher waiting for you. Click to redeem now!""",spam
-"""You are selected as our lucky winner. Reply YES to receive your gift.""",spam
-"""Exclusive promotion! Buy now and receive a special bonus.""",spam
-"""Earn extra income from home. No experience required!""",spam
-"""Congratulations! Your account has been chosen for a cash reward.""",spam
-"""Flash sale starts now! Save big on your favourite items.""",spam
-"""Get free shopping coupons today. Register immediately.""",spam
-"""Special offer only for you. Claim your reward before it expires.""",spam
-"""Win a brand new laptop by joining our lucky draw.""",spam
-"""Act fast! Free membership available for limited users.""",spam
-"""Your chance to receive RM500 cash is here. Apply now!""",spam
-"""Big discount alert! Purchase today and save more.""",spam
-"""Congratulations! You have unlocked a premium reward.""",spam
-"""Free tickets available now. Click to reserve your seat.""",spam
-"""Don't miss this amazing deal. Order before midnight.""",spam
-"""Lowest price guaranteed. Shop now and enjoy huge savings.""",spam
-"""Get a free gift with every purchase today.""",spam
-"""Exclusive customer reward available. Claim immediately.""",spam
-"""Limited offer! Subscribe now and get one month free.""",spam
-"""You have been selected for a special promotion.""",spam
-"""Receive cashback rewards when you register today.""",spam
-"""Buy one get one free offer starts now.""",spam
-"""Special clearance sale! Everything must go.""",spam
-"""Congratulations! You are eligible for a free holiday package.""",spam
-"""Earn money quickly with our online opportunity.""",spam
-"""Claim your free data package before it ends.""",spam
-"""New users receive a welcome bonus. Sign up today.""",spam
-"""Massive sale event! Prices reduced for a limited time.""",spam
-"""Get exclusive VIP access with your free membership.""",spam
-"""Your reward points can be exchanged for gifts now.""",spam
-"""Win exciting prizes by completing this short survey.""",spam
-"""Free movie subscription available. Activate today.""",spam
-"""Huge savings available. Shop our latest collection now.""",spam
-"""Special deal for selected customers only.""",spam
-"""Congratulations! You have received a shopping voucher.""",spam
-"""Join our giveaway and win amazing prizes.""",spam
-"""Limited stock available. Order yours before it sells out.""",spam
-"""Get RM100 instantly by downloading our application.""",spam
-"""Today's special offer cannot be missed.""",spam
-"""Unlock your exclusive discount code now.""",spam
-"""Free delivery promotion available this week only.""",spam
-"""Become a member today and receive rewards.""",spam
-"""Your lucky number has been selected. Claim your prize.""",spam
-"""Big promotion! Save up to 90% on selected items.""",spam
-"""Get instant approval for our special offer.""",spam
-"""Congratulations! You have won a shopping credit.""",spam
-"""Special bonus waiting for you. Click to collect.""",spam
-"""Limited invitation: Join our premium program today.""",spam
-"""Receive a free gift card by participating now.""",spam
-"""Exclusive online deal available for today only.""",spam
-"""Earn thousands monthly through our easy program.""",spam
-"""Your free coupon is ready. Redeem before expiry.""",spam
-"""Buy now and receive additional rewards.""",spam
-"""Super sale begins today. Don't miss the opportunity.""",spam
-"""Claim your free upgrade package now.""",spam
-"""Congratulations! You are one of our selected customers.""",spam
-"""Get a special discount by clicking this offer.""",spam
-"""Free trial available. Subscribe immediately.""",spam
-"""Save money with our amazing limited promotion.""",spam
-"""Receive bonus points after completing registration.""",spam
-"""Hot deal alert! Prices reduced for a short period.""",spam
-"""Join our reward program and get free benefits.""",spam
-"""Your exclusive coupon is waiting. Use it now.""",spam
-"""Special offer ends tonight. Purchase before deadline.""",spam
-"""Win cash prizes by entering our competition.""",spam
-"""Free accessories available for new customers.""",spam
-"""Get instant rewards after signing up today.""",spam
-"""Congratulations! Your name appears on our winner list.""",spam
-"""Claim your special package before someone else takes it.""",spam
-"""Online shopping festival starts now. Enjoy discounts.""",spam
-"""Receive a free bonus when you complete this offer.""",spam
-"""New promotion launched. Register to participate.""",spam
-"""Limited quantity available. Buy immediately.""",spam
-"""Get your free reward by replying YES now.""",spam
-"""Exclusive deal for loyal customers. Act today.""",spam
-"""Special announcement! You have received a reward.""",spam
-"""Free subscription offer available for a limited time.""",spam
-"""Increase your income with our simple online method.""",spam
-"""Congratulations! Collect your free electronics voucher.""",spam
-"""Discount code available. Use it before it expires.""",spam
-"""Don't wait! This amazing offer ends soon.""",spam
-"""Claim your bonus reward with one simple step.""",spam
-"""Special promotion for new members only.""",spam
-"""Win an iPhone by joining our giveaway today.""",spam
-"""Get free internet data by registering now.""",spam
-"""Exclusive shopping deal available immediately.""",spam
-"""Your chance to save money starts today.""",spam
-"""Receive a gift package after completing this form.""",spam
-"""Limited-time reward. Click now to claim.""",spam
-"""Huge discounts on electronics. Shop today.""",spam
-"""Congratulations! You have been selected for a prize.""",spam
-"""Free coupons available while supplies last.""",spam
-"""Special customer offer. Activate now.""",spam
-"""Earn rewards easily with our new program.""",spam
-"""Get cashback instantly after purchase.""",spam
-"""Last chance! Claim your free reward today.""",spam
-"""Congratulations! You have been chosen for our exclusive giveaway.""",spam
-"""Get your free Amazon gift card today. Claim before midnight.""",spam
-"""Amazing opportunity! Start earning money immediately.""",spam
-"""Special promotion! Enjoy massive discounts on selected products.""",spam
-"""Free reward available. Click the link to receive it now.""",spam
-"""Your lucky draw entry has been approved. Collect your prize.""",spam
-"""Limited offer! Get premium access at no cost.""",spam
-"""Save up to 80% with our special shopping event.""",spam
-"""Congratulations! A surprise gift is waiting for you.""",spam
-"""Earn cash rewards by completing simple online tasks.""",spam
-"""Exclusive offer for registered users. Join today.""",spam
-"""Free mobile data package available. Activate now.""",spam
-"""Hot deal! Purchase today and receive extra bonuses.""",spam
-"""Win exciting prizes in our monthly competition.""",spam
-"""Your reward coupon is about to expire. Redeem now.""",spam
-"""Special discount unlocked. Click to use your voucher.""",spam
-"""Get a free trial of our premium service today.""",spam
-"""Massive savings available only for a limited time.""",spam
-"""Congratulations! You are eligible for a special gift.""",spam
-"""Receive RM300 shopping credit by signing up now.""",spam
-"""New customers get free rewards instantly.""",spam
-"""Exclusive flash sale! Prices dropped today only.""",spam
-"""Claim your bonus points before they disappear.""",spam
-"""Free samples available. Request yours now.""",spam
-"""Don't miss this unbelievable promotion.""",spam
-"""Get instant cashback after registration.""",spam
-"""Congratulations! Your reward has been reserved.""",spam
-"""Special deal alert! Save more when you buy now.""",spam
-"""Win a luxury phone through our lucky draw.""",spam
-"""Free membership upgrade available today.""",spam
-"""Your special offer is ready. Click to activate.""",spam
-"""Earn extra income with our simple online system.""",spam
-"""Limited seats available. Register immediately.""",spam
-"""Exclusive invitation! Join our premium club.""",spam
-"""Free delivery and discounts available this week.""",spam
-"""Congratulations! You have received a bonus reward.""",spam
-"""Get unlimited access with our special package.""",spam
-"""Today only! Huge discount on all items.""",spam
-"""Your free voucher is waiting. Redeem now.""",spam
-"""Special customer promotion. Take advantage today.""",spam
-"""Win cash prizes instantly by joining our contest.""",spam
-"""New deal launched! Buy now before it ends.""",spam
-"""Get a surprise reward after completing this survey.""",spam
-"""Congratulations! You are among our top winners.""",spam
-"""Free upgrade offer available for selected users.""",spam
-"""Claim your shopping credits before the deadline.""",spam
-"""Exclusive sale event begins now.""",spam
-"""Save more money with our limited promotion.""",spam
-"""Get your bonus gift after a quick registration.""",spam
-"""Free entertainment subscription available now.""",spam
-"""Special offer! Receive additional benefits today.""",spam
-"""Your account has earned reward points. Exchange them now.""",spam
-"""Join our lucky draw and win amazing prizes.""",spam
-"""Big clearance sale! Everything must be sold.""",spam
-"""Earn money online without investment.""",spam
-"""Congratulations! Your free package is ready.""",spam
-"""Click now to unlock your special discount.""",spam
-"""Limited time bonus! Do not miss this chance.""",spam
-"""Get a free shopping voucher instantly.""",spam
-"""Exclusive online promotion for selected customers.""",spam
-"""Special reward program starts today.""",spam
-"""Win a free holiday trip by entering now.""",spam
-"""Your discount code has been generated.""",spam
-"""Get amazing prices on our latest products.""",spam
-"""Free bonus available for new registrations.""",spam
-"""Congratulations! You have won a special prize.""",spam
-"""Enjoy 50% off your next purchase today.""",spam
-"""Act quickly! This offer expires soon.""",spam
-"""Receive free gifts when you shop with us.""",spam
-"""Join today and unlock premium benefits.""",spam
-"""Special package available at a very low price.""",spam
-"""Get instant rewards by downloading our app.""",spam
-"""Exclusive deal created just for you.""",spam
-"""Your chance to win starts now.""",spam
-"""Limited promotion! Order before stock runs out.""",spam
-"""Free coupons are available for everyone.""",spam
-"""Earn rewards by inviting your friends.""",spam
-"""Congratulations! Your application for a reward was approved.""",spam
-"""Special discount waiting for you inside.""",spam
-"""Claim your free bonus before it is gone.""",spam
-"""Big savings event begins this weekend.""",spam
-"""Receive a gift card after completing registration.""",spam
-"""New users can get a welcome reward.""",spam
-"""Special offer! Buy more and save more.""",spam
-"""Free premium service for selected customers.""",spam
-"""Get your exclusive deal today.""",spam
-"""Reward notification: claim your prize now.""",spam
-"""Win exciting gifts through our online campaign.""",spam
-"""Limited-time coupon available now.""",spam
-"""Start earning additional income today.""",spam
-"""Your free item is waiting for confirmation.""",spam
-"""Special shopping event with huge discounts.""",spam
-"""Congratulations! You have been selected for a bonus.""",spam
-"""Activate your free membership now.""",spam
-"""Save money with this amazing offer.""",spam
-"""Receive a free gift after joining our program.""",spam
-"""Final reminder! Claim your promotion today.""",spam
-"""Get access to exclusive deals instantly.""",spam
-"""Flash promotion ends soon. Shop now.""",spam
-"""Your reward is ready. Confirm to receive it.""",spam
-"""Congratulations! You have unlocked a special reward today.""",spam
-"""Get 90% discount on our products. Shop immediately.""",spam
-"""Free bonus points are available. Redeem them now.""",spam
-"""Limited time deal! Purchase before the offer ends.""",spam
-"""Win a brand new device in our online giveaway.""",spam
-"""Your exclusive reward package is ready to collect.""",spam
-"""Join now and receive a welcome bonus instantly.""",spam
-"""Special offer for you! Click to claim your discount.""",spam
-"""Earn extra money with our easy online opportunity.""",spam
-"""Free shopping voucher available for selected users.""",spam
-"""Congratulations! Your prize notification has arrived.""",spam
-"""Get a free upgrade by activating this offer.""",spam
-"""Huge promotion! Save more when you order today.""",spam
-"""Your lucky reward is waiting. Claim it now.""",spam
-"""Exclusive member benefits available immediately.""",spam
-"""Free gifts available while supplies last.""",spam
-"""Special weekend sale! Enjoy amazing discounts.""",spam
-"""Congratulations! You have received a bonus coupon.""",spam
-"""Unlock premium features with our special deal.""",spam
-"""Claim your free package before it expires.""",spam
-"""Limited stock! Buy now before it is gone.""",spam
-"""Get cashback rewards from every purchase.""",spam
-"""Special invitation! Become a VIP customer today.""",spam
-"""Win exciting prizes by joining our campaign.""",spam
-"""Free internet package available. Register now.""",spam
-"""Congratulations! You are selected for a special offer.""",spam
-"""Save up to 75% with our latest promotion.""",spam
-"""Your discount voucher is ready to use.""",spam
-"""Act now and receive a free surprise gift.""",spam
-"""Exclusive sale event starts today.""",spam
-"""Earn rewards quickly with our new program.""",spam
-"""Get free access to premium services.""",spam
-"""Congratulations! Claim your free electronics gift.""",spam
-"""Special deal available only for today.""",spam
-"""Receive instant rewards after completing registration.""",spam
-"""Big announcement! A special reward is waiting.""",spam
-"""Get your free coupon by clicking now.""",spam
-"""New customers receive exclusive benefits.""",spam
-"""Limited offer! Subscribe and get extra rewards.""",spam
-"""Your bonus credit has been added. Use it now.""",spam
-"""Join our promotion and win amazing prizes.""",spam
-"""Free trial available. Start using it today.""",spam
-"""Congratulations! Your name has been selected.""",spam
-"""Special discount code available now.""",spam
-"""Get huge savings with this limited offer.""",spam
-"""Receive free gifts with your next purchase.""",spam
-"""Win cash prizes through our lucky draw.""",spam
-"""Exclusive promotion ends soon. Take action now.""",spam
-"""Your free reward is waiting for confirmation.""",spam
-"""Get instant approval for our special package.""",spam
-"""Limited time! Enjoy our biggest sale event.""",spam
-"""Congratulations! You have earned a free voucher.""",spam
-"""Free subscription available for new users.""",spam
-"""Increase your income with our simple method.""",spam
-"""Claim your reward points before they expire.""",spam
-"""Special offer unlocked for your account.""",spam
-"""Get a free gift card today.""",spam
-"""Massive discounts available on selected items.""",spam
-"""Your chance to win a prize is here.""",spam
-"""Exclusive customer reward program launched.""",spam
-"""Receive special bonuses when you register.""",spam
-"""Congratulations! Your reward has been approved.""",spam
-"""Save money today with our amazing deals.""",spam
-"""Free delivery offer available now.""",spam
-"""Join the competition and win great prizes.""",spam
-"""Limited promotion! Order quickly.""",spam
-"""Get your special coupon immediately.""",spam
-"""New reward system launched. Join today.""",spam
-"""Receive extra benefits by signing up.""",spam
-"""Congratulations! You are our lucky customer.""",spam
-"""Special discount available before midnight.""",spam
-"""Claim your free item now.""",spam
-"""Exclusive online offer created for you.""",spam
-"""Earn rewards from your daily activities.""",spam
-"""Free products available for early users.""",spam
-"""Big sale! Lowest prices guaranteed.""",spam
-"""Your special bonus is ready.""",spam
-"""Get unlimited benefits with our premium plan.""",spam
-"""Congratulations! You have won a special gift.""",spam
-"""Activate your reward account today.""",spam
-"""Free promotional items available now.""",spam
-"""Shop today and receive extra discounts.""",spam
-"""Limited-time giveaway starts now.""",spam
-"""Get your free voucher instantly.""",spam
-"""Special offer! Don't miss this opportunity.""",spam
-"""Receive cashback after completing your purchase.""",spam
-"""Win a smartphone by joining our contest.""",spam
-"""Your exclusive deal is waiting.""",spam
-"""Save more with our latest shopping event.""",spam
-"""Congratulations! You are eligible for a free reward.""",spam
-"""Get bonus points by registering today.""",spam
-"""Free membership invitation available.""",spam
-"""Claim your promotion before it ends.""",spam
-"""Special reward available for loyal customers.""",spam
-"""Earn money easily with our online service.""",spam
-"""Your gift package is ready to be collected.""",spam
-"""Big discount alert! Shop now.""",spam
-"""Receive a free upgrade immediately.""",spam
-"""Final chance! Claim your offer today.""",spam
-"""Your account has been suspended. Verify your identity immediately.""",phishing
-"""Security alert: suspicious login detected. Confirm your password now.""",phishing
-"""Your bank account requires urgent verification. Click the secure link.""",phishing
-"""Your email account will be closed unless you verify your information.""",phishing
-"""Unusual activity detected. Login now to secure your account.""",phishing
-"""Your password has expired. Reset it immediately using this link.""",phishing
-"""Microsoft security team: confirm your account details to continue.""",phishing
-"""Your Apple ID has been locked. Verify your information now.""",phishing
-"""Bank alert: Your account access is limited. Confirm your details.""",phishing
-"""We detected unauthorized activity. Please verify your account.""",phishing
-"""Your online banking session has expired. Re-login to continue.""",phishing
-"""Security warning: someone accessed your account. Change password now.""",phishing
-"""Your payment information needs to be updated to avoid suspension.""",phishing
-"""Your account will be permanently closed. Verify immediately.""",phishing
-"""Confirm your identity to prevent account restriction.""",phishing
-"""Your mailbox is full. Login to increase storage capacity.""",phishing
-"""Important notice: Your account requires security confirmation.""",phishing
-"""Your transaction was blocked. Verify your payment details.""",phishing
-"""Your bank detected suspicious activity. Follow the verification process.""",phishing
-"""Your profile information is incomplete. Update it now.""",phishing
-"""Your account has been compromised. Reset your password immediately.""",phishing
-"""Security check required. Confirm your login information.""",phishing
-"""Your credit card has been disabled. Update your details now.""",phishing
-"""Your subscription payment failed. Enter your card information again.""",phishing
-"""Your account access will expire today. Verify now.""",phishing
-"""Google security alert: suspicious sign-in detected on your account.""",phishing
-"""Your account has unusual login attempts. Secure your account now.""",phishing
-"""Confirm your password to restore account access.""",phishing
-"""Your online service account is at risk. Verify your identity.""",phishing
-"""Your banking profile needs confirmation immediately.""",phishing
-"""Security notification: Login from unknown device detected.""",phishing
-"""Your account has been restricted due to suspicious activity.""",phishing
-"""Verify your personal information to unlock your account.""",phishing
-"""Your payment method was rejected. Update your billing information.""",phishing
-"""Your account recovery requires identity verification.""",phishing
-"""Your email security settings need immediate confirmation.""",phishing
-"""Your account has been temporarily locked. Click to unlock.""",phishing
-"""Important security update required. Confirm your account details.""",phishing
-"""Your password reset request is pending. Verify now.""",phishing
-"""Your financial account needs verification to avoid closure.""",phishing
-"""Your login credentials may have been exposed. Change them now.""",phishing
-"""Your account protection has expired. Renew it immediately.""",phishing
-"""Your transaction requires additional verification.""",phishing
-"""Security alert from your bank. Confirm recent activity.""",phishing
-"""Your account will be deleted unless you verify your identity.""",phishing
-"""Your payment account has been blocked. Restore access now.""",phishing
-"""Your device has been linked to another account. Verify ownership.""",phishing
-"""Your email access has been limited. Confirm your details.""",phishing
-"""Suspicious activity detected on your account. Login to review.""",phishing
-"""Your security information needs updating. Complete verification.""",phishing
-"""Your account verification failed. Submit your details again.""",phishing
-"""Your bank requires confirmation of your personal information.""",phishing
-"""Your account has been accessed from an unknown location.""",phishing
-"""Your password must be updated due to security reasons.""",phishing
-"""Your account is under review. Verify your information now.""",phishing
-"""Confirm your identity to prevent unauthorized access.""",phishing
-"""Your service account will be suspended without verification.""",phishing
-"""Your payment details are outdated. Update them immediately.""",phishing
-"""Your account has a security problem. Follow the instructions.""",phishing
-"""Your login session expired. Sign in again to continue.""",phishing
-"""Your security verification is incomplete. Finish it now.""",phishing
-"""Your account needs urgent attention. Verify immediately.""",phishing
-"""Your personal details have not been confirmed. Update now.""",phishing
-"""Your online account has been flagged. Confirm ownership.""",phishing
-"""Your bank security team needs your verification response.""",phishing
-"""Your account recovery link is waiting. Confirm now.""",phishing
-"""Your identity verification failed. Submit documents again.""",phishing
-"""Your account protection requires immediate action.""",phishing
-"""Your email account has suspicious activity. Secure it now.""",phishing
-"""Your banking access has been disabled. Restore it immediately.""",phishing
-"""Your account information must be updated today.""",phishing
-"""Your security token has expired. Request a new one now.""",phishing
-"""Your account is temporarily unavailable. Verify to restore access.""",phishing
-"""Your payment was declined. Confirm your card details.""",phishing
-"""Your account has been selected for a security check.""",phishing
-"""Your login details need confirmation before continuing.""",phishing
-"""Your account has been marked as suspicious. Verify now.""",phishing
-"""Your online profile requires immediate verification.""",phishing
-"""Your account will lose access unless you confirm your identity.""",phishing
-"""Security notification: Please confirm your account information.""",phishing
-"""Your password recovery request requires verification.""",phishing
-"""Your account settings have changed. Confirm if this was you.""",phishing
-"""Your financial information requires security confirmation.""",phishing
-"""Your account has encountered a security issue. Login now.""",phishing
-"""Your account credentials need to be verified.""",phishing
-"""Your service access is limited. Update your information.""",phishing
-"""Your account has been frozen. Complete verification to unlock.""",phishing
-"""Your bank profile requires immediate confirmation.""",phishing
-"""Your email password needs renewal. Click to reset.""",phishing
-"""Your account has detected unusual activity. Verify now.""",phishing
-"""Your identity confirmation is required to continue using services.""",phishing
-"""Your account has expired. Reactivate it by verifying details.""",phishing
-"""Your security check failed. Confirm your information again.""",phishing
-"""Your account requires additional authentication.""",phishing
-"""Your payment account needs urgent verification.""",phishing
-"""Your login attempt was blocked. Confirm your identity.""",phishing
-"""Your account is at risk. Secure it immediately.""",phishing
-"""Your account details must be updated before access is removed.""",phishing
-"""Maybank security alert: Your account has unusual activity. Verify now.""",phishing
-"""Touch 'n Go eWallet: Your account is locked. Confirm your identity immediately.""",phishing
-"""Shopee security team: Your account requires verification to avoid suspension.""",phishing
-"""Grab account warning: Please confirm your payment information.""",phishing
-"""PayPal alert: Your account access has been restricted. Verify your details.""",phishing
-"""Apple ID security notice: Your account has been disabled. Restore access now.""",phishing
-"""Google account warning: Sign-in attempt detected. Confirm your identity.""",phishing
-"""Microsoft account alert: Your password needs immediate verification.""",phishing
-"""Netflix security notice: Update your payment details to continue service.""",phishing
-"""Amazon security alert: Verify your account information to prevent closure.""",phishing
-"""Your bank account has been frozen due to suspicious transactions.""",phishing
-"""Your online banking password has expired. Reset it immediately.""",phishing
-"""Security department requires your account verification within 24 hours.""",phishing
-"""Your payment card has been blocked. Confirm your details to unlock it.""",phishing
-"""Your e-wallet account needs identity verification before use.""",phishing
-"""Your account has detected suspicious login from another country.""",phishing
-"""Verify your banking information to avoid permanent account suspension.""",phishing
-"""Your account recovery process requires personal information confirmation.""",phishing
-"""Your email account has been hacked. Change your password immediately.""",phishing
-"""Your account security level is low. Upgrade protection now.""",phishing
-"""Your online shopping account has been compromised. Verify ownership.""",phishing
-"""Your wallet balance is frozen. Complete verification to restore access.""",phishing
-"""Your transaction is pending. Confirm your banking details.""",phishing
-"""Your account has failed security verification. Submit information again.""",phishing
-"""Your identity check is incomplete. Complete the process now.""",phishing
-"""Your card payment failed. Update your card information immediately.""",phishing
-"""Your account will be suspended due to incomplete verification.""",phishing
-"""Security alert: Unknown device signed into your account.""",phishing
-"""Your account requires two-factor authentication setup. Verify now.""",phishing
-"""Your login information has expired. Confirm your credentials.""",phishing
-"""Your account has been flagged for suspicious behavior.""",phishing
-"""Your bank needs additional information to approve your transaction.""",phishing
-"""Your online account will be deleted unless action is taken.""",phishing
-"""Your account access has been limited. Verify your personal details.""",phishing
-"""Your password reset link is ready. Confirm your account first.""",phishing
-"""Your account has a critical security issue. Login to fix it.""",phishing
-"""Your financial profile requires immediate verification.""",phishing
-"""Your payment method needs confirmation to avoid service interruption.""",phishing
-"""Your account ownership must be confirmed today.""",phishing
-"""Your security certificate has expired. Renew your account now.""",phishing
-"""Your account has been selected for mandatory verification.""",phishing
-"""Your login attempt requires confirmation. Verify immediately.""",phishing
-"""Your online service has detected unauthorized access.""",phishing
-"""Your account information does not match our records. Update now.""",phishing
-"""Your bank security team requests confirmation of your details.""",phishing
-"""Your account is temporarily disabled. Verify to reactivate.""",phishing
-"""Your payment account has suspicious activity. Review now.""",phishing
-"""Your email service requires password confirmation.""",phishing
-"""Your account has reached a security limit. Verify your identity.""",phishing
-"""Your account needs urgent recovery. Submit your details.""",phishing
-"""Your mobile banking access has been suspended. Restore it now.""",phishing
-"""Your account requires a security update before continuing.""",phishing
-"""Your identity verification expires today. Complete it immediately.""",phishing
-"""Your account has an unauthorized transaction. Confirm your information.""",phishing
-"""Your bank card security check requires verification.""",phishing
-"""Your account has been temporarily restricted. Click to unlock.""",phishing
-"""Your online profile needs confirmation due to security reasons.""",phishing
-"""Your account has suspicious activity from a new location.""",phishing
-"""Your payment details have changed. Confirm this update.""",phishing
-"""Your account protection needs renewal. Verify now.""",phishing
-"""Your service provider detected unusual account behavior.""",phishing
-"""Your account recovery requires a security code confirmation.""",phishing
-"""Your personal information needs updating to maintain access.""",phishing
-"""Your account login has been blocked. Confirm your identity.""",phishing
-"""Your financial account requires immediate action.""",phishing
-"""Your account has been locked after multiple failed attempts.""",phishing
-"""Your security settings require verification.""",phishing
-"""Your account access will expire soon. Confirm now.""",phishing
-"""Your payment account has been suspended temporarily.""",phishing
-"""Your account has been reported for suspicious activity.""",phishing
-"""Your bank requires confirmation before processing your transaction.""",phishing
-"""Your account details must be reviewed immediately.""",phishing
-"""Your email storage is full. Login to increase your limit.""",phishing
-"""Your account has a pending security review.""",phishing
-"""Your identity has not been verified. Complete the process.""",phishing
-"""Your account will be disabled if verification is not completed.""",phishing
-"""Your card information needs to be updated urgently.""",phishing
-"""Your online account requires a new security confirmation.""",phishing
-"""Your account has unauthorized access attempts. Secure it now.""",phishing
-"""Your password has been changed. Confirm if this was you.""",phishing
-"""Your account has a suspicious payment request.""",phishing
-"""Your banking session requires re-authentication.""",phishing
-"""Your account verification deadline is approaching.""",phishing
-"""Your account has been selected for security inspection.""",phishing
-"""Your login credentials are at risk. Update them now.""",phishing
-"""Your account requires identity confirmation to continue.""",phishing
-"""Your account has been blocked because of unusual activity.""",phishing
-"""Your security verification failed. Try again immediately.""",phishing
-"""Your payment information is incomplete. Update now.""",phishing
-"""Your account access is restricted until verification.""",phishing
-"""Your account has received a suspicious login alert.""",phishing
-"""Your online banking account needs confirmation.""",phishing
-"""Your account requires immediate security attention.""",phishing
-"""Your profile has been marked for review. Verify now.""",phishing
-"""Your account has expired. Reactivate it today.""",phishing
-"""Your account security check requires additional information.""",phishing
-"""Your account has a pending verification request.""",phishing
-"""Your account has been compromised. Take action immediately.""",phishing
-"""Your account has been flagged due to suspicious activity. Verify immediately.""",phishing
-"""Security warning: Your login details may have been stolen. Change your password now.""",phishing
-"""Your bank account requires confirmation before the transaction can proceed.""",phishing
-"""Your account access has been temporarily disabled. Verify your identity.""",phishing
-"""Your email account security has failed. Confirm your information now.""",phishing
-"""Your account has an unauthorized login attempt. Secure your account immediately.""",phishing
-"""Your payment has been declined. Update your billing information to continue.""",phishing
-"""Your account verification is incomplete. Complete the process today.""",phishing
-"""Your password reset request requires confirmation. Verify your account.""",phishing
-"""Your account will be closed due to inactivity. Login to reactivate it.""",phishing
-"""Your security information needs updating. Confirm your details now.""",phishing
-"""Your bank detected unusual activity. Review your account immediately.""",phishing
-"""Your account has been restricted. Submit your information to restore access.""",phishing
-"""Your online account requires urgent verification.""",phishing
-"""Your identity cannot be confirmed. Provide additional details now.""",phishing
-"""Your account has been accessed from an unknown device.""",phishing
-"""Your card has been blocked. Verify your payment details immediately.""",phishing
-"""Your account security requires immediate attention.""",phishing
-"""Your account has expired. Confirm your information to continue using services.""",phishing
-"""Your transaction requires additional security verification.""",phishing
-"""Your account has been locked. Click to unlock your access.""",phishing
-"""Your online banking requires a security update.""",phishing
-"""Your account details have changed. Confirm whether this was you.""",phishing
-"""Your login session is invalid. Sign in again to verify.""",phishing
-"""Your account is at risk. Complete verification now.""",phishing
-"""Your personal details need confirmation to prevent account suspension.""",phishing
-"""Your security code has expired. Request a new verification code.""",phishing
-"""Your account has a pending verification request. Complete it immediately.""",phishing
-"""Your payment account requires identity confirmation.""",phishing
-"""Your account has suspicious activity from a foreign location.""",phishing
-"""Your email password needs to be updated due to security concerns.""",phishing
-"""Your account has been compromised. Follow the recovery steps now.""",phishing
-"""Your account recovery requires confirmation of personal details.""",phishing
-"""Your bank profile needs to be verified before the deadline.""",phishing
-"""Your account access will be removed unless you verify now.""",phishing
-"""Your security settings have changed. Confirm your account details.""",phishing
-"""Your account has failed the security check. Verify again.""",phishing
-"""Your payment card information requires immediate update.""",phishing
-"""Your account has been placed under security review.""",phishing
-"""Your account requires authentication before continuing.""",phishing
-"""Your online wallet has been suspended. Verify to restore access.""",phishing
-"""Your account has detected unauthorized activity. Login now.""",phishing
-"""Your account information is outdated. Update it immediately.""",phishing
-"""Your service account requires confirmation to avoid closure.""",phishing
-"""Your account security alert requires your response.""",phishing
-"""Your login credentials must be confirmed today.""",phishing
-"""Your account has been frozen due to suspicious behavior.""",phishing
-"""Your account requires a security check before access is restored.""",phishing
-"""Your banking information needs verification immediately.""",phishing
-"""Your account has received a suspicious request. Confirm now.""",phishing
-"""Your account protection has expired. Renew your security settings.""",phishing
-"""Your online profile has been disabled. Verify your identity.""",phishing
-"""Your account has an important notification. Login to review.""",phishing
-"""Your payment details need confirmation before your next purchase.""",phishing
-"""Your account has been marked as unsafe. Secure it now.""",phishing
-"""Your account requires additional identity verification.""",phishing
-"""Your password has expired. Confirm a new password immediately.""",phishing
-"""Your account has unauthorized access. Change your credentials now.""",phishing
-"""Your bank account verification deadline is today.""",phishing
-"""Your account has been temporarily blocked for security reasons.""",phishing
-"""Your account requires confirmation through the security portal.""",phishing
-"""Your identity information must be verified to continue service.""",phishing
-"""Your account has a suspicious transaction waiting for approval.""",phishing
-"""Your online account has been compromised. Verify ownership now.""",phishing
-"""Your security verification has failed. Try again immediately.""",phishing
-"""Your account requires urgent action to prevent closure.""",phishing
-"""Your account access is limited until your information is confirmed.""",phishing
-"""Your email account requires security confirmation.""",phishing
-"""Your account has been selected for a mandatory security review.""",phishing
-"""Your bank requires additional verification for your safety.""",phishing
-"""Your account has a problem with payment authorization.""",phishing
-"""Your account has been blocked after unusual login activity.""",phishing
-"""Your account requires a new security confirmation code.""",phishing
-"""Your account information must be verified before the next login.""",phishing
-"""Your account has been reported for suspicious activity.""",phishing
-"""Your security alert requires immediate verification.""",phishing
-"""Your account access will expire without confirmation.""",phishing
-"""Your online service account requires urgent identity verification.""",phishing
-"""Your account has been temporarily suspended. Verify now.""",phishing
-"""Your banking session requires authentication again.""",phishing
-"""Your account has detected a suspicious payment attempt.""",phishing
-"""Your account recovery process is waiting for confirmation.""",phishing
-"""Your personal information requires security validation.""",phishing
-"""Your account needs immediate verification to remain active.""",phishing
-"""Your login attempt was blocked for security reasons.""",phishing
-"""Your account requires confirmation before processing requests.""",phishing
-"""Your account has an important security message.""",phishing
-"""Your account has been locked because of unusual behavior.""",phishing
-"""Your online banking access requires reactivation.""",phishing
-"""Your account has a security issue that needs fixing.""",phishing
-"""Your account verification link will expire soon.""",phishing
-"""Your account has suspicious login records. Review immediately.""",phishing
-"""Your account security update is incomplete.""",phishing
-"""Your payment information has to be confirmed again.""",phishing
-"""Your account has been temporarily restricted.""",phishing
-"""Your identity verification is required immediately.""",phishing
-"""Your account needs urgent protection from unauthorized access.""",phishing
-"""Your account details require confirmation today.""",phishing
-I will send you the updated file after checking it.,ham
-The meeting has been scheduled for next Tuesday.,ham
-Can you help me review this document?,ham
-I have arrived safely at my destination.,ham
-Please remember to submit your assignment before the deadline.,ham
-The lecturer uploaded the new materials today.,ham
-I will join the discussion after my class ends.,ham
-Your appointment reminder is scheduled for tomorrow.,ham
-The package has been delivered to your address.,ham
-I have completed the requested changes.,ham
-Please check the latest version of the report.,ham
-The team will meet online at 3 PM.,ham
-I have sent the information through email.,ham
-Can we discuss the project requirements tomorrow?,ham
-The office will close earlier today.,ham
-Your booking has been confirmed successfully.,ham
-I will prepare the presentation slides tonight.,ham
-Thank you for your assistance with this matter.,ham
-The payment has been received successfully.,ham
-Please update me when you are available.,ham
-The class schedule has been updated.,ham
-I will bring the documents during the meeting.,ham
-The system maintenance has been completed.,ham
-Can you check whether the file opens correctly?,ham
-I have saved the latest changes.,ham
-The event starts at 8 PM this Saturday.,ham
-Please contact the support team if you need help.,ham
-I will arrive around lunchtime.,ham
-The project progress report is ready.,ham
-Thank you for your quick reply.,ham
-The customer request has been processed.,ham
-I have completed my part of the assignment.,ham
-Please share the meeting link with everyone.,ham
-The delivery is expected tomorrow morning.,ham
-I will review the document later today.,ham
-Your reservation details have been updated.,ham
-The classroom location has changed to Block C.,ham
-I have uploaded the final presentation.,ham
-Please remember our appointment tomorrow.,ham
-The team has finished testing the system.,ham
-I will call you after work.,ham
-The report has been approved by the manager.,ham
-Can you send me the latest version?,ham
-The application form has been submitted.,ham
-Your request has been successfully completed.,ham
-I am currently working on the assigned task.,ham
-The meeting notes are available now.,ham
-Please check your inbox for the details.,ham
-I will attend the training session tomorrow.,ham
-The document has been reviewed and updated.,ham
-Thank you for helping me solve the problem.,ham
-The order has been packed and shipped.,ham
-I will arrive at the location soon.,ham
-The payment receipt has been attached.,ham
-Please let me know if there are any issues.,ham
-The new software version is ready to install.,ham
-I have completed the required registration.,ham
-The appointment has been moved to Friday.,ham
-I will send the remaining information later.,ham
-The team meeting has been confirmed.,ham
-Your account settings have been updated successfully.,ham
-Please remember to bring your student card.,ham
-I have received the documents you sent.,ham
-The report deadline is next Monday.,ham
-I will check the results and update you.,ham
-The system is running normally now.,ham
-Can you join the group discussion tonight?,ham
-The package will arrive within three days.,ham
-I have finished preparing the materials.,ham
-The schedule has been shared with the team.,ham
-Please review the attached document.,ham
-The service request has been completed.,ham
-I will provide the details during the meeting.,ham
-The payment confirmation has been received.,ham
-The library book should be returned next week.,ham
-I will be available after 5 PM.,ham
-The project files are stored in the shared folder.,ham
-Please confirm your attendance for the event.,ham
-The customer information has been updated.,ham
-I have completed the online form.,ham
-The issue has been fixed successfully.,ham
-I will send the invoice tomorrow.,ham
-The presentation was completed on time.,ham
-The team agreed with the proposed plan.,ham
-Please check the updated schedule.,ham
-I will discuss this with the team later.,ham
-The order status has changed to delivered.,ham
-Your request is currently being processed.,ham
-I have received your payment details.,ham
-The meeting minutes have been uploaded.,ham
-Please wait while we process your request.,ham
-The training session starts next week.,ham
-I will prepare the necessary documents.,ham
-The website update has been completed.,ham
-Thank you for your cooperation.,ham
-The appointment reminder was sent successfully.,ham
-I have completed the testing phase.,ham
-The final report is ready for submission.,ham
-Please contact me when you arrive.,ham
-The event information has been updated.,ham
-I will check the system logs tomorrow.,ham
-Your order confirmation has been received.,ham
-"Good afternoon, I have received your message.",ham
-I will update the report after reviewing the feedback.,ham
-The meeting room has been reserved for tomorrow.,ham
-Please send me the details when you are ready.,ham
-I have completed the requested assignment.,ham
-The documents are available in the shared folder.,ham
-I will attend the event this weekend.,ham
-Thank you for your help during the project.,ham
-The payment has been successfully processed.,ham
-I have checked the information and everything is correct.,ham
-Please let me know your preferred schedule.,ham
-The package is ready for pickup.,ham
-I will submit the form before the deadline.,ham
-The team has completed the discussion.,ham
-Your reservation has been confirmed.,ham
-I will prepare the required materials tonight.,ham
-The lecturer has uploaded the new notes.,ham
-Can you review my work before submission?,ham
-The customer has confirmed the order.,ham
-I will reply after checking the details.,ham
-The office meeting starts at 2 PM.,ham
-Please remember to bring your documents.,ham
-I have updated the software successfully.,ham
-The report has been submitted for approval.,ham
-I will send the final version tomorrow.,ham
-The delivery service will arrive soon.,ham
-The issue has been resolved by the technical team.,ham
-Please check the attached report.,ham
-I have completed the database task.,ham
-The appointment date has been changed.,ham
-Thank you for attending the meeting today.,ham
-I will share the presentation slides later.,ham
-The project timeline has been updated.,ham
-Your request has been approved.,ham
-I have received the confirmation email.,ham
-The system backup has completed successfully.,ham
-Please contact me if anything changes.,ham
-I will join the online class tonight.,ham
-The booking information has been updated.,ham
-The document review is completed.,ham
-I have prepared the meeting agenda.,ham
-The team will discuss the next steps tomorrow.,ham
-Please check the latest announcement.,ham
-I will arrive at the campus soon.,ham
-The order has been delivered successfully.,ham
-The invoice has been generated.,ham
-I have completed the required training.,ham
-The application process is finished.,ham
-Please inform me when you receive the package.,ham
-I will check the system performance later.,ham
-The event registration is confirmed.,ham
-The customer feedback has been recorded.,ham
-I have sent the requested information.,ham
-The class materials are ready to download.,ham
-Please remember the deadline is next week.,ham
-The meeting summary has been shared.,ham
-I will discuss the issue with the team.,ham
-The payment receipt has been saved.,ham
-Your order details are available now.,ham
-I have finished preparing the documents.,ham
-The website content has been updated.,ham
-Please review the changes when possible.,ham
-I will complete the remaining tasks soon.,ham
-The server maintenance has been completed.,ham
-The report contains the latest information.,ham
-I have received the package today.,ham
-The schedule has been confirmed by everyone.,ham
-Please send the updated file version.,ham
-I will attend the training session tomorrow.,ham
-The problem was fixed successfully.,ham
-The project meeting went well today.,ham
-Your account information has been updated successfully.,ham
-I have completed the survey form.,ham
-The library reminder has been received.,ham
-Please check the new timetable.,ham
-I will bring the equipment tomorrow.,ham
-The application has entered the review stage.,ham
-Thank you for your cooperation.,ham
-The team has approved the final design.,ham
-I have received the necessary approval.,ham
-Please let me know your availability.,ham
-The order tracking information is available.,ham
-I will prepare the final presentation.,ham
-The documents have been signed and submitted.,ham
-The system update was successful.,ham
-Please confirm your attendance tomorrow.,ham
-I have reviewed the project requirements.,ham
-The meeting has been moved to another time.,ham
-I will provide an update later today.,ham
-The payment status has been updated.,ham
-Your request is being processed now.,ham
-I have completed the testing process.,ham
-Please check the latest version of the file.,ham
-The delivery has arrived safely.,ham
-I will contact you after the meeting.,ham
-The report is ready for submission.,ham
-Thank you for your patience and support.,ham
-The task has been completed successfully.,ham
-I have saved the important documents.,ham
-Please inform the team about the changes.,ham
-The appointment reminder has been received.,ham
-I will continue working on the project tomorrow.,ham
-Hello how are you today?,ham
-Can we meet after class tomorrow?,ham
-Please send me the assignment notes.,ham
-Happy birthday! Hope you have a great day.,ham
-I will call you when I arrive.,ham
-Thank you for your help with the project.,ham
-Your parcel will arrive this afternoon.,ham
-Do not forget the team meeting at ten.,ham
-Dinner is ready whenever you are home.,ham
-The library book is due next Monday.,ham
-See you at the coffee shop around noon.,ham
-I attached the slides from yesterday's lecture.,ham
-Could you review my draft before I submit it?,ham
-The exam results will be posted on Friday.,ham
-Mom called and said she is doing well.,ham
-Let me know if you need a ride to campus.,ham
-I finished the lab report and uploaded it.,ham
-Are we still on for study group tonight?,ham
-The weather looks nice for the weekend hike.,ham
-Please confirm your attendance for the workshop.,ham
-I left your textbook on the kitchen table.,ham
-Thanks for covering my shift last week.,ham
-The professor moved the deadline to next Wednesday.,ham
-Can you pick up milk on your way home?,ham
-I enjoyed our conversation at the conference.,ham
-Your dentist appointment is confirmed for Tuesday at 3pm.,ham
-The team approved your leave request for August.,ham
-I shared the folder with you on Google Drive.,ham
-Reminder: submit your timesheet by end of day.,ham
-Great job on the presentation today!,ham
-"""Congratulations! You won a free iPhone. Click now!""",spam
-"""FREE entry in our weekly prize draw, reply WIN now.""",spam
-Limited offer: claim your cash reward today!,spam
-You have been selected as a lucky winner!,spam
-"""Act fast and get free vouchers now!!!""",spam
-Call this number to collect your prize.,spam
-Exclusive deal! Buy now and save big.,spam
-You won a gift card. Click here to claim.,spam
-Urgent promotion: free subscription available now.,spam
-Reply STOP to unsubscribe from this offer.,spam
-Earn $5000/week working from home. No experience needed!,spam
-Hot singles in your area want to meet you tonight.,spam
-You have been pre-approved for a credit line of $10000.,spam
-Last chance! 90% off designer watches today only.,spam
-Your number was chosen in our monthly lottery draw.,spam
-Get rich quick with this one weird trick doctors hate.,spam
-Double your income in 30 days. Call now for details.,spam
-Free trial of premium channels. Text YES to subscribe.,spam
-You qualify for a government grant. Apply immediately!,spam
-Amazing weight loss results guaranteed. Order now!,spam
-Cheap meds online no prescription required.,spam
-Make money fast by forwarding this to 10 friends.,spam
-Your loan application has been approved. Collect funds now.,spam
-Flash sale ends in one hour. Everything must go!,spam
-You are our 1000000th visitor. Claim your reward!,spam
-Win a luxury vacation. Enter your details to participate.,spam
-Exclusive members-only discount just for you.,spam
-Buy one get ten free. Limited stock available.,spam
-Congratulations on your cash prize of $2500!,spam
-Act now and receive a free smartphone upgrade.,spam
-Special promotion: zero interest for 12 months.,spam
-"""Your account is suspended. Verify at https://account-check.example""",phishing
-"""Security alert: confirm your password immediately.""",phishing
-"""We detected unusual login activity. Click https://secure-login.example""",phishing
-Your bank needs you to verify your account now.,phishing
-Update your payment details to avoid account closure.,phishing
-Microsoft support: call urgently to fix your computer.,phishing
-Reset your password at http://fake-reset.example immediately.,phishing
-Your mailbox quota is full. Login to keep receiving email.,phishing
-Verify your identity or your account will be locked.,phishing
-Invoice attached. Open link to review secure document.,phishing
-Your PayPal account has been limited. Sign in to restore access.,phishing
-Apple ID locked due to suspicious activity. Verify now at http://apple-id-verify.example,phishing
-Netflix payment failed. Update billing at https://netflix-billing.example,phishing
-Your Amazon order could not be delivered. Confirm address here.,phishing
-IRS notice: you owe back taxes. Pay immediately to avoid arrest.,phishing
-Your package is held at customs. Pay fee at http://delivery-fee.example,phishing
-WhatsApp verification code expired. Re-enter credentials at link.,phishing
-Your Google account will be deleted in 24 hours unless you verify.,phishing
-Chase Bank: unusual transaction detected. Confirm at secure portal.,phishing
-DocuSign: you have a pending document. Review and sign now.,phishing
-Your Microsoft 365 subscription expired. Renew to avoid data loss.,phishing
-LinkedIn: someone viewed your profile. Login to see who.,phishing
-Your crypto wallet requires immediate verification.,phishing
-FedEx: delivery attempt failed. Reschedule at http://fedex-track.example,phishing
-Your university email will be deactivated. Update password now.,phishing
-IT department: mandatory security update. Click to install patch.,phishing
-Your social security benefits are pending. Confirm identity online.,phishing
-Dropbox shared file expires today. Open link before deletion.,phishing
-Your Steam account has a pending trade. Authorize at login page.,phishing
-Bank transfer of $4500 pending. Approve transaction to release funds.,phishing
-Your insurance policy lapsed. Renew coverage at http://insure-renew.example,phishing
-Adobe Creative Cloud payment declined. Update card details.,phishing
-Your Zoom meeting recording is ready. Download from secure link.,phishing
-Coinbase: withdraw your funds before account suspension.,phishing
-Your tax refund is ready. Submit bank details to receive payment.,phishing
+Thank you for helping me solve the problem.,low
+Can you send me the summary for the conference?,low
+Your email account will be permanently deleted in today unless you verify now.,high
+Earn $5000/week working from home. No experience needed!,medium
+Don't miss out: 10% off shoes ends Friday.,medium
+Immediate action required: your government tax account will be closed in 2 hours.,high
+The issue has been fixed successfully.,low
+Earn $50 cashback when you shop accessories at our outlet.,medium
+Use code BONUS20 for 50% off furniture this the end of the week.,medium
+"""Your account details must be reviewed immediately.""",high
+Please send me the assignment notes.,low
+Use code TREAT25 for 25% off furniture this the end of the week.,medium
+Click here to confirm your your employer login before your session expires in 2 hours.,high
+I will be at the cafe around 10:30 AM.,low
+"""Get free shopping coupons today. Register immediately.""",medium
+"""Hot deal! Purchase today and receive extra bonuses.""",medium
+"""Security warning: someone accessed your account. Change password now.""",high
+Exclusive deal just for you: 40% off accessories at our partner.,medium
+I will send the payment receipt later.,low
+"""Your payment information needs to be updated to avoid suspension.""",high
+Let's catch up over dinner this Monday.,low
+"Get 60% off your next home goods purchase, use code TREAT25!",medium
+"""Special reward program starts today.""",medium
+Your your employer account will be permanently deleted in the next hour unless you verify now.,high
+I'm running a few minutes late to the interview.,low
+"""Free accessories available for new customers.""",medium
+Your PayPal account will be permanently deleted in today unless you verify now.,high
+Your government tax password will expire 12 hours. Click here to reset it.,high
+Could you review the invoice before tomorrow?,low
+"""Special offer! Don't miss this opportunity.""",medium
+Can you send me the agenda for the interview?,low
+"""Congratulations! Your free package is ready.""",medium
+Please remember to bring your ID card tomorrow.,low
+"""Your email password needs renewal. Click to reset.""",high
+Please let me know your decision.,low
+our outlet rewards: claim your gadget bundle worth $50 today.,medium
+Immediate action required: your Apple account will be closed in 2 hours.,high
+Cheap meds online no prescription required.,medium
+"""Your online banking session has expired. Re-login to continue.""",high
+"""Exclusive shopping deal available immediately.""",medium
+"""Your online profile needs confirmation due to security reasons.""",high
+Earn $750 cashback when you shop shoes at the marketplace.,medium
+"""Your account has an important security message.""",high
+The payment confirmation has been received.,low
+Can we reschedule the training session to next week?,low
+Can you send me the report for the meeting?,low
+"""Your payment was declined. Confirm your card details.""",high
+Use code SAVE10 for 70% off shoes this the end of the week.,medium
+"The budget summary has been updated, please review.",low
+Thank you for your quick response.,low
+I've attached the presentation you requested.,low
+I will be at the gym around 5 PM.,low
+Your Amazon password will expire 12 hours. Click here to reset it.,high
+Please contact me when you arrive.,low
+The team approved your leave request for August.,low
+Unusual login detected on your Amazon account. Confirm your identity within 3 days.,high
+The weather looks great for a picnic this weekend.,low
+"""Your login credentials may have been exposed. Change them now.""",high
+"""Free subscription offer available for a limited time.""",medium
+Your PayPal password will expire 2 hours. Click here to reset it.,high
+Your Steam account has a pending trade. Authorize at login page.,high
+Final notice: your Apple account will be suspended in 48 hours. Act now.,high
+"""Your payment details have changed. Confirm this update.""",high
+"""Your account has reached a security limit. Verify your identity.""",high
+The application has entered the review stage.,low
+Can we reschedule the interview to Wednesday?,low
+Use code VIP50 for 40% off shoes this Friday.,medium
+Happy birthday! Hope you have a great day.,low
+I will be at the cafe around noon.,low
+"""Your bank needs additional information to approve your transaction.""",high
+Your Amazon account shows unauthorized charges. Confirm your identity to dispute them.,high
+Your Instagram account will be permanently deleted in 24 hours unless you verify now.,high
+"""Special offer for you! Click to claim your discount.""",medium
+"""Free movie subscription available. Activate today.""",medium
+We could not verify your bank details. Update them within today or lose access.,high
+Your bank account has been locked. Verify your information to unlock it.,high
+The library book should be returned next week.,low
+Use code SAVE10 for 30% off groceries this Monday.,medium
+See you at the library tomorrow at noon.,low
+"Get 50% off your next home goods purchase, use code FREESHIP!",medium
+See you tomorrow at campus.,low
+Final notice: your email account will be suspended in 48 hours. Act now.,high
+I will prepare the required materials tonight.,low
+Your insurance password will expire 48 hours. Click here to reset it.,high
+"""Receive RM300 shopping credit by signing up now.""",medium
+Your payment method failed. Update your billing details within 12 hours.,high
+Your PayPal password will expire 48 hours. Click here to reset it.,high
+"""Your online account will be deleted unless action is taken.""",high
+"""Earn rewards easily with our new program.""",medium
+Please confirm your attendance.,low
+"""Your transaction requires additional security verification.""",high
+"""Congratulations! You are our lucky customer.""",medium
+"""Your account requires immediate security attention.""",high
+Special offer: subscribe to the retailer now and save 40%.,medium
+Can you send me the invoice for the training session?,low
+Reminder: the interview starts at 10:30 AM.,low
+"""Win a brand new laptop by joining our lucky draw.""",medium
+"""Flash promotion ends soon. Shop now.""",medium
+"""Claim your bonus reward with one simple step.""",medium
+"""Your account requires additional identity verification.""",high
+Use code SAVE10 for 60% off clothing this Friday.,medium
+Reminder: the training session starts at 9 AM.,low
+Final notice: your Instagram account will be suspended in 48 hours. Act now.,high
+The project files are stored in the shared folder.,low
+Use code DEAL30 for 50% off beauty products this Friday.,medium
+Your application is being processed.,low
+Your social media account will be permanently deleted in the next hour unless you verify now.,high
+Click here to confirm your PayPal login before your session expires in 24 hours.,high
+Don't miss out: 30% off accessories ends midnight.,medium
+"""Congratulations! You have earned a free voucher.""",medium
+The new software version is ready to install.,low
+Use code TREAT25 for 20% off home goods this Monday.,medium
+Immediate action required: your social media account will be closed in today.,high
+Click here to confirm your insurance login before your session expires in 48 hours.,high
+Earn $750 cashback when you shop clothing at our partner.,medium
+Please confirm your availability for the class.,low
+FedEx: delivery attempt failed. Reschedule at http://fedex-track.example,high
+I'm running a few minutes late to the class.,low
+"""Earn rewards by inviting your friends.""",medium
+Exclusive deal just for you: 15% off furniture at the marketplace.,medium
+Your tax refund is ready. Submit bank details to receive payment.,high
+"""Limited seats available. Register immediately.""",medium
+"Get 40% off your next clothing purchase, use code SAVE10!",medium
+"""Get your bonus gift after a quick registration.""",medium
+"""Your account protection needs renewal. Verify now.""",high
+Use code VIP50 for 80% off accessories this tonight.,medium
+Use code VIP50 for 30% off electronics this tonight.,medium
+Click here to confirm your Netflix login before your session expires in 24 hours.,high
+I have completed the testing process.,low
+"""Special offer! Buy more and save more.""",medium
+Hot singles in your area want to meet you tonight.,medium
+"""Your bank profile requires immediate confirmation.""",high
+I finished the lab report and uploaded it.,low
+"""Free delivery and discounts available this week.""",medium
+Unusual login detected on your Netflix account. Confirm your identity within 48 hours.,high
+the club rewards: claim your cash prize worth $750 today.,medium
+The meeting minutes have been uploaded.,low
+"""Your online wallet has been suspended. Verify to restore access.""",high
+"""Huge savings available. Shop our latest collection now.""",medium
+The booking information has been updated.,low
+"""Congratulations! You have unlocked a special reward today.""",medium
+Can you send me the file for the workshop?,low
+Your bank account will be permanently deleted in 2 hours unless you verify now.,high
+Can we reschedule the appointment to Wednesday?,low
+"""Save money today with our amazing deals.""",medium
+Final notice: your Microsoft account will be suspended in the next hour. Act now.,high
+the marketplace rewards: claim your new phone worth $50 today.,medium
+Reminder: the training session starts at 6:15 PM.,low
+"""Your account recovery requires identity verification.""",high
+"""Claim your free data package before it ends.""",medium
+The exam results will be posted on Friday.,low
+Reminder: the class starts at 2 PM.,low
+Use code TREAT25 for 15% off furniture this tonight.,medium
+"""Your account has been blocked because of unusual activity.""",high
+Earn $750 cashback when you shop clothing at the retailer.,medium
+I am currently working on the assignment.,low
+Your bank account will be permanently deleted in 12 hours unless you verify now.,high
+our partner rewards: claim your free vacation worth $750 today.,medium
+I will check the system performance later.,low
+"""Win a brand new device in our online giveaway.""",medium
+I have finished preparing the materials.,low
+"""Your account requires identity confirmation to continue.""",high
+Unusual login detected on your Instagram account. Confirm your identity within 48 hours.,high
+Use code SAVE10 for 10% off groceries this this weekend.,medium
+Use code BONUS20 for 30% off home goods this the end of the week.,medium
+I'm running a few minutes late to the workshop.,low
+Reminder: the interview starts at 9 AM.,low
+Unusual login detected on your government tax account. Confirm your identity within 3 days.,high
+Special offer: subscribe to the marketplace now and save 15%.,medium
+"""Your account recovery process is waiting for confirmation.""",high
+Earn $150 cashback when you shop shoes at our store.,medium
+"""Join our lucky draw and win amazing prizes.""",medium
+Your email password will expire 3 days. Click here to reset it.,high
+"""Your free item is waiting for confirmation.""",medium
+Immediate action required: your Amazon account will be closed in 3 days.,high
+Use code VIP50 for 60% off furniture this Monday.,medium
+Thanks for your help with the proposal.,low
+The final report is ready for submission.,low
+"""Save more with our latest shopping event.""",medium
+Your email password will expire 12 hours. Click here to reset it.,high
+Your government tax account shows unauthorized charges. Confirm your identity to dispute them.,high
+Can we reschedule the interview to next week?,low
+Immediate action required: your email account will be closed in 12 hours.,high
+Use code FREESHIP for 80% off accessories this midnight.,medium
+Use code WELCOME5 for 20% off groceries this Friday.,medium
+Earn $750 cashback when you shop home goods at our outlet.,medium
+Use code SAVE10 for 50% off electronics this the end of the week.,medium
+Your your employer password will expire 12 hours. Click here to reset it.,high
+Use code WELCOME5 for 70% off home goods this tonight.,medium
+The payment receipt has been attached.,low
+"Get 10% off your next beauty products purchase, use code FREESHIP!",medium
+Click here to confirm your Amazon login before your session expires in 3 days.,high
+"""New deal launched! Buy now before it ends.""",medium
+Security alert: someone tried to access your email account from a new device.,high
+I enjoyed our conversation at the conference.,low
+Can you help me review this document?,low
+"""Exclusive customer reward available. Claim immediately.""",medium
+"""Free subscription available for new users.""",medium
+Your Apple subscription payment was declined. Update your card details now.,high
+Claim your free cash prize before the end of the week.,medium
+Please remind me about the appointment.,low
+"""Your reward is ready. Confirm to receive it.""",medium
+Let's catch up over breakfast this Monday.,low
+"""Your account access is restricted until verification.""",high
+"""New users can get a welcome reward.""",medium
+Can you send me the agenda for the appointment?,low
+Reminder: the workshop starts at 9 AM.,low
+Use code DEAL30 for 40% off accessories this the end of the week.,medium
+Use code WELCOME5 for 60% off electronics this this weekend.,medium
+Unusual login detected on your Instagram account. Confirm your identity within 2 hours.,high
+"""Your login session is invalid. Sign in again to verify.""",high
+See you at the airport tomorrow at 6:15 PM.,low
+Earn $2000 cashback when you shop shoes at our store.,medium
+I will prepare the presentation slides tonight.,low
+"""Your password has expired. Confirm a new password immediately.""",high
+Immediate action required: your PayPal account will be closed in 12 hours.,high
+Use code DEAL30 for 25% off electronics this Monday.,medium
+See you at the cafe tomorrow at 5 PM.,low
+Just checking in to see how the proposal is going.,low
+"""Your identity verification expires today. Complete it immediately.""",high
+Can we meet after class tomorrow?,low
+Mom called and said she is doing well.,low
+I will bring the laptop tomorrow.,low
+"""Your account is at risk. Secure it immediately.""",high
+"Great job on the report, well done!",low
+The team meeting is scheduled for Monday.,low
+Use code VIP50 for 15% off furniture this Friday.,medium
+Exclusive deal just for you: 20% off accessories at the marketplace.,medium
+"Great job on the assignment, well done!",low
+Immediate action required: your Microsoft account will be closed in today.,high
+"""Your financial information requires security confirmation.""",high
+I will be at the library around noon.,low
+I will be at the library around 9 AM.,low
+"""Your account has an unauthorized login attempt. Secure your account immediately.""",high
+"""Security department requires your account verification within 24 hours.""",high
+Dropbox shared file expires today. Open link before deletion.,high
+The store opens at 9 AM.,low
+"""Your account access has been limited. Verify your personal details.""",high
+Don't miss out: 60% off accessories ends midnight.,medium
+"""Special invitation! Become a VIP customer today.""",medium
+Final notice: your insurance account will be suspended in 12 hours. Act now.,high
+"""Earn extra income with our simple online system.""",medium
+Your bank password will expire 3 days. Click here to reset it.,high
+"""Congratulations! You are selected for a special offer.""",medium
+Unusual login detected on your email account. Confirm your identity within 48 hours.,high
+Your government tax account will be permanently deleted in 48 hours unless you verify now.,high
+Use code DEAL30 for 25% off clothing this Monday.,medium
+"""Your bank detected unusual activity. Review your account immediately.""",high
+"""Special deal available only for today.""",medium
+Your email account will be permanently deleted in 2 hours unless you verify now.,high
+Could you review the file before Wednesday?,low
+Unusual login detected on your Netflix account. Confirm your identity within today.,high
+"""Your online service has detected unauthorized access.""",high
+I will be at the cafe around 6:15 PM.,low
+"""Special offer unlocked for your account.""",medium
+Earn $750 cashback when you shop home goods at the retailer.,medium
+"""Get your free voucher instantly.""",medium
+Use code SAVE10 for 15% off groceries this tonight.,medium
+"""Win cash prizes instantly by joining our contest.""",medium
+The system is working normally.,low
+"""Your credit card has been disabled. Update your details now.""",high
+"""Claim your reward points before they expire.""",medium
+The project review is scheduled for Wednesday.,low
+We could not verify your PayPal details. Update them within 2 hours or lose access.,high
+IT department: mandatory security update. Click to install patch.,high
+Can you send me the schedule for the workshop?,low
+We could not verify your bank details. Update them within 3 days or lose access.,high
+"""Buy one get one free offer starts now.""",medium
+Security alert: someone tried to access your social media account from a new device.,high
+"""Special promotion for new members only.""",medium
+"""Special shopping event with huge discounts.""",medium
+Could you review the agenda before Monday?,low
+The teacher uploaded new materials.,low
+"Get 15% off your next groceries purchase, use code SAVE10!",medium
+Final notice: your government tax account will be suspended in 24 hours. Act now.,high
+Could you review the report before next week?,low
+Use code EXTRA15 for 50% off groceries this Friday.,medium
+We could not verify your PayPal details. Update them within 24 hours or lose access.,high
+Your parcel could not be delivered. Pay a small fee within 48 hours to reschedule.,high
+"""Your bank detected suspicious activity. Follow the verification process.""",high
+I have arrived safely at my destination.,low
+Reminder: the meeting starts at noon.,low
+Your government tax subscription payment was declined. Update your card details now.,high
+Security alert: someone tried to access your PayPal account from a new device.,high
+"Get 50% off your next electronics purchase, use code DEAL30!",medium
+Please remember to submit your assignment before the deadline.,low
+"""Win exciting prizes in our monthly competition.""",medium
+Click here to confirm your email login before your session expires in 2 hours.,high
+"""Your account access will expire today. Verify now.""",high
+our partner rewards: claim your new phone worth $50 today.,medium
+"""Earn extra money with our easy online opportunity.""",medium
+Use code VIP50 for 20% off accessories this this weekend.,medium
+Free voucher with every shoes order this week only.,medium
+"Your our partner cart is waiting, complete your order and save 60%.",medium
+Your Microsoft account will be permanently deleted in 2 hours unless you verify now.,high
+our partner rewards: claim your gadget bundle worth $50 today.,medium
+"""Free mobile data package available. Activate now.""",medium
+Can we reschedule the conference to Friday?,low
+"""Your online account has been flagged. Confirm ownership.""",high
+our partner rewards: claim your cash prize worth $500 today.,medium
+Could you review the document before Thursday?,low
+"""Exclusive flash sale! Prices dropped today only.""",medium
+Could you review the document before Tuesday?,low
+"""Your free voucher is waiting. Redeem now.""",medium
+Use code EXTRA15 for 25% off beauty products this this weekend.,medium
+Use code VIP50 for 60% off clothing this tonight.,medium
+"""Special discount code available now.""",medium
+Click here to confirm your bank login before your session expires in today.,high
+Click here to confirm your email login before your session expires in 48 hours.,high
+I have completed the testing phase.,low
+Make money fast by forwarding this to 10 friends.,medium
+I will be at the library around 10:30 AM.,low
+"""Verify your personal information to unlock your account.""",high
+Please check the attached file for the details.,low
+Your reservation has been confirmed.,low
+"""Get access to exclusive deals instantly.""",medium
+Your Apple password will expire 24 hours. Click here to reset it.,high
+"""Your password reset request requires confirmation. Verify your account.""",high
+See you at the library tomorrow at 2 PM.,low
+Use code FREESHIP for 50% off shoes this the end of the week.,medium
+"""Your banking profile needs confirmation immediately.""",high
+Could you review the report before Monday?,low
+The customer request has been processed.,low
+Use code SAVE10 for 20% off clothing this Monday.,medium
+Earn $1000 cashback when you shop clothing at the club.,medium
+"""Your security code has expired. Request a new verification code.""",high
+"""Your email access has been limited. Confirm your details.""",high
+Your Netflix account will be permanently deleted in 12 hours unless you verify now.,high
+IRS notice: you owe back taxes. Pay immediately to avoid arrest.,high
+Use code TREAT25 for 15% off groceries this this weekend.,medium
+We could not verify your Instagram details. Update them within the next hour or lose access.,high
+"""Your account details must be updated before access is removed.""",high
+"""Receive extra benefits by signing up.""",medium
+"""Your password reset link is ready. Confirm your account first.""",high
+Free trial of premium channels. Text YES to subscribe.,medium
+Use code BONUS20 for 70% off clothing this this weekend.,medium
+Click here to confirm your Instagram login before your session expires in 48 hours.,high
+Click here to confirm your social media login before your session expires in 3 days.,high
+"""Congratulations! You have received a bonus coupon.""",medium
+Unusual login detected on your PayPal account. Confirm your identity within 24 hours.,high
+"""Exclusive promotion! Buy now and receive a special bonus.""",medium
+"Get 70% off your next clothing purchase, use code DEAL30!",medium
+"""Limited offer! Subscribe now and get one month free.""",medium
+Exclusive deal! Buy now and save big.,medium
+Please confirm your availability for the interview.,low
+Your Netflix account has been flagged for review. Verify your identity to avoid suspension.,high
+Don't miss out: 10% off home goods ends the end of the week.,medium
+Reminder: the conference starts at 5 PM.,low
+Your Amazon account will be permanently deleted in 24 hours unless you verify now.,high
+"""Congratulations! You have unlocked a premium reward.""",medium
+Let's discuss this during the meeting.,low
+"Get 20% off your next electronics purchase, use code TREAT25!",medium
+Use code WELCOME5 for 70% off shoes this Monday.,medium
+Use code VIP50 for 15% off beauty products this Friday.,medium
+Unusual login detected on your insurance account. Confirm your identity within 48 hours.,high
+I will be at the office around 6:15 PM.,low
+"""Your email account has been hacked. Change your password immediately.""",high
+Let me know if you need anything else for presentation.,low
+"""Your account has been locked because of unusual behavior.""",high
+We could not verify your PayPal details. Update them within 3 days or lose access.,high
+"""Your account has been accessed from an unknown location.""",high
+Reminder: the interview starts at 6:15 PM.,low
+Use code EXTRA15 for 60% off furniture this Monday.,medium
+Earn $750 cashback when you shop groceries at our store.,medium
+"""Your account verification is incomplete. Complete the process today.""",high
+"""Bank alert: Your account access is limited. Confirm your details.""",high
+Use code WELCOME5 for 80% off furniture this Friday.,medium
+The invoice has been generated.,low
+You have been selected as a lucky winner!,medium
+"""Special announcement! You have received a reward.""",medium
+"""Your online banking password has expired. Reset it immediately.""",high
+Use code DEAL30 for 30% off clothing this the end of the week.,medium
+The issue has been resolved by the technical team.,low
+"""Your payment account has been suspended temporarily.""",high
+Please wait while we process your request.,low
+Reply STOP to unsubscribe from this offer.,medium
+"""Your account has been placed under security review.""",high
+Could you review the document before Wednesday?,low
+I have saved the important documents.,low
+See you at home tomorrow at 6:15 PM.,low
+"""Your account has a pending verification request. Complete it immediately.""",high
+Your Amazon account will be permanently deleted in the next hour unless you verify now.,high
+"""Your email security settings need immediate confirmation.""",high
+Use code BONUS20 for 15% off accessories this Monday.,medium
+Can we reschedule the class to Thursday?,low
+Exclusive deal just for you: 80% off beauty products at the retailer.,medium
+The library reminder has been received.,low
+Exclusive deal just for you: 60% off furniture at our partner.,medium
+Please check your email for the details.,low
+We could not verify your email details. Update them within the next hour or lose access.,high
+The office meeting starts at 2 PM.,low
+Can you send me the invoice for the appointment?,low
+Can you send me the summary for the appointment?,low
+Can we reschedule the training session to Wednesday?,low
+Use code FREESHIP for 15% off groceries this the end of the week.,medium
+Click here to confirm your PayPal login before your session expires in 12 hours.,high
+Click here to confirm your Apple login before your session expires in 12 hours.,high
+Can you send me the summary for the workshop?,low
+Can we reschedule the class to Monday?,low
+Use code BONUS20 for 15% off furniture this this weekend.,medium
+Your email subscription payment was declined. Update your card details now.,high
+Use code TREAT25 for 25% off electronics this Friday.,medium
+"""Limited offer! Get premium access at no cost.""",medium
+"""Your account has failed security verification. Submit information again.""",high
+The project review is scheduled for Friday.,low
+"""Your email service requires password confirmation.""",high
+"""Your security certificate has expired. Renew your account now.""",high
+Unusual login detected on your insurance account. Confirm your identity within 12 hours.,high
+"""Important notice: Your account requires security confirmation.""",high
+I have prepared the meeting agenda.,low
+The customer has confirmed the order.,low
+Your food delivery is on the way.,low
+Unusual login detected on your social media account. Confirm your identity within the next hour.,high
+Your PayPal account has been suspended. Verify now to restore access.,high
+Can you send me the invoice for the workshop?,low
+"""Last chance! Claim your free reward today.""",medium
+The invoice has been received.,low
+"""Receive a free bonus when you complete this offer.""",medium
+"""Your online service account is at risk. Verify your identity.""",high
+"""Your account credentials need to be verified.""",high
+Flash sale ends in one hour. Everything must go!,medium
+"""Free shopping voucher available for selected users.""",medium
+See you at the office tomorrow at 9 AM.,low
+Use code BONUS20 for 20% off beauty products this this weekend.,medium
+The presentation went well today.,low
+The team has approved the proposal.,low
+"Flash sale! 25% off everything at our outlet, today only.",medium
+We noticed suspicious activity on your PayPal account. Confirm your details now.,high
+The weekly sync is scheduled for next week.,low
+"""Your security alert requires immediate verification.""",high
+Use code WELCOME5 for 25% off electronics this tonight.,medium
+Please confirm your attendance tomorrow.,low
+Please send the updated file version.,low
+our store rewards: claim your spa day worth $100 today.,medium
+"""Receive bonus points after completing registration.""",medium
+"""Security alert: confirm your password immediately.""",high
+I will be at the cafe around 9 AM.,low
+The project meeting went well today.,low
+"""Your service account requires confirmation to avoid closure.""",high
+"""Your password recovery request requires verification.""",high
+"""Limited time bonus! Do not miss this chance.""",medium
+Exclusive deal just for you: 30% off groceries at the club.,medium
+"""Your transaction requires additional verification.""",high
+"""Your account has been locked after multiple failed attempts.""",high
+Your social media password will expire 12 hours. Click here to reset it.,high
+"""Your account settings have changed. Confirm if this was you.""",high
+Could you review the schedule before Friday?,low
+"""Your bank account requires confirmation before the transaction can proceed.""",high
+"The project report looks good, thanks for putting it together.",low
+The weather looks good today.,low
+Reminder: the workshop starts at 6:15 PM.,low
+"""Your account information is outdated. Update it immediately.""",high
+Use code FREESHIP for 30% off home goods this tonight.,medium
+"""Limited-time giveaway starts now.""",medium
+The weekly sync is scheduled for Wednesday.,low
+Use code VIP50 for 40% off furniture this tonight.,medium
+the retailer rewards: claim your gadget bundle worth $2000 today.,medium
+Use code FREESHIP for 40% off accessories this Friday.,medium
+Your Amazon subscription payment was declined. Update your card details now.,high
+I will continue working on the project tomorrow.,low
+Can you review my work before submission?,low
+Can we reschedule the conference to next week?,low
+Click here to confirm your email login before your session expires in the next hour.,high
+Unusual login detected on your your employer account. Confirm your identity within 24 hours.,high
+Reminder: the workshop starts at 10:30 AM.,low
+"Get 80% off your next furniture purchase, use code VIP50!",medium
+"""Big sale! Lowest prices guaranteed.""",medium
+"""Get instant rewards by downloading our app.""",medium
+I have finished preparing the documents.,low
+Can we reschedule the training session to Thursday?,low
+"""Your card has been blocked. Verify your payment details immediately.""",high
+"""Your identity verification failed. Submit documents again.""",high
+Can we reschedule the training session to Friday?,low
+I will send the final version tomorrow.,low
+The weekly sync is scheduled for Friday.,low
+"""Your account has been restricted due to suspicious activity.""",high
+Don't forget to bring your charger.,low
+The appointment reminder has been received.,low
+Earn $1000 cashback when you shop shoes at our partner.,medium
+"""Your security verification is incomplete. Finish it now.""",high
+Your bank subscription payment was declined. Update your card details now.,high
+"Get 15% off your next groceries purchase, use code VIP50!",medium
+The library closes at 8 PM.,low
+"""New reward system launched. Join today.""",medium
+Don't miss out: 70% off accessories ends the end of the week.,medium
+I am going to the supermarket later.,low
+Netflix payment failed. Update billing at https://netflix-billing.example,high
+Could you review the schedule before Wednesday?,low
+Use code FREESHIP for 40% off home goods this midnight.,medium
+Your PayPal account has been locked. Verify your information to unlock it.,high
+See you at the coffee shop around noon.,low
+"""Important security update required. Confirm your account details.""",high
+"Good afternoon, I have received your message.",low
+Earn $100 cashback when you shop groceries at the marketplace.,medium
+"""Hot deal alert! Prices reduced for a short period.""",medium
+"""Free reward available. Click the link to receive it now.""",medium
+See you at home tomorrow at noon.,low
+Your social media account will be permanently deleted in 2 hours unless you verify now.,high
+I will be at the cafe around 5 PM.,low
+See you at the cafe tomorrow at 10:30 AM.,low
+"""Join now and receive a welcome bonus instantly.""",medium
+"""Exclusive offer for registered users. Join today.""",medium
+Could you review the summary before tomorrow?,low
+Use code TREAT25 for 70% off shoes this Friday.,medium
+Your email account will be permanently deleted in 48 hours unless you verify now.,high
+"""Huge discounts on electronics. Shop today.""",medium
+Your Apple password will expire today. Click here to reset it.,high
+Let me know if you need a ride to campus.,low
+I have saved the latest changes.,low
+The appointment reminder was sent successfully.,low
+Exclusive deal just for you: 30% off home goods at our store.,medium
+"""Your financial profile requires immediate verification.""",high
+Use code WELCOME5 for 25% off furniture this midnight.,medium
+"""Your payment details need confirmation before your next purchase.""",high
+Your email account has been locked. Verify your information to unlock it.,high
+"""Your service access is limited. Update your information.""",high
+See you at the station tomorrow at 9 AM.,low
+I will be at the station around 6:15 PM.,low
+Your Microsoft password will expire the next hour. Click here to reset it.,high
+"Get 15% off your next home goods purchase, use code TREAT25!",medium
+The team meeting is scheduled for Tuesday.,low
+"""Your account will be permanently closed. Verify immediately.""",high
+Final notice: your Apple account will be suspended in 12 hours. Act now.,high
+The weekly sync is scheduled for Monday.,low
+The delivery service will arrive soon.,low
+"Great job on the presentation, well done!",low
+Click here to confirm your Amazon login before your session expires in 24 hours.,high
+Can you send me the presentation for the appointment?,low
+I will send the invoice tomorrow.,low
+"""Your security information needs updating. Complete verification.""",high
+Unusual login detected on your Microsoft account. Confirm your identity within 48 hours.,high
+Let me know if you need anything else for proposal.,low
+We could not verify your Netflix details. Update them within 12 hours or lose access.,high
+You've won a shopping voucher! Claim it before tonight.,medium
+Unusual login detected on your bank account. Confirm your identity within the next hour.,high
+The documents are ready for collection.,low
+Your Instagram password will expire 24 hours. Click here to reset it.,high
+"""Your account will be disabled if verification is not completed.""",high
+"""Receive a free gift after joining our program.""",medium
+Reminder: the interview starts at noon.,low
+Use code VIP50 for 20% off furniture this this weekend.,medium
+Let's catch up over breakfast this Wednesday.,low
+Apple ID locked due to suspicious activity. Verify now at http://apple-id-verify.example,high
+"""Your password reset request is pending. Verify now.""",high
+"""Your service provider detected unusual account behavior.""",high
+"""Earn money easily with our online service.""",medium
+Can we reschedule the meeting to Wednesday?,low
+"""Your account ownership must be confirmed today.""",high
+The team meeting starts tomorrow morning.,low
+Reminder: the conference starts at 9 AM.,low
+"Get 15% off your next clothing purchase, use code SAVE10!",medium
+Immediate action required: your Netflix account will be closed in the next hour.,high
+Final notice: your government tax account will be suspended in 48 hours. Act now.,high
+The customer feedback has been recorded.,low
+"""Your account has expired. Reactivate it today.""",high
+"""Receive free gifts with your next purchase.""",medium
+The lecturer has uploaded the new notes.,low
+"""Increase your income with our simple method.""",medium
+The booking confirmation has arrived.,low
+Your social media account will be permanently deleted in 24 hours unless you verify now.,high
+the retailer rewards: claim your spa day worth $500 today.,medium
+Your Instagram account will be permanently deleted in 2 hours unless you verify now.,high
+Exclusive deal just for you: 25% off groceries at the club.,medium
+"""Your discount code has been generated.""",medium
+The training session starts next week.,low
+Earn $750 cashback when you shop beauty products at the club.,medium
+Your Microsoft password will expire 12 hours. Click here to reset it.,high
+Use code SAVE10 for 40% off accessories this the end of the week.,medium
+Your social media password will expire 3 days. Click here to reset it.,high
+The staff meeting is scheduled for next week.,low
+Use code WELCOME5 for 40% off furniture this Friday.,medium
+Use code SAVE10 for 20% off home goods this this weekend.,medium
+"""Get 90% discount on our products. Shop immediately.""",medium
+Your Amazon order could not be delivered. Confirm address here.,high
+Could you review the agenda before next week?,low
+"""Special weekend sale! Enjoy amazing discounts.""",medium
+Exclusive deal just for you: 10% off clothing at the retailer.,medium
+"""Confirm your identity to prevent unauthorized access.""",high
+"""Limited quantity available. Buy immediately.""",medium
+"""Your online service account requires urgent identity verification.""",high
+Let's catch up over breakfast this Friday.,low
+Your government tax password will expire 2 hours. Click here to reset it.,high
+"""Receive cashback rewards when you register today.""",medium
+"""Your account is at risk. Complete verification now.""",high
+"""Your gift package is ready to be collected.""",medium
+Refer a friend to the marketplace and earn $2000 in credit.,medium
+The classroom location has changed to Block C.,low
+Please contact me if you need any help.,low
+"""Your bank security team needs your verification response.""",high
+"""Your account security requires immediate attention.""",high
+Can we reschedule the class to next week?,low
+"""Congratulations! Claim your free electronics gift.""",medium
+"""Free coupons available while supplies last.""",medium
+Click here to confirm your Microsoft login before your session expires in 2 hours.,high
+"""Win exciting prizes by joining our campaign.""",medium
+"""Act quickly! This offer expires soon.""",medium
+Use code BONUS20 for 25% off accessories this tonight.,medium
+"""Your account has been selected for security inspection.""",high
+Final notice: your PayPal account will be suspended in 12 hours. Act now.,high
+I will be at home around 9 AM.,low
+Immediate action required: your Instagram account will be closed in 48 hours.,high
+"Get 80% off your next electronics purchase, use code DEAL30!",medium
+"""Your account has unauthorized access. Change your credentials now.""",high
+I am currently working on the assigned task.,low
+Let's catch up over breakfast this next week.,low
+The order tracking information is available.,low
+Immediate action required: your email account will be closed in 3 days.,high
+"The project report has been updated, please review.",low
+"""Your card information needs to be updated urgently.""",high
+Click here to confirm your Instagram login before your session expires in 3 days.,high
+Your Instagram account has been locked. Verify your information to unlock it.,high
+Use code VIP50 for 20% off home goods this Monday.,medium
+The project progress report is ready.,low
+Reminder: the meeting starts at 2 PM.,low
+"Get 25% off your next electronics purchase, use code VIP50!",medium
+Could you review the report before Tuesday?,low
+Can you send me the file for the meeting?,low
+See you at the library tomorrow at 9 AM.,low
+"""Your account has failed the security check. Verify again.""",high
+Immediate action required: your insurance account will be closed in 3 days.,high
+The order has been packed and shipped.,low
+"""Get your special coupon immediately.""",medium
+"""Your account requires confirmation before processing requests.""",high
+We could not verify your Microsoft details. Update them within today or lose access.,high
+Use code EXTRA15 for 70% off electronics this the end of the week.,medium
+Use code FREESHIP for 70% off groceries this this weekend.,medium
+"""Your security verification failed. Try again immediately.""",high
+Can we reschedule the interview to Friday?,low
+Your Amazon account requires urgent verification to prevent permanent closure.,high
+Your loan application has been approved. Collect funds now.,medium
+See you at the office tomorrow at 10:30 AM.,low
+Immediate action required: your insurance account will be closed in 2 hours.,high
+I will attend the event this weekend.,low
+Your payment method failed. Update your billing details within 24 hours.,high
+Could you review the presentation before Thursday?,low
+"""Claim your free package before it expires.""",medium
+Unusual login detected on your government tax account. Confirm your identity within 24 hours.,high
+See you at home tomorrow at 10:30 AM.,low
+Use code BONUS20 for 15% off furniture this tonight.,medium
+"Get 80% off your next electronics purchase, use code TREAT25!",medium
+Unusual login detected on your bank account. Confirm your identity within today.,high
+"""Get huge savings with this limited offer.""",medium
+"""Your account has been suspended. Verify your identity immediately.""",high
+"""Your payment information is incomplete. Update now.""",high
+Use code WELCOME5 for 50% off clothing this Friday.,medium
+"""Activate your free membership now.""",medium
+The event registration is confirmed.,low
+I will be at the station around 10:30 AM.,low
+Can you send me the schedule for the appointment?,low
+"""Today's special offer cannot be missed.""",medium
+Your Amazon password will expire 24 hours. Click here to reset it.,high
+I will arrive at the office around 9 AM.,low
+"""Your account has a suspicious payment request.""",high
+"Get 15% off your next shoes purchase, use code VIP50!",medium
+"""Join our promotion and win amazing prizes.""",medium
+The schedule has been confirmed by everyone.,low
+"""Enjoy 50% off your next purchase today.""",medium
+"""Get unlimited benefits with our premium plan.""",medium
+Use code TREAT25 for 80% off home goods this this weekend.,medium
+"""Your account protection has expired. Renew it immediately.""",high
+"""Exclusive deal created just for you.""",medium
+"""Claim your shopping credits before the deadline.""",medium
+Click here to confirm your Netflix login before your session expires in 48 hours.,high
+The office will close earlier today.,low
+Call this number to collect your prize.,medium
+"""Your payment information has to be confirmed again.""",high
+"""Your online account requires urgent verification.""",high
+"""Your transaction was blocked. Verify your payment details.""",high
+"""Limited promotion! Order before stock runs out.""",medium
+See you at the library tomorrow at 6:15 PM.,low
+"""Your account has earned reward points. Exchange them now.""",medium
+"""Your mailbox is full. Login to increase storage capacity.""",high
+I will be at the station around 2 PM.,low
+Your government tax password will expire 3 days. Click here to reset it.,high
+"""Get a free upgrade by activating this offer.""",medium
+Your Netflix password will expire today. Click here to reset it.,high
+Please remember to bring your student card.,low
+"""Confirm your password to restore account access.""",high
+Immediate action required: your your employer account will be closed in 2 hours.,high
+Don't miss out: 50% off shoes ends the end of the week.,medium
+Use code WELCOME5 for 15% off furniture this tonight.,medium
+Use code DEAL30 for 15% off home goods this Friday.,medium
+You are our 1000000th visitor. Claim your reward!,medium
+Let's catch up over breakfast this tomorrow.,low
+Don't miss out: 40% off accessories ends tonight.,medium
+"""Your account has been flagged for suspicious behavior.""",high
+The system is running normally now.,low
+I have reviewed the project requirements.,low
+"""Discount code available. Use it before it expires.""",medium
+"""Congratulations! Your name appears on our winner list.""",medium
+I will check the results and update you.,low
+Don't miss out: 25% off clothing ends this weekend.,medium
+"""Get free internet data by registering now.""",medium
+"""Your personal details need confirmation to prevent account suspension.""",high
+Your email account will be permanently deleted in 24 hours unless you verify now.,high
+"""Congratulations! You are one of our selected customers.""",medium
+I have completed the survey form.,low
+"""Your chance to win starts now.""",medium
+"""Your account has been locked. Click to unlock your access.""",high
+Click here to confirm your Instagram login before your session expires in today.,high
+Please confirm your availability for the workshop.,low
+Your tax refund is pending. Confirm your bank details within 48 hours to receive it.,high
+"""Exclusive online offer created for you.""",medium
+"""Free samples available. Request yours now.""",medium
+"""Your account has been compromised. Take action immediately.""",high
+Immediate action required: your Apple account will be closed in the next hour.,high
+Can you send me the report for the training session?,low
+Final notice: your Instagram account will be suspended in 2 hours. Act now.,high
+"""Special deal for selected customers only.""",medium
+"""Your transaction is pending. Confirm your banking details.""",high
+Use code WELCOME5 for 80% off clothing this tonight.,medium
+"""Big announcement! A special reward is waiting.""",medium
+Use code WELCOME5 for 70% off electronics this Friday.,medium
+"The status update has been updated, please review.",low
+Reminder: the class starts at 10:30 AM.,low
+Unusual login detected on your Instagram account. Confirm your identity within 12 hours.,high
+Please update me when you are available.,low
+Can you share the notes from yesterday's lecture?,low
+"""FREE entry in our weekly prize draw, reply WIN now.""",medium
+I will be at the library around 2 PM.,low
+Your Instagram account will be permanently deleted in 48 hours unless you verify now.,high
+Your PayPal account requires urgent verification to prevent permanent closure.,high
+"""Your identity has not been verified. Complete the process.""",high
+"""Your account requires confirmation through the security portal.""",high
+Please check the attached report.,low
+Could you review the report before Friday?,low
+"""Your account protection requires immediate action.""",high
+Can you send me the agenda for the training session?,low
+"""Congratulations! You have been chosen for our exclusive giveaway.""",medium
+Unusual login detected on your bank account. Confirm your identity within 12 hours.,high
+"Get 25% off your next home goods purchase, use code TREAT25!",medium
+Could you review the presentation before next week?,low
+I've attached the summary you requested.,low
+Reminder: the workshop starts at 2 PM.,low
+Your Instagram password will expire 48 hours. Click here to reset it.,high
+Use code WELCOME5 for 25% off clothing this the end of the week.,medium
+Use code SAVE10 for 10% off beauty products this Friday.,medium
+"""Your account security check requires additional information.""",high
+I've attached the invoice you requested.,low
+Use code SAVE10 for 80% off home goods this Monday.,medium
+Don't miss out: 70% off shoes ends Friday.,medium
+Use code BONUS20 for 50% off clothing this Friday.,medium
+Are we still on for study group tonight?,low
+I've attached the agenda you requested.,low
+The classroom has moved to another location.,low
+You've won a free vacation! Claim it before the end of the week.,medium
+"""Free coupons are available for everyone.""",medium
+Reminder: the appointment starts at 6:15 PM.,low
+"""Congratulations! You have won a free smartphone. Claim your prize now!""",medium
+Use code WELCOME5 for 10% off shoes this this weekend.,medium
+Special offer: subscribe to the retailer now and save 70%.,medium
+Final notice: your Netflix account will be suspended in 24 hours. Act now.,high
+"""Congratulations! Your account has been chosen for a cash reward.""",medium
+You have been pre-approved for a credit line of $10000.,medium
+"""Touch 'n Go eWallet: Your account is locked. Confirm your identity immediately.""",high
+Immediate action required: your insurance account will be closed in the next hour.,high
+Unusual login detected on your Apple account. Confirm your identity within 12 hours.,high
+Let's catch up over lunch this Monday.,low
+Please inform me when you receive the package.,low
+Could you review the invoice before Tuesday?,low
+Use code WELCOME5 for 80% off groceries this tonight.,medium
+You qualify for a cash reward of $50 from our outlet.,medium
+Unusual login detected on your email account. Confirm your identity within 12 hours.,high
+Amazing weight loss results guaranteed. Order now!,medium
+"Get 15% off your next beauty products purchase, use code DEAL30!",medium
+I will bring the documents during the meeting.,low
+I will prepare the report by tomorrow.,low
+Could you review the document before Monday?,low
+Use code TREAT25 for 30% off furniture this tonight.,medium
+Can we reschedule the class to Wednesday?,low
+The the documents you ordered has been delivered.,low
+"""Your account has encountered a security issue. Login now.""",high
+Could you review the file before Monday?,low
+"""Your bank account has been frozen due to suspicious transactions.""",high
+I will be at home around 2 PM.,low
+Reminder: the training session starts at 5 PM.,low
+Use code EXTRA15 for 15% off clothing this Friday.,medium
+Click here to confirm your insurance login before your session expires in 2 hours.,high
+Could you review the agenda before Friday?,low
+Use code TREAT25 for 30% off beauty products this the end of the week.,medium
+Reminder: the class starts at 9 AM.,low
+Use code TREAT25 for 20% off electronics this midnight.,medium
+Use code TREAT25 for 80% off electronics this midnight.,medium
+"""Huge promotion! Save more when you order today.""",medium
+Your social media account has been flagged for review. Verify your identity to avoid suspension.,high
+"""Your Apple ID has been locked. Verify your information now.""",high
+Your Apple account will be permanently deleted in 24 hours unless you verify now.,high
+Use code EXTRA15 for 20% off electronics this Friday.,medium
+Immediate action required: your Netflix account will be closed in 48 hours.,high
+Act now and receive a free smartphone upgrade.,medium
+See you at home tomorrow at 9 AM.,low
+"""Congratulations! Your prize notification has arrived.""",medium
+"""Special deal alert! Save more when you buy now.""",medium
+I will arrive at the location soon.,low
+Your Amazon password will expire 48 hours. Click here to reset it.,high
+Use code FREESHIP for 50% off home goods this tonight.,medium
+Use code EXTRA15 for 70% off furniture this the end of the week.,medium
+We could not verify your your employer details. Update them within 12 hours or lose access.,high
+Use code EXTRA15 for 80% off furniture this this weekend.,medium
+I will be at home around noon.,low
+I will be at home around 6:15 PM.,low
+"""Congratulations! You have won a shopping credit.""",medium
+Can you send me the agenda for the meeting?,low
+Let's catch up over lunch this tomorrow.,low
+Your crypto wallet requires immediate verification.,high
+"""Congratulations! You have been selected for a bonus.""",medium
+The meeting has been scheduled for next Tuesday.,low
+Can we discuss the project requirements tomorrow?,low
+I will be at the cafe around 2 PM.,low
+The your ID card you ordered has been delivered.,low
+"""Your password has been changed. Confirm if this was you.""",high
+"""Your account recovery requires a security code confirmation.""",high
+Reminder: the appointment starts at noon.,low
+Please check the latest version of the report.,low
+Congratulations on your cash prize of $2500!,medium
+Please remember to bring your laptop tomorrow.,low
+Reminder: the training session starts at noon.,low
+Use code DEAL30 for 25% off shoes this midnight.,medium
+The appointment has been moved to Friday.,low
+Don't miss out: 50% off clothing ends tonight.,medium
+The meeting summary has been shared.,low
+"""Win cash prizes by entering our competition.""",medium
+The team has finished testing the system.,low
+Just checking in to see how the report is going.,low
+"""Win exciting gifts through our online campaign.""",medium
+Can you send me the summary for the interview?,low
+Final notice: your social media account will be suspended in 2 hours. Act now.,high
+Reminder: the appointment starts at 9 AM.,low
+"""Your account access will be removed unless you verify now.""",high
+"""Your email account security has failed. Confirm your information now.""",high
+Immediate action required: your Apple account will be closed in 24 hours.,high
+"""Congratulations! You have won a special gift.""",medium
+Your Apple password will expire 3 days. Click here to reset it.,high
+Use code WELCOME5 for 30% off furniture this Monday.,medium
+Your email password will expire 48 hours. Click here to reset it.,high
+Your government tax password will expire 24 hours. Click here to reset it.,high
+Use code BONUS20 for 10% off furniture this tonight.,medium
+Exclusive deal just for you: 25% off home goods at our partner.,medium
+I finished my homework already.,low
+Your insurance account will be permanently deleted in 48 hours unless you verify now.,high
+Immediate action required: your email account will be closed in today.,high
+Can we reschedule the appointment to Monday?,low
+Reminder: the workshop starts at noon.,low
+Exclusive deal just for you: 20% off home goods at our partner.,medium
+I have received the necessary approval.,low
+"""Your account has been accessed from an unknown device.""",high
+Can you send me the schedule for the meeting?,low
+Use code SAVE10 for 15% off shoes this Friday.,medium
+Use code FREESHIP for 25% off beauty products this tonight.,medium
+Earn $250 cashback when you shop accessories at our partner.,medium
+Can you send me the agenda for the workshop?,low
+"""Your login attempt was blocked. Confirm your identity.""",high
+Use code DEAL30 for 25% off clothing this this weekend.,medium
+"""Special discount waiting for you inside.""",medium
+Can you join the group discussion tonight?,low
+Your PayPal account will be permanently deleted in 3 days unless you verify now.,high
+"""Exclusive customer reward program launched.""",medium
+Click here to confirm your Instagram login before your session expires in the next hour.,high
+"""Today only! Huge discount on all items.""",medium
+"""Your account has been temporarily restricted. Click to unlock.""",high
+"""Your identity check is incomplete. Complete the process now.""",high
+Let's catch up over coffee this Wednesday.,low
+"""Earn cash rewards by completing simple online tasks.""",medium
+Exclusive deal just for you: 10% off furniture at the club.,medium
+Thank you for your quick reply.,low
+We could not verify your bank details. Update them within 2 hours or lose access.,high
+Your social media account will be permanently deleted in 12 hours unless you verify now.,high
+Use code WELCOME5 for 20% off groceries this tonight.,medium
+I have fixed the issue you reported.,low
+"""Your payment card information requires immediate update.""",high
+Your parcel could not be delivered. Pay a small fee within 24 hours to reschedule.,high
+Could you review the invoice before Monday?,low
+"""Your account has a pending verification request.""",high
+We could not verify your PayPal details. Update them within the next hour or lose access.,high
+"""Join the competition and win great prizes.""",medium
+Exclusive deal just for you: 25% off groceries at our outlet.,medium
+"""Amazon security alert: Verify your account information to prevent closure.""",high
+Your dentist appointment is confirmed for Tuesday at 3pm.,low
+Sign up today and get a free gift card from our outlet.,medium
+See you at the cafe tomorrow at noon.,low
+Your insurance password will expire 2 hours. Click here to reset it.,high
+Can you send me the latest version?,low
+Use code SAVE10 for 20% off shoes this Monday.,medium
+Click here to confirm your government tax login before your session expires in 12 hours.,high
+Could you review the invoice before Wednesday?,low
+Could you review the presentation before Wednesday?,low
+Your your employer password will expire 48 hours. Click here to reset it.,high
+"""Lowest price guaranteed. Shop now and enjoy huge savings.""",medium
+Use code SAVE10 for 15% off beauty products this Friday.,medium
+Your booking has been confirmed successfully.,low
+Use code BONUS20 for 60% off shoes this midnight.,medium
+Please let me know if there are any issues.,low
+"""Your account will be suspended due to incomplete verification.""",high
+Can you send me the presentation for the conference?,low
+Claim your free airline miles before this weekend.,medium
+"""Your account recovery process requires personal information confirmation.""",high
+The event location has been updated.,low
+Unusual login detected on your Instagram account. Confirm your identity within 24 hours.,high
+I will be at the station around 5 PM.,low
+Your payment method failed. Update your billing details within today.,high
+"""Shop today and receive extra discounts.""",medium
+Your PayPal password will expire the next hour. Click here to reset it.,high
+Final notice: your Microsoft account will be suspended in today. Act now.,high
+Can you review the code changes?,low
+Your insurance invoice is overdue. Provide your payment information immediately.,high
+"""Your banking session requires authentication again.""",high
+The team agreed with the proposed plan.,low
+"""Earn rewards quickly with our new program.""",medium
+I have completed the project report.,low
+Free mug with every shoes order this week only.,medium
+We could not verify your your employer details. Update them within 3 days or lose access.,high
+Please confirm your attendance for the workshop.,low
+Use code VIP50 for 30% off shoes this tonight.,medium
+"""Congratulations! Collect your free electronics voucher.""",medium
+"""Join our reward program and get free benefits.""",medium
+Your Amazon account will be permanently deleted in today unless you verify now.,high
+"""Your password must be updated due to security reasons.""",high
+We could not verify your government tax details. Update them within 3 days or lose access.,high
+"""Your security check failed. Confirm your information again.""",high
+Let's catch up over lunch this Wednesday.,low
+Use code DEAL30 for 80% off clothing this tonight.,medium
+"""Limited-time coupon available now.""",medium
+Your government tax invoice is overdue. Provide your payment information immediately.,high
+The report looks good now.,low
+Use code BONUS20 for 20% off clothing this this weekend.,medium
+Please let me know your preferred schedule.,low
+Let's catch up over dinner this Thursday.,low
+Click here to confirm your PayPal login before your session expires in today.,high
+"Great job on the proposal, well done!",low
+Your Microsoft recovery request is pending. Confirm your credentials to proceed.,high
+We could not verify your Apple details. Update them within 48 hours or lose access.,high
+I will be at the library around 6:15 PM.,low
+"The quarterly report has been updated, please review.",low
+Can we reschedule the workshop to Monday?,low
+Can we reschedule the interview to Monday?,low
+We could not verify your insurance details. Update them within 2 hours or lose access.,high
+"""Act now and receive a free surprise gift.""",medium
+Could you review the presentation before Friday?,low
+"""Your account will be deleted unless you verify your identity.""",high
+I will arrive at the campus soon.,low
+Use code TREAT25 for 80% off shoes this Monday.,medium
+Immediate action required: your bank account will be closed in 12 hours.,high
+The team will discuss the next steps tomorrow.,low
+Can we reschedule the interview to Thursday?,low
+"""Get instant approval for our special package.""",medium
+The your laptop you ordered has been delivered.,low
+"""Exclusive deal for loyal customers. Act today.""",medium
+Use code WELCOME5 for 25% off accessories this Monday.,medium
+Could you review the presentation before Monday?,low
+Security alert: someone tried to access your bank account from a new device.,high
+I will wait for your reply.,low
+Use code EXTRA15 for 40% off shoes this Friday.,medium
+Your parcel could not be delivered. Pay a small fee within 3 days to reschedule.,high
+We could not verify your Microsoft details. Update them within 12 hours or lose access.,high
+"""Your login session expired. Sign in again to continue.""",high
+The order status has changed to delivered.,low
+Unusual login detected on your your employer account. Confirm your identity within 2 hours.,high
+"""Your banking information needs verification immediately.""",high
+We could not verify your your employer details. Update them within today or lose access.,high
+Let's have lunch together tomorrow.,low
+Exclusive deal just for you: 60% off furniture at our store.,medium
+Click here to confirm your Apple login before your session expires in 2 hours.,high
+Use code WELCOME5 for 30% off clothing this the end of the week.,medium
+"""Your account has received a suspicious request. Confirm now.""",high
+Could you review the schedule before Tuesday?,low
+I'm running a few minutes late to the appointment.,low
+"""Your login attempt was blocked for security reasons.""",high
+"""Claim your bonus points before they disappear.""",medium
+"""Your chance to receive RM500 cash is here. Apply now!""",medium
+Don't miss out: 60% off furniture ends Monday.,medium
+"Get 15% off your next home goods purchase, use code WELCOME5!",medium
+Your parcel could not be delivered. Pay a small fee within the next hour to reschedule.,high
+"""New promotion launched. Register to participate.""",medium
+I will be at the office around noon.,low
+"""Your profile has been marked for review. Verify now.""",high
+I will be at the gym around noon.,low
+Final notice: your PayPal account will be suspended in 2 hours. Act now.,high
+The appointment has been confirmed for Monday.,low
+"""Google security alert: suspicious sign-in detected on your account.""",high
+Exclusive deal just for you: 70% off shoes at the club.,medium
+"""Reward notification: claim your prize now.""",medium
+Your bank invoice is overdue. Provide your payment information immediately.,high
+"""Security notification: Login from unknown device detected.""",high
+"Get 20% off your next electronics purchase, use code FREESHIP!",medium
+Could you review the presentation before Tuesday?,low
+"""Your account access will expire without confirmation.""",high
+Please review my document when you have time.,low
+the retailer rewards: claim your cash prize worth $750 today.,medium
+I have completed my part of the assignment.,low
+Click here to confirm your social media login before your session expires in 2 hours.,high
+Use code VIP50 for 30% off furniture this Friday.,medium
+We could not verify your Instagram details. Update them within today or lose access.,high
+"""Special discount unlocked. Click to use your voucher.""",medium
+Your parcel could not be delivered. Pay a small fee within today to reschedule.,high
+"Your our store cart is waiting, complete your order and save 70%.",medium
+Use code TREAT25 for 25% off furniture this midnight.,medium
+Click here to confirm your insurance login before your session expires in 3 days.,high
+"""Your discount voucher is ready to use.""",medium
+"""Your financial account requires immediate action.""",high
+Let's catch up over dinner this Friday.,low
+I have completed the requested changes.,low
+Can we reschedule the conference to Monday?,low
+Can you send me the presentation for the workshop?,low
+"""Congratulations! Your name has been selected.""",medium
+"""Your security settings have changed. Confirm your account details.""",high
+"""Get instant approval for our special offer.""",medium
+Use code DEAL30 for 10% off accessories this midnight.,medium
+"""Congratulations! Your reward has been approved.""",medium
+The payment deadline is next week.,low
+"Get 20% off your next electronics purchase, use code EXTRA15!",medium
+Your package is held at customs. Pay fee at http://delivery-fee.example,high
+I will check the system later.,low
+"""Your account information must be updated today.""",high
+The delivery has arrived safely.,low
+"""Buy now and receive additional rewards.""",medium
+Immediate action required: your your employer account will be closed in the next hour.,high
+Use code VIP50 for 60% off beauty products this Monday.,medium
+Use code DEAL30 for 60% off home goods this Monday.,medium
+Use code VIP50 for 60% off groceries this tonight.,medium
+Use code WELCOME5 for 10% off accessories this tonight.,medium
+Immediate action required: your your employer account will be closed in 12 hours.,high
+We could not verify your Microsoft details. Update them within 24 hours or lose access.,high
+I have received the package today.,low
+"""PayPal alert: Your account access has been restricted. Verify your details.""",high
+Your government tax account requires urgent verification to prevent permanent closure.,high
+Could you review the agenda before Wednesday?,low
+Your Instagram password will expire today. Click here to reset it.,high
+our store rewards: claim your shopping voucher worth $100 today.,medium
+Use code DEAL30 for 50% off electronics this the end of the week.,medium
+We could not verify your Netflix details. Update them within 2 hours or lose access.,high
+You qualify for a government grant. Apply immediately!,medium
+Your Apple account has been locked. Verify your information to unlock it.,high
+"""Exclusive promotion ends soon. Take action now.""",medium
+Exclusive deal just for you: 50% off accessories at the retailer.,medium
+Unusual login detected on your bank account. Confirm your identity within 24 hours.,high
+"""Win a smartphone by joining our contest.""",medium
+Your bank account has been suspended. Verify now to restore access.,high
+Can you send me the presentation for the meeting?,low
+"""Free upgrade offer available for selected users.""",medium
+Can we reschedule the workshop to Thursday?,low
+Double your income in 30 days. Call now for details.,medium
+Use code DEAL30 for 10% off groceries this this weekend.,medium
+"""Your lucky reward is waiting. Claim it now.""",medium
+Unusual login detected on your PayPal account. Confirm your identity within 2 hours.,high
+Your Google account will be deleted in 24 hours unless you verify.,high
+"""Your account access is limited until your information is confirmed.""",high
+Don't miss out: 70% off groceries ends Friday.,medium
+"""Claim your free item now.""",medium
+"""Your bank requires confirmation before processing your transaction.""",high
+Use code FREESHIP for 30% off shoes this Friday.,medium
+The project timeline has been updated.,low
+Adobe Creative Cloud payment declined. Update card details.,high
+The client call is scheduled for Thursday.,low
+Please remember to bring your documents.,low
+Your request is currently being processed.,low
+Can you send me the document for the conference?,low
+Don't miss out: 70% off accessories ends Monday.,medium
+Can you send me the file for the conference?,low
+Can we reschedule the meeting to Tuesday?,low
+Your bank recovery request is pending. Confirm your credentials to proceed.,high
+"""Congratulations! You are eligible for a free holiday package.""",medium
+Please inform the team about the changes.,low
+Let's catch up over dinner this Tuesday.,low
+"""Get a free gift card today.""",medium
+"Get 60% off your next beauty products purchase, use code FREESHIP!",medium
+"""Your account has a security issue that needs fixing.""",high
+Click here to confirm your Netflix login before your session expires in 12 hours.,high
+Use code EXTRA15 for 25% off accessories this tonight.,medium
+Coinbase: withdraw your funds before account suspension.,high
+Your Amazon account has been locked. Verify your information to unlock it.,high
+"""Get RM100 instantly by downloading our application.""",medium
+Use code VIP50 for 25% off home goods this the end of the week.,medium
+Use code VIP50 for 30% off shoes this Friday.,medium
+Use code BONUS20 for 20% off shoes this Monday.,medium
+Click here to confirm your Instagram login before your session expires in 24 hours.,high
+See you at the library tomorrow at 10:30 AM.,low
+Just checking in to see how the presentation is going.,low
+Don't miss out: 60% off clothing ends Friday.,medium
+The class schedule has been updated.,low
+See you at the station tomorrow at 5 PM.,low
+Immediate action required: your Microsoft account will be closed in the next hour.,high
+Let's meet at the library after lunch.,low
+Your Microsoft account has been locked. Verify your information to unlock it.,high
+Use code SAVE10 for 10% off accessories this Friday.,medium
+The report deadline is next Monday.,low
+"""Your account recovery requires confirmation of personal details.""",high
+The staff meeting is scheduled for tomorrow.,low
+"""New users receive a welcome bonus. Sign up today.""",medium
+The class materials are ready to download.,low
+"""Free internet package available. Register now.""",medium
+I will be at the office around 9 AM.,low
+The exam timetable has been released.,low
+"Your the marketplace cart is waiting, complete your order and save 50%.",medium
+"""Get a free trial of our premium service today.""",medium
+Reminder: the class starts at noon.,low
+Your insurance account requires urgent verification to prevent permanent closure.,high
+Final notice: your social media account will be suspended in today. Act now.,high
+I will bring the equipment tomorrow.,low
+"""Your online shopping account has been compromised. Verify ownership.""",high
+"""Your account access has been temporarily disabled. Verify your identity.""",high
+"""Special customer offer. Activate now.""",medium
+"""Start earning additional income today.""",medium
+Special promotion: zero interest for 12 months.,medium
+The client call is scheduled for Monday.,low
+Use code EXTRA15 for 80% off shoes this Friday.,medium
+"""Your account has an unauthorized transaction. Confirm your information.""",high
+"""Super sale begins today. Don't miss the opportunity.""",medium
+"""Security check required. Confirm your login information.""",high
+Limited offer: claim your cash reward today!,medium
+"""Security notification: Please confirm your account information.""",high
+Can you send me the report for the appointment?,low
+"""Your account has suspicious activity from a new location.""",high
+"""Free membership invitation available.""",medium
+"""Your account verification deadline is approaching.""",high
+Your email password will expire 2 hours. Click here to reset it.,high
+Reminder: the training session starts at 10:30 AM.,low
+Immediate action required: your government tax account will be closed in today.,high
+I have completed the database task.,low
+Immediate action required: your bank account will be closed in today.,high
+Can you send me the summary for the training session?,low
+Don't miss out: 30% off shoes ends Friday.,medium
+"""Your account has a problem with payment authorization.""",high
+Unusual login detected on your Instagram account. Confirm your identity within 3 days.,high
+"""Unlock your exclusive discount code now.""",medium
+Use code VIP50 for 60% off shoes this this weekend.,medium
+The project review is scheduled for next week.,low
+"""Your subscription payment failed. Enter your card information again.""",high
+Thank you for your help during the project.,low
+"""Your online banking requires a security update.""",high
+"""Final reminder! Claim your promotion today.""",medium
+"""Your email account will be closed unless you verify your information.""",high
+The customer request has been completed.,low
+Don't miss out: 15% off furniture ends Monday.,medium
+Immediate action required: your Amazon account will be closed in today.,high
+"""Get exclusive VIP access with your free membership.""",medium
+We could not verify your Amazon details. Update them within 3 days or lose access.,high
+Could you review the summary before Friday?,low
+Final notice: your Amazon account will be suspended in 48 hours. Act now.,high
+Use code SAVE10 for 30% off electronics this this weekend.,medium
+The delivery is expected tomorrow morning.,low
+The staff meeting is scheduled for Friday.,low
+"""Special package available at a very low price.""",medium
+our outlet rewards: claim your shopping voucher worth $750 today.,medium
+I shared the folder with you on Google Drive.,low
+Use code DEAL30 for 60% off furniture this tonight.,medium
+Exclusive deal just for you: 25% off clothing at our store.,medium
+"""Your special bonus is ready.""",medium
+"""Receive instant rewards after completing registration.""",medium
+Can you send me the document for the meeting?,low
+Your your employer password will expire 24 hours. Click here to reset it.,high
+The client call is scheduled for Friday.,low
+I left your textbook on the kitchen table.,low
+I will discuss this with the team later.,low
+See you at the cafe tomorrow at 6:15 PM.,low
+"""Exclusive sale event starts today.""",medium
+Final notice: your social media account will be suspended in 12 hours. Act now.,high
+Happy birthday! Wishing you all the best.,low
+Do not forget the team meeting at ten.,low
+"""Claim your special package before someone else takes it.""",medium
+"""Win a free holiday trip by entering now.""",medium
+Earn $2000 cashback when you shop shoes at our outlet.,medium
+Use code BONUS20 for 15% off home goods this midnight.,medium
+I attached the slides from yesterday's lecture.,low
+"""Exclusive online promotion for selected customers.""",medium
+Please remember the deadline is next week.,low
+"""Join our giveaway and win amazing prizes.""",medium
+"""Limited stock! Buy now before it is gone.""",medium
+Use code TREAT25 for 20% off groceries this the end of the week.,medium
+Use code EXTRA15 for 10% off home goods this the end of the week.,medium
+Just checking in to see how the assignment is going.,low
+"""Your personal information needs updating to maintain access.""",high
+"""Limited stock available. Order yours before it sells out.""",medium
+Your Instagram password will expire 2 hours. Click here to reset it.,high
+"""Your account has a critical security issue. Login to fix it.""",high
+"""Get instant cashback after registration.""",medium
+Please share the meeting link with everyone.,low
+Final notice: your bank account will be suspended in 2 hours. Act now.,high
+Use code SAVE10 for 20% off clothing this the end of the week.,medium
+"""Save up to 75% with our latest promotion.""",medium
+Use code DEAL30 for 15% off home goods this the end of the week.,medium
+Can you send me the report for the class?,low
+Can you check whether the file opens correctly?,low
+I will discuss the issue with the team.,low
+"""Congratulations! You have been selected for a prize.""",medium
+"""Your online account requires a new security confirmation.""",high
+Exclusive members-only discount just for you.,medium
+"""Microsoft account alert: Your password needs immediate verification.""",high
+Use code TREAT25 for 40% off shoes this Monday.,medium
+The project review is scheduled for tomorrow.,low
+"""Your online profile has been disabled. Verify your identity.""",high
+Please remember to bring the documents tomorrow.,low
+See you at the airport tomorrow at 10:30 AM.,low
+"""Your banking access has been disabled. Restore it immediately.""",high
+Thank you for helping me with my assignment.,low
+Your social media account will be permanently deleted in 3 days unless you verify now.,high
+"""Your account requires a security update before continuing.""",high
+"""Free membership upgrade available today.""",medium
+Let's catch up over dinner this tomorrow.,low
+"""Your payment account has suspicious activity. Review now.""",high
+"""Congratulations! You are among our top winners.""",medium
+Dinner is ready whenever you are home.,low
+Final notice: your Apple account will be suspended in today. Act now.,high
+Let's catch up over lunch this Tuesday.,low
+Refer a friend to the club and earn $100 in credit.,medium
+Reminder: the interview starts at 5 PM.,low
+I have sent the requested information.,low
+Don't miss out: 20% off electronics ends Friday.,medium
+Click here to confirm your Apple login before your session expires in the next hour.,high
+"""Congratulations! Your application for a reward was approved.""",medium
+"""Your email account requires security confirmation.""",high
+Don't miss out: 25% off home goods ends the end of the week.,medium
+"""Free gifts available while supplies last.""",medium
+I will send you the updated file after checking it.,low
+Final notice: your your employer account will be suspended in the next hour. Act now.,high
+"""Your account has unusual login attempts. Secure your account now.""",high
+"""Your account has been flagged due to suspicious activity. Verify immediately.""",high
+Final notice: your Instagram account will be suspended in the next hour. Act now.,high
+"""Your payment account requires identity confirmation.""",high
+Final notice: your email account will be suspended in the next hour. Act now.,high
+The client call is scheduled for tomorrow.,low
+"""Win a luxury phone through our lucky draw.""",medium
+Use code VIP50 for 30% off furniture this this weekend.,medium
+The weekly sync is scheduled for tomorrow.,low
+Use code EXTRA15 for 70% off furniture this this weekend.,medium
+Don't miss out: 40% off electronics ends this weekend.,medium
+The payment was completed successfully.,low
+The meeting room has been changed to Room B.,low
+"""Become a member today and receive rewards.""",medium
+"""Your account has been selected for mandatory verification.""",high
+I will reply after checking the details.,low
+See you at home tomorrow at 2 PM.,low
+The problem has been solved.,low
+Use code VIP50 for 30% off groceries this Monday.,medium
+The the report copies you ordered has been delivered.,low
+Can you send me the summary for the class?,low
+"""Your account has been frozen. Complete verification to unlock.""",high
+Your PayPal account shows unauthorized charges. Confirm your identity to dispute them.,high
+Unusual login detected on your email account. Confirm your identity within 3 days.,high
+Exclusive deal just for you: 10% off furniture at the retailer.,medium
+Can you send me the summary for the meeting?,low
+"""Free delivery offer available now.""",medium
+Unusual login detected on your bank account. Confirm your identity within 2 hours.,high
+I will be at the airport around 10:30 AM.,low
+Could you review the agenda before tomorrow?,low
+See you at the airport tomorrow at 5 PM.,low
+Immediate action required: your Netflix account will be closed in 2 hours.,high
+Use code SAVE10 for 50% off clothing this Monday.,medium
+Can we reschedule the training session to Monday?,low
+"""Your account has been blocked after unusual login activity.""",high
+"""Limited promotion! Order quickly.""",medium
+Could you review the file before next week?,low
+Your appointment reminder has been scheduled.,low
+Can we discuss the assignment requirements?,low
+Use code DEAL30 for 60% off beauty products this tonight.,medium
+"""Your login information has expired. Confirm your credentials.""",high
+I will review the document later today.,low
+I will be unavailable this afternoon.,low
+"""Your account security alert requires your response.""",high
+"""Limited time deal! Purchase before the offer ends.""",medium
+I will arrive around lunchtime.,low
+"""Your email password needs to be updated due to security concerns.""",high
+Are you free to discuss the project later?,low
+The package is ready for pickup.,low
+The client call is scheduled for Tuesday.,low
+"""New customers receive exclusive benefits.""",medium
+The website update has been completed.,low
+Use code TREAT25 for 70% off home goods this Friday.,medium
+"""Earn extra income from home. No experience required!""",medium
+"""Limited time! Enjoy our biggest sale event.""",medium
+Could you review the schedule before Monday?,low
+"""Special customer promotion. Take advantage today.""",medium
+"""Your reward coupon is about to expire. Redeem now.""",medium
+The team meeting is scheduled for tomorrow.,low
+"Get 20% off your next accessories purchase, use code BONUS20!",medium
+I'm running a few minutes late to the conference.,low
+I will update the report after reviewing the feedback.,low
+Let's catch up over coffee this Monday.,low
+Your Netflix account shows unauthorized charges. Confirm your identity to dispute them.,high
+Can we reschedule the training session to tomorrow?,low
+Your Instagram account will be permanently deleted in 3 days unless you verify now.,high
+Unusual login detected on your government tax account. Confirm your identity within the next hour.,high
+"""Security alert: Unknown device signed into your account.""",high
+"""Exclusive invitation! Join our premium club.""",medium
+"""Your account protection has expired. Renew your security settings.""",high
+Use code FREESHIP for 25% off shoes this Monday.,medium
+"""Your payment method needs confirmation to avoid service interruption.""",high
+You qualify for a cash reward of $50 from our partner.,medium
+"""Your account will be closed due to inactivity. Login to reactivate it.""",high
+Use code DEAL30 for 25% off accessories this this weekend.,medium
+Please confirm your availability for the meeting.,low
+Use code BONUS20 for 40% off accessories this midnight.,medium
+Can you join the online meeting tonight?,low
+Use code FREESHIP for 50% off electronics this tonight.,medium
+The meeting has been postponed.,low
+"""Your account requires a new security confirmation code.""",high
+Use code SAVE10 for 15% off accessories this midnight.,medium
+Immediate action required: your Instagram account will be closed in the next hour.,high
+"""Receive a gift card after completing registration.""",medium
+Refer a friend to our store and earn $1000 in credit.,medium
+"""Receive special bonuses when you register.""",medium
+Please remember to bring a pen tomorrow.,low
+I will be at home around 10:30 AM.,low
+The payment receipt has been saved.,low
+The a pen you ordered has been delivered.,low
+Exclusive deal just for you: 20% off electronics at the club.,medium
+"""Special offer only for you. Claim your reward before it expires.""",medium
+Can you explain this question to me?,low
+"""Special clearance sale! Everything must go.""",medium
+"""Your lucky draw entry has been approved. Collect your prize.""",medium
+The bus will arrive in ten minutes.,low
+"""Your account needs urgent recovery. Submit your details.""",high
+I have arrived at the location.,low
+Use code SAVE10 for 70% off accessories this the end of the week.,medium
+Click here to confirm your Amazon login before your session expires in the next hour.,high
+"""Don't wait! This amazing offer ends soon.""",medium
+"""Congratulations! You have received a shopping voucher.""",medium
+The library book is due next Monday.,low
+I have completed the requested assignment.,low
+"""Your reward points can be exchanged for gifts now.""",medium
+Please bring your identification card.,low
+Don't miss out: 40% off groceries ends the end of the week.,medium
+Click here to confirm your Apple login before your session expires in 3 days.,high
+"""Your account is temporarily disabled. Verify to reactivate.""",high
+Security alert: someone tried to access your Netflix account from a new device.,high
+Your Zoom meeting recording is ready. Download from secure link.,high
+"""Your exclusive coupon is waiting. Use it now.""",medium
+"""Free entertainment subscription available now.""",medium
+"""Suspicious activity detected on your account. Login to review.""",high
+See you at the office tomorrow at 2 PM.,low
+The problem was fixed successfully.,low
+Final notice: your email account will be suspended in 2 hours. Act now.,high
+The assignment instructions are available online.,low
+Unusual login detected on your bank account. Confirm your identity within 3 days.,high
+The team has completed the discussion.,low
+The meeting notes are available now.,low
+Exclusive deal just for you: 80% off groceries at the retailer.,medium
+"""Limited time offer! Get 70% discount on all products today.""",medium
+"""Your account has been temporarily locked. Click to unlock.""",high
+The software update is complete.,low
+"""Your banking session requires re-authentication.""",high
+Use code DEAL30 for 20% off home goods this tonight.,medium
+the marketplace rewards: claim your gift card worth $750 today.,medium
+Can we reschedule the appointment to Thursday?,low
+Reminder: submit your timesheet by end of day.,low
+Can you send me the document for the workshop?,low
+We could not verify your bank details. Update them within the next hour or lose access.,high
+Immediate action required: your email account will be closed in the next hour.,high
+Immediate action required: your Microsoft account will be closed in 24 hours.,high
+The service request has been completed.,low
+Could you review the schedule before next week?,low
+"""Congratulations! You are eligible for a free reward.""",medium
+"""Get unlimited access with our special package.""",medium
+Use code DEAL30 for 15% off home goods this midnight.,medium
+"""Receive free gifts when you shop with us.""",medium
+Let's catch up over coffee this Tuesday.,low
+Can you send me the file for the class?,low
+"""Don't miss this amazing deal. Order before midnight.""",medium
+Unusual login detected on your Apple account. Confirm your identity within the next hour.,high
+"""Your account has detected a suspicious payment attempt.""",high
+"""Special offer! Receive additional benefits today.""",medium
+Your Microsoft account will be permanently deleted in 24 hours unless you verify now.,high
+Final notice: your social media account will be suspended in 48 hours. Act now.,high
+I will update the team later.,low
+The project deadline is next Friday.,low
+Use code SAVE10 for 40% off home goods this this weekend.,medium
+Unusual login detected on your social media account. Confirm your identity within 48 hours.,high
+"""Your account verification failed. Submit your details again.""",high
+The event starts at 8 PM this Saturday.,low
+Use code EXTRA15 for 60% off home goods this this weekend.,medium
+Use code WELCOME5 for 15% off clothing this Friday.,medium
+"Good morning, I hope you have a great day.",low
+Use code EXTRA15 for 10% off groceries this this weekend.,medium
+Reminder: the meeting starts at 6:15 PM.,low
+The team meeting is scheduled for Wednesday.,low
+Earn $2000 cashback when you shop home goods at the club.,medium
+I have sent the required documents.,low
+Use code TREAT25 for 20% off groceries this Friday.,medium
+"""Your account needs immediate verification to remain active.""",high
+Your Microsoft password will expire 3 days. Click here to reset it.,high
+Could you review the summary before Wednesday?,low
+I have completed the online form.,low
+Earn $750 cashback when you shop clothing at the club.,medium
+Earn $50 cashback when you shop electronics at our partner.,medium
+Your PayPal password will expire 24 hours. Click here to reset it.,high
+"Get 60% off your next groceries purchase, use code FREESHIP!",medium
+"""Microsoft security team: confirm your account details to continue.""",high
+Your email account has been flagged for review. Verify your identity to avoid suspension.,high
+"Get 10% off your next accessories purchase, use code FREESHIP!",medium
+"Get 40% off your next furniture purchase, use code SAVE10!",medium
+"""You are selected as our lucky winner. Reply YES to receive your gift.""",medium
+"""Your identity verification is required immediately.""",high
+Exclusive deal just for you: 50% off accessories at our partner.,medium
+The system backup has completed successfully.,low
+Let's catch up over dinner this Wednesday.,low
+The file has been saved successfully.,low
+Please confirm your availability for the conference.,low
+I will complete the remaining tasks soon.,low
+Use code SAVE10 for 50% off clothing this tonight.,medium
+I will be at the office around 2 PM.,low
+"""Don't miss this unbelievable promotion.""",medium
+"""Your lucky number has been selected. Claim your prize.""",medium
+The project review is scheduled for Tuesday.,low
+"""Free products available for early users.""",medium
+Your PayPal account will be permanently deleted in 48 hours unless you verify now.,high
+Can you send me the schedule for the training session?,low
+Your your employer account has been flagged for review. Verify your identity to avoid suspension.,high
+"Get 25% off your next clothing purchase, use code EXTRA15!",medium
+Can you send me the schedule for the interview?,low
+Could you review the document before Friday?,low
+Your government tax account has been locked. Verify your information to unlock it.,high
+Final notice: your email account will be suspended in 3 days. Act now.,high
+The package arrived this afternoon.,low
+"""Your bank requires confirmation of your personal information.""",high
+Thank you for your assistance with this matter.,low
+"""Click now to unlock your special discount.""",medium
+I will contact you after the meeting.,low
+"""Get bonus points by registering today.""",medium
+Don't miss out: 25% off furniture ends this weekend.,medium
+The weather looks nice for the weekend hike.,low
+"""Act fast and get free vouchers now!!!""",medium
+Your Netflix recovery request is pending. Confirm your credentials to proceed.,high
+our outlet rewards: claim your shopping voucher worth $1000 today.,medium
+"""Your personal details have not been confirmed. Update now.""",high
+We noticed suspicious activity on your your employer account. Confirm your details now.,high
+Your Apple account will be permanently deleted in 12 hours unless you verify now.,high
+I will be at the office around 5 PM.,low
+Your mailbox quota is full. Login to keep receiving email.,high
+"""Apple ID security notice: Your account has been disabled. Restore access now.""",high
+I will attend the training session tomorrow.,low
+The event will begin at 7 PM.,low
+Please let me know your availability.,low
+I will call you after work.,low
+"""Your account information does not match our records. Update now.""",high
+Can we reschedule the meeting to Thursday?,low
+Let's catch up over breakfast this Tuesday.,low
+I will join the discussion after my class ends.,low
+Earn $2000 cashback when you shop beauty products at the retailer.,medium
+Use code WELCOME5 for 15% off electronics this this weekend.,medium
+See you at the cafe tomorrow at 9 AM.,low
+See you at the cafe tomorrow at 2 PM.,low
+Can we reschedule the conference to Tuesday?,low
+"""Earn rewards from your daily activities.""",medium
+"""Your account information must be verified before the next login.""",high
+Earn $500 cashback when you shop clothing at our outlet.,medium
+Use code WELCOME5 for 60% off furniture this this weekend.,medium
+"""Your chance to win a prize is here.""",medium
+WhatsApp verification code expired. Re-enter credentials at link.,high
+I will prepare the necessary documents.,low
+Your request has been successfully completed.,low
+Can we reschedule the appointment to next week?,low
+Could you review the invoice before Friday?,low
+DocuSign: you have a pending document. Review and sign now.,high
+Use code BONUS20 for 25% off beauty products this Friday.,medium
+Exclusive deal just for you: 70% off home goods at our store.,medium
+We could not verify your social media details. Update them within 2 hours or lose access.,high
+We could not verify your government tax details. Update them within 12 hours or lose access.,high
+Claim your free gadget bundle before midnight.,medium
+Use code DEAL30 for 70% off electronics this Monday.,medium
+Just checking in to see how the project is going.,low
+Use code TREAT25 for 25% off home goods this midnight.,medium
+Use code DEAL30 for 30% off home goods this the end of the week.,medium
+Free mug with every electronics order this week only.,medium
+Your Instagram invoice is overdue. Provide your payment information immediately.,high
+I've attached the file you requested.,low
+Your email password will expire the next hour. Click here to reset it.,high
+We noticed suspicious activity on your insurance account. Confirm your details now.,high
+See you at the office tomorrow at noon.,low
+The task has been completed successfully.,low
+I will help you with the project.,low
+Can you send me the invoice for the conference?,low
+I have updated the software successfully.,low
+"Get 15% off your next accessories purchase, use code EXTRA15!",medium
+"""Your account has been temporarily suspended. Verify now.""",high
+Immediate action required: your Microsoft account will be closed in 2 hours.,high
+The new schedule has been shared.,low
+"""Win exciting prizes by completing this short survey.""",medium
+Can we reschedule the interview to tomorrow?,low
+Last chance! 90% off designer watches today only.,medium
+Your Apple account requires urgent verification to prevent permanent closure.,high
+I will share the presentation slides later.,low
+"Get 10% off your next beauty products purchase, use code VIP50!",medium
+Earn $1000 cashback when you shop beauty products at our store.,medium
+Can we reschedule the workshop to next week?,low
+"""Netflix security notice: Update your payment details to continue service.""",high
+Click here to confirm your bank login before your session expires in 3 days.,high
+"""Your free reward is waiting for confirmation.""",medium
+"""Your exclusive deal is waiting.""",medium
+Reminder: the class starts at 5 PM.,low
+Let me know if you need anything else for assignment.,low
+I will call you when I arrive.,low
+I will join the online class tonight.,low
+We noticed suspicious activity on your email account. Confirm your details now.,high
+"""Your online profile requires immediate verification.""",high
+Use code BONUS20 for 10% off groceries this this weekend.,medium
+our store rewards: claim your gift card worth $250 today.,medium
+Immediate action required: your bank account will be closed in 2 hours.,high
+"""Your bank account verification deadline is today.""",high
+"""Online shopping festival starts now. Enjoy discounts.""",medium
+Refer a friend to the retailer and earn $2000 in credit.,medium
+The project review is scheduled for Monday.,low
+Your account balance has been updated.,low
+The system maintenance has been completed.,low
+I am travelling home today.,low
+"""Special offer ends tonight. Purchase before deadline.""",medium
+Could you review the file before Thursday?,low
+The meeting has been moved to another time.,low
+Use code FREESHIP for 60% off beauty products this Friday.,medium
+Your email account requires urgent verification to prevent permanent closure.,high
+Final notice: your email account will be suspended in 24 hours. Act now.,high
+Let's catch up over coffee this Thursday.,low
+Can you send me the file for the training session?,low
+Can we reschedule the conference to tomorrow?,low
+Unusual login detected on your Netflix account. Confirm your identity within 24 hours.,high
+Reminder: the conference starts at 2 PM.,low
+"""Your e-wallet account needs identity verification before use.""",high
+"""Grab account warning: Please confirm your payment information.""",high
+Use code FREESHIP for 20% off furniture this Monday.,medium
+We noticed suspicious activity on your social media account. Confirm your details now.,high
+"""Your bonus credit has been added. Use it now.""",medium
+We could not verify your email details. Update them within 24 hours or lose access.,high
+Could you review the document before next week?,low
+The train will arrive at 6 PM.,low
+I've attached the document you requested.,low
+Earn $500 cashback when you shop electronics at the retailer.,medium
+The meeting room has been reserved for tomorrow.,low
+Win a luxury vacation. Enter your details to participate.,medium
+Click here to confirm your social media login before your session expires in the next hour.,high
+"""Get instant rewards after signing up today.""",medium
+Use code TREAT25 for 30% off shoes this Monday.,medium
+The team meeting is scheduled for Friday.,low
+Can you send me the report for the conference?,low
+Your social media account has been locked. Verify your information to unlock it.,high
+The professor moved the deadline to next Wednesday.,low
+"""Your account requires additional authentication.""",high
+"""We detected unusual login activity. Click https://secure-login.example""",high
+Can we reschedule the conference to Wednesday?,low
+Can we reschedule the meeting to Monday?,low
+"""Your online banking account needs confirmation.""",high
+The team meeting has been confirmed.,low
+"""Your online account has been compromised. Verify ownership now.""",high
+"""Congratulations! You have received a bonus reward.""",medium
+The report has been approved by the manager.,low
+We could not verify your Microsoft details. Update them within 48 hours or lose access.,high
+Your tax refund is pending. Confirm your bank details within 3 days to receive it.,high
+The team meeting is scheduled for next week.,low
+our outlet rewards: claim your new phone worth $2000 today.,medium
+Use code DEAL30 for 70% off shoes this midnight.,medium
+We could not verify your insurance details. Update them within 3 days or lose access.,high
+Your number was chosen in our monthly lottery draw.,medium
+I will be at the airport around 6:15 PM.,low
+"The status update looks good, thanks for putting it together.",low
+"""Flash sale starts now! Save big on your favourite items.""",medium
+We could not verify your PayPal details. Update them within today or lose access.,high
+"""Your email storage is full. Login to increase your limit.""",high
+Can we reschedule the workshop to tomorrow?,low
+Could you review the invoice before next week?,low
+Use code TREAT25 for 30% off groceries this Monday.,medium
+Use code TREAT25 for 60% off furniture this Monday.,medium
+Hello how are you today?,low
+Buy one get ten free. Limited stock available.,medium
+See you at the gym tomorrow at 10:30 AM.,low
+Use code VIP50 for 15% off clothing this tonight.,medium
+"Get 20% off your next furniture purchase, use code BONUS20!",medium
+"Flash sale! 40% off everything at our outlet, today only.",medium
+Thank you for your patience and support.,low
+Your Amazon invoice is overdue. Provide your payment information immediately.,high
+Click here to confirm your Amazon login before your session expires in 48 hours.,high
+Immediate action required: your Apple account will be closed in 3 days.,high
+The website content has been updated.,low
+Use code WELCOME5 for 25% off beauty products this tonight.,medium
+The application form has been submitted.,low
+Please contact the support team if you need help.,low
+"""Your service account will be suspended without verification.""",high
+"""Congratulations! You have won a special prize.""",medium
+I received the package safely.,low
+Final notice: your bank account will be suspended in 12 hours. Act now.,high
+"""Your device has been linked to another account. Verify ownership.""",high
+"""Big discount alert! Shop now.""",medium
+"""Get your free reward by replying YES now.""",medium
+Can you send me the agenda for the conference?,low
+Your social media recovery request is pending. Confirm your credentials to proceed.,high
+"Get 40% off your next groceries purchase, use code FREESHIP!",medium
+Use code FREESHIP for 10% off furniture this Monday.,medium
+Use code VIP50 for 80% off furniture this this weekend.,medium
+"""Security warning: Your login details may have been stolen. Change your password now.""",high
+I have completed the required training.,low
+Can you send me the agenda for the class?,low
+The system update was successful.,low
+Your PayPal account will be permanently deleted in 24 hours unless you verify now.,high
+"""Massive savings available only for a limited time.""",medium
+"""Claim your free bonus before it is gone.""",medium
+Use code WELCOME5 for 20% off accessories this midnight.,medium
+Don't miss out: 80% off groceries ends the end of the week.,medium
+Let's work together on this problem.,low
+Use code SAVE10 for 60% off clothing this Monday.,medium
+"""Your account has been selected for a mandatory security review.""",high
+Immediate action required: your PayPal account will be closed in 2 hours.,high
+Use code VIP50 for 70% off clothing this midnight.,medium
+Your social security benefits are pending. Confirm identity online.,high
+Use code SAVE10 for 80% off electronics this Friday.,medium
+Your Amazon password will expire 2 hours. Click here to reset it.,high
+Please check your inbox for the details.,low
+"""Limited-time reward. Click now to claim.""",medium
+Great job on the presentation today!,low
+"""Your account has a security problem. Follow the instructions.""",high
+Use code FREESHIP for 15% off home goods this Friday.,medium
+"""Your personal information requires security validation.""",high
+The schedule has been shared with the team.,low
+We could not verify your Amazon details. Update them within 2 hours or lose access.,high
+Final notice: your Amazon account will be suspended in 3 days. Act now.,high
+I have uploaded the final presentation.,low
+We could not verify your Netflix details. Update them within today or lose access.,high
+Exclusive deal just for you: 50% off accessories at the marketplace.,medium
+"""Confirm your identity to prevent account restriction.""",high
+Could you review the file before tomorrow?,low
+Don't miss out: 70% off beauty products ends this weekend.,medium
+Earn $50 cashback when you shop groceries at the club.,medium
+Your request has been approved.,low
+Use code EXTRA15 for 10% off accessories this the end of the week.,medium
+"""Your account details have changed. Confirm whether this was you.""",high
+"""Big discount alert! Purchase today and save more.""",medium
+"""Your profile information is incomplete. Update it now.""",high
+Your bank account shows unauthorized charges. Confirm your identity to dispute them.,high
+Chase Bank: unusual transaction detected. Confirm at secure portal.,high
+"""Your security information needs updating. Confirm your details now.""",high
+Final notice: your insurance account will be suspended in 48 hours. Act now.,high
+Please check the attached information.,low
+Your order details are available now.,low
+Use code SAVE10 for 25% off furniture this the end of the week.,medium
+Immediate action required: your Netflix account will be closed in 24 hours.,high
+I have received the documents you sent.,low
+"""Shopee security team: Your account requires verification to avoid suspension.""",high
+Could you review the summary before Monday?,low
+Can we reschedule the meeting to next week?,low
+Claim your free gift card before the end of the week.,medium
+I will call you when I reach home.,low
+"""Receive a free upgrade immediately.""",medium
+"""Get your exclusive deal today.""",medium
+We could not verify your social media details. Update them within 48 hours or lose access.,high
+The weekly sync is scheduled for Tuesday.,low
+The staff meeting is scheduled for Thursday.,low
+Refer a friend to our partner and earn $2000 in credit.,medium
+Don't miss out: 40% off shoes ends Friday.,medium
+Click here to confirm your government tax login before your session expires in 2 hours.,high
+Your insurance account has been suspended. Verify now to restore access.,high
+Use code TREAT25 for 60% off groceries this Friday.,medium
+"""Your account details require confirmation today.""",high
+Your PayPal account will be permanently deleted in 2 hours unless you verify now.,high
+Earn $250 cashback when you shop groceries at our partner.,medium
+We could not verify your insurance details. Update them within the next hour or lose access.,high
+"""Your account needs urgent protection from unauthorized access.""",high
+Please review the changes when possible.,low
+Use code FREESHIP for 15% off shoes this Friday.,medium
+"""Get a special discount by clicking this offer.""",medium
+Thank you for your help with the project.,low
+Immediate action required: your PayPal account will be closed in 3 days.,high
+"""Get a free shopping voucher instantly.""",medium
+"""Get your free coupon by clicking now.""",medium
+Your social media account will be permanently deleted in 48 hours unless you verify now.,high
+See you at the gym tomorrow at 6:15 PM.,low
+"""Your account security level is low. Upgrade protection now.""",high
+"Great job on the project, well done!",low
+Let's catch up over breakfast this Thursday.,low
+Please confirm your attendance for the event.,low
+Immediate action required: your social media account will be closed in the next hour.,high
+Final notice: your bank account will be suspended in today. Act now.,high
+Please review the attached document.,low
+Could you review the file before Friday?,low
+Can we reschedule the workshop to Tuesday?,low
+Use code SAVE10 for 50% off clothing this midnight.,medium
+See you at the gym tomorrow at noon.,low
+"""Your card payment failed. Update your card information immediately.""",high
+Please update me when you finish the task.,low
+"""Massive discounts available on selected items.""",medium
+Could you review the file before Tuesday?,low
+I will be at the gym around 10:30 AM.,low
+Use code EXTRA15 for 50% off electronics this this weekend.,medium
+Click here to confirm your Microsoft login before your session expires in 24 hours.,high
+"""Free trial available. Start using it today.""",medium
+"""Your payment method was rejected. Update your billing information.""",high
+"""Your login details need confirmation before continuing.""",high
+"""Congratulations! You are eligible for a special gift.""",medium
+Thanks for covering my shift last week.,low
+Could you review the schedule before tomorrow?,low
+Your PayPal account will be permanently deleted in the next hour unless you verify now.,high
+Can you send me the file for the interview?,low
+Reset your password at http://fake-reset.example immediately.,high
+Your subscription has been renewed successfully.,low
+Can you send me the document for the training session?,low
+Can we reschedule the interview to Tuesday?,low
+Can you send me the invoice for the meeting?,low
+Click here to confirm your PayPal login before your session expires in 3 days.,high
+Could you review the presentation before tomorrow?,low
+The lecturer uploaded the new materials today.,low
+Reminder: the meeting starts at 9 AM.,low
+Can we reschedule the appointment to tomorrow?,low
+Earn $1000 cashback when you shop groceries at our partner.,medium
+Free keychain with every accessories order this week only.,medium
+"""Earn thousands monthly through our easy program.""",medium
+I've attached the schedule you requested.,low
+Final notice: your Microsoft account will be suspended in 24 hours. Act now.,high
+Your Apple recovery request is pending. Confirm your credentials to proceed.,high
+The event information has been updated.,low
+"""Your login credentials are at risk. Update them now.""",high
+Exclusive deal just for you: 30% off electronics at our partner.,medium
+I have sent the information through email.,low
+The client call is scheduled for Wednesday.,low
+The project review is scheduled for Thursday.,low
+Your Apple account will be permanently deleted in 48 hours unless you verify now.,high
+See you at the station tomorrow at 6:15 PM.,low
+"""Your account has detected unusual activity. Verify now.""",high
+Don't miss out: 80% off groceries ends Friday.,medium
+"""Your account login has been blocked. Confirm your identity.""",high
+Reminder: the appointment starts at 5 PM.,low
+Immediate action required: your bank account will be closed in the next hour.,high
+Reminder: the meeting starts at 5 PM.,low
+I have checked the information and everything is correct.,low
+"""Verify your banking information to avoid permanent account suspension.""",high
+"""Your account requires authentication before continuing.""",high
+We could not verify your Apple details. Update them within 2 hours or lose access.,high
+Use code BONUS20 for 60% off furniture this the end of the week.,medium
+See you at the airport tomorrow at noon.,low
+We could not verify your Instagram details. Update them within 3 days or lose access.,high
+Could you review the report before Thursday?,low
+I will check the system logs tomorrow.,low
+"""Free tickets available now. Click to reserve your seat.""",medium
+Use code TREAT25 for 15% off clothing this Monday.,medium
+The document has been reviewed and updated.,low
+Your your employer account will be permanently deleted in 24 hours unless you verify now.,high
+I will be at the airport around 2 PM.,low
+the retailer rewards: claim your spa day worth $2000 today.,medium
+The document review is completed.,low
+"""Get a free gift with every purchase today.""",medium
+"""Your account has a suspicious transaction waiting for approval.""",high
+Your PayPal account will be permanently deleted in 12 hours unless you verify now.,high
+Immediate action required: your Netflix account will be closed in 3 days.,high
+Your government tax password will expire 48 hours. Click here to reset it.,high
+"""Your account has detected unauthorized activity. Login now.""",high
+"""Special discount available before midnight.""",medium
+"""Join today and unlock premium benefits.""",medium
+"""Your identity information must be verified to continue service.""",high
+Get rich quick with this one weird trick doctors hate.,medium
+Thank you for attending the meeting today.,low
+The team has approved the final design.,low
+Thank you for attending the meeting.,low
+The team meeting is scheduled for Thursday.,low
+Your Netflix password will expire 2 hours. Click here to reset it.,high
+Can you send me the report for the workshop?,low
+I will provide an update later today.,low
+The presentation was completed on time.,low
+Can you send me the presentation for the interview?,low
+"The budget summary looks good, thanks for putting it together.",low
+The class starts at 10 o'clock today.,low
+Your email account will be permanently deleted in 12 hours unless you verify now.,high
+See you at the airport tomorrow at 9 AM.,low
+Click here to confirm your government tax login before your session expires in the next hour.,high
+Unusual login detected on your bank account. Confirm your identity within 48 hours.,high
+"""Free bonus available for new registrations.""",medium
+Security alert: someone tried to access your Microsoft account from a new device.,high
+"""Your account has expired. Confirm your information to continue using services.""",high
+"""Your payment account has been blocked. Restore access now.""",high
+Can we reschedule the class to Friday?,low
+I will be at the airport around noon.,low
+The application process is finished.,low
+"""Your online banking access requires reactivation.""",high
+Click here to confirm your your employer login before your session expires in the next hour.,high
+"""Your exclusive reward package is ready to collect.""",medium
+Let me know if you need anything else for report.,low
+Unusual login detected on your social media account. Confirm your identity within 3 days.,high
+"""Exclusive member benefits available immediately.""",medium
+"""Special bonus waiting for you. Click to collect.""",medium
+See you at home tomorrow at 5 PM.,low
+Let's catch up over coffee this next week.,low
+"""Your account has unauthorized access attempts. Secure it now.""",high
+Earn $1000 cashback when you shop beauty products at our partner.,medium
+Exclusive deal just for you: 80% off home goods at our outlet.,medium
+Please send the final version of the report.,low
+Immediate action required: your Netflix account will be closed in 12 hours.,high
+Your reservation details have been updated.,low
+Please check the latest announcement.,low
+Could you review the summary before next week?,low
+Let's catch up over lunch this Friday.,low
+Reminder: the class starts at 6:15 PM.,low
+"""Your account is temporarily unavailable. Verify to restore access.""",high
+Your Microsoft 365 subscription expired. Renew to avoid data loss.,high
+"""Your account has been temporarily blocked for security reasons.""",high
+"""Security alert: suspicious login detected. Confirm your password now.""",high
+"""Your account has detected suspicious login from another country.""",high
+"""Get cashback rewards from every purchase.""",medium
+Thank you for your support and guidance.,low
+"""Your account has suspicious login records. Review immediately.""",high
+I have received your message.,low
+Could you review my draft before I submit it?,low
+Unusual login detected on your Apple account. Confirm your identity within 2 hours.,high
+Please contact me if anything changes.,low
+"""Your account requires two-factor authentication setup. Verify now.""",high
+"""We detected unauthorized activity. Please verify your account.""",high
+"""Congratulations! You won a free iPhone. Click now!""",medium
+"""Your login attempt requires confirmation. Verify immediately.""",high
+The package will arrive within three days.,low
+"Get 30% off your next shoes purchase, use code WELCOME5!",medium
+Click here to confirm your insurance login before your session expires in the next hour.,high
+Can you send me the document for the appointment?,low
+Reminder: the conference starts at 10:30 AM.,low
+"""Exclusive sale event begins now.""",medium
+"Get 30% off your next accessories purchase, use code FREESHIP!",medium
+Let's catch up over coffee this Friday.,low
+Thank you for your cooperation.,low
+Click here to confirm your bank login before your session expires in 48 hours.,high
+"""Your account has expired. Reactivate it by verifying details.""",high
+"""Your free coupon is ready. Redeem before expiry.""",medium
+Use code EXTRA15 for 25% off beauty products this the end of the week.,medium
+Your PayPal account has been limited. Sign in to restore access.,high
+Use code EXTRA15 for 25% off shoes this Friday.,medium
+The server maintenance has been completed.,low
+I'm running a few minutes late to the meeting.,low
+"""Your account has been compromised. Follow the recovery steps now.""",high
+Your bank password will expire 24 hours. Click here to reset it.,high
+"""Your account security update is incomplete.""",high
+We could not verify your PayPal details. Update them within 48 hours or lose access.,high
+"""Your account has a pending security review.""",high
+"""Your account has been reported for suspicious activity.""",high
+Congratulations! You've been selected for a new phone from the club.,medium
+Final notice: your Amazon account will be suspended in today. Act now.,high
+I have submitted the application form.,low
+"""Earn money quickly with our online opportunity.""",medium
+Can you send me the schedule for the conference?,low
+See you at the office tomorrow at 6:15 PM.,low
+Unusual login detected on your your employer account. Confirm your identity within 12 hours.,high
+You won a gift card. Click here to claim.,medium
+Bank transfer of $4500 pending. Approve transaction to release funds.,high
+"""Big clearance sale! Everything must be sold.""",medium
+"""Receive a gift package after completing this form.""",medium
+Let's catch up over dinner this next week.,low
+Could you review the agenda before Thursday?,low
+The package has been delivered to your address.,low
+Click here to confirm your government tax login before your session expires in 3 days.,high
+"""Your account has been restricted. Submit your information to restore access.""",high
+"""Increase your income with our simple online method.""",medium
+"""Free bonus points are available. Redeem them now.""",medium
+"""Maybank security alert: Your account has unusual activity. Verify now.""",high
+Your insurance account will be permanently deleted in 24 hours unless you verify now.,high
+Your Instagram password will expire the next hour. Click here to reset it.,high
+Final notice: your Netflix account will be suspended in 48 hours. Act now.,high
+Your Amazon account will be permanently deleted in 48 hours unless you verify now.,high
+We could not verify your government tax details. Update them within 24 hours or lose access.,high
+"""Your wallet balance is frozen. Complete verification to restore access.""",high
+Use code FREESHIP for 10% off beauty products this Friday.,medium
+The weekly sync is scheduled for Thursday.,low
+"""Your account will lose access unless you confirm your identity.""",high
+"""Claim your free upgrade package now.""",medium
+Reminder: the workshop starts at 5 PM.,low
+See you at the office tomorrow at 5 PM.,low
+Dinner is ready. Come home when you are free.,low
+Use code SAVE10 for 80% off beauty products this tonight.,medium
+I will be at the gym around 2 PM.,low
+Your your employer account has been suspended. Verify now to restore access.,high
+"""Your mobile banking access has been suspended. Restore it now.""",high
+Don't miss out: 40% off home goods ends the end of the week.,medium
+"""Your security verification has failed. Try again immediately.""",high
+Unusual login detected on your PayPal account. Confirm your identity within 3 days.,high
+Click here to confirm your Netflix login before your session expires in 3 days.,high
+Could you review the agenda before Tuesday?,low
+Your email invoice is overdue. Provide your payment information immediately.,high
+Sign up today and get a free tote bag from the club.,medium
+Verify your identity or your account will be locked.,high
+Immediate action required: your PayPal account will be closed in 48 hours.,high
+"""Free premium service for selected customers.""",medium
+Use code TREAT25 for 70% off beauty products this tonight.,medium
+The documents are available in the shared folder.,low
+Your government tax account will be permanently deleted in 3 days unless you verify now.,high
+"""Congratulations! Your reward has been reserved.""",medium
+I have uploaded the presentation slides.,low
+Unusual login detected on your Microsoft account. Confirm your identity within the next hour.,high
+Final notice: your social media account will be suspended in 24 hours. Act now.,high
+"""Your financial account needs verification to avoid closure.""",high
+Your your employer password will expire 2 hours. Click here to reset it.,high
+Exclusive deal just for you: 40% off groceries at our store.,medium
+"""Your special offer is ready. Click to activate.""",medium
+The restaurant reservation is confirmed.,low
+Use code FREESHIP for 20% off groceries this this weekend.,medium
+I will send the remaining information later.,low
+I will be at the library around 5 PM.,low
+Earn $500 cashback when you shop shoes at the club.,medium
+"""Your security token has expired. Request a new one now.""",high
+Click here to confirm your Apple login before your session expires in today.,high
+Your bank account has been flagged for review. Verify your identity to avoid suspension.,high
+"""Your account has been temporarily restricted.""",high
+Can you send me the schedule for the class?,low
+"""Your login credentials must be confirmed today.""",high
+We could not verify your Apple details. Update them within 24 hours or lose access.,high
+See you at the airport tomorrow at 2 PM.,low
+I will be at the airport around 9 AM.,low
+Use code BONUS20 for 30% off electronics this Monday.,medium
+Earn $750 cashback when you shop electronics at our partner.,medium
+Immediate action required: your insurance account will be closed in 48 hours.,high
+Can we reschedule the class to Tuesday?,low
+Final notice: your insurance account will be suspended in 24 hours. Act now.,high
+The payment has been successfully processed.,low
+Use code EXTRA15 for 40% off beauty products this Friday.,medium
+"""Free trial available. Subscribe immediately.""",medium
+the club rewards: claim your free vacation worth $1000 today.,medium
+Microsoft support: call urgently to fix your computer.,high
+Congratulations! You've been selected for a gadget bundle from the retailer.,medium
+I will be at the gym around 9 AM.,low
+The appointment date has been changed.,low
+"Your gift card is waiting, redeem it with code WELCOME5.",medium
+Your Netflix account will be permanently deleted in 24 hours unless you verify now.,high
+The payment status has been updated.,low
+Can you pick up milk on your way home?,low
+Unusual login detected on your Microsoft account. Confirm your identity within today.,high
+"""Exclusive online deal available for today only.""",medium
+I have received the confirmation email.,low
+Unusual login detected on your insurance account. Confirm your identity within today.,high
+"""Your payment card has been blocked. Confirm your details to unlock it.""",high
+Let's catch up over coffee this tomorrow.,low
+I will be at the gym around 6:15 PM.,low
+Click here to confirm your Apple login before your session expires in 24 hours.,high
+Final notice: your PayPal account will be suspended in 48 hours. Act now.,high
+"""FREE voucher waiting for you. Click to redeem now!""",medium
+Use code WELCOME5 for 30% off clothing this midnight.,medium
+Exclusive deal just for you: 50% off electronics at our store.,medium
+Final notice: your Apple account will be suspended in 3 days. Act now.,high
+"""Your account has received a suspicious login alert.""",high
+"""Your bank profile needs to be verified before the deadline.""",high
+Use code FREESHIP for 70% off beauty products this the end of the week.,medium
+Reminder: the appointment starts at 10:30 AM.,low
+Your reservation has been successfully confirmed.,low
+"""Receive a free gift card by participating now.""",medium
+"""Your password has expired. Reset it immediately using this link.""",high
+Please confirm your availability for the appointment.,low
+"""Congratulations! A surprise gift is waiting for you.""",medium
+Unusual login detected on your Netflix account. Confirm your identity within 3 days.,high
+our partner rewards: claim your gadget bundle worth $100 today.,medium
+Reminder: the training session starts at 2 PM.,low
+Final notice: your Amazon account will be suspended in 12 hours. Act now.,high
+Your order has been delivered successfully.,low
+I will be at the station around 9 AM.,low
+Unusual login detected on your Instagram account. Confirm your identity within the next hour.,high
+Could you review the summary before Tuesday?,low
+"""Your account is under review. Verify your information now.""",high
+Use code SAVE10 for 50% off beauty products this this weekend.,medium
+"""Earn money online without investment.""",medium
+Can we reschedule the appointment to Friday?,low
+Your parcel will arrive this afternoon.,low
+Your social media password will expire the next hour. Click here to reset it.,high
+Please check the latest version of the file.,low
+Use code VIP50 for 60% off beauty products this midnight.,medium
+Your insurance password will expire 12 hours. Click here to reset it.,high
+"""Your account has suspicious activity from a foreign location.""",high
+"""Win cash prizes through our lucky draw.""",medium
+Final notice: your Instagram account will be suspended in 24 hours. Act now.,high
+Immediate action required: your email account will be closed in 48 hours.,high
+"""Get amazing prices on our latest products.""",medium
+"Get 80% off your next electronics purchase, use code FREESHIP!",medium
+Reminder: the conference starts at 6:15 PM.,low
+Use code DEAL30 for 40% off furniture this midnight.,medium
+"""Limited invitation: Join our premium program today.""",medium
+"""Your account has been selected for a security check.""",high
+Final notice: your your employer account will be suspended in 48 hours. Act now.,high
+"""Your account has been frozen due to suspicious behavior.""",high
+The documents have been signed and submitted.,low
+Unusual login detected on your Netflix account. Confirm your identity within 12 hours.,high
+"""Your bank card security check requires verification.""",high
+Your Instagram subscription payment was declined. Update your card details now.,high
+We noticed suspicious activity on your bank account. Confirm your details now.,high
+Urgent promotion: free subscription available now.,medium
+"""Your identity confirmation is required to continue using services.""",high
+We could not verify your insurance details. Update them within 12 hours or lose access.,high
+Use code BONUS20 for 15% off shoes this tonight.,medium
+Unusual login detected on your Microsoft account. Confirm your identity within 3 days.,high
+I will be at home around 5 PM.,low
+"""Big promotion! Save up to 90% on selected items.""",medium
+Immediate action required: your PayPal account will be closed in today.,high
+Can we reschedule the class to tomorrow?,low
+"""Unusual activity detected. Login now to secure your account.""",high
+Final notice: your bank account will be suspended in the next hour. Act now.,high
+Your bank needs you to verify your account now.,high
+Your email password will expire 24 hours. Click here to reset it.,high
+"""Your account requires urgent action to prevent closure.""",high
+Your Amazon account has been suspended. Verify now to restore access.,high
+Can we reschedule the meeting to tomorrow?,low
+"""Your account recovery link is waiting. Confirm now.""",high
+Reminder: the meeting starts at 10:30 AM.,low
+"""Win an iPhone by joining our giveaway today.""",medium
+Can we reschedule the appointment to Tuesday?,low
+Can you send me the presentation for the training session?,low
+"""Your identity cannot be confirmed. Provide additional details now.""",high
+"""Free delivery promotion available this week only.""",medium
+Your account settings have been updated successfully.,low
+our partner rewards: claim your free vacation worth $2000 today.,medium
+Your bank password will expire 48 hours. Click here to reset it.,high
+Your insurance policy lapsed. Renew coverage at http://insure-renew.example,high
+"""Get cashback instantly after purchase.""",medium
+Exclusive deal just for you: 50% off furniture at our store.,medium
+The report is ready for submission.,low
+We noticed suspicious activity on your Netflix account. Confirm your details now.,high
+"""Big savings event begins this weekend.""",medium
+"""Save money with this amazing offer.""",medium
+I will be available after 5 PM.,low
+"""Your bank account requires urgent verification. Click the secure link.""",high
+"""You have been selected for a special promotion.""",medium
+Let's catch up over lunch this Thursday.,low
+"""Special promotion! Enjoy massive discounts on selected products.""",medium
+Use code SAVE10 for 80% off groceries this Monday.,medium
+The order has been delivered successfully.,low
+"""Save more money with our limited promotion.""",medium
+Earn $500 cashback when you shop electronics at our outlet.,medium
+Use code TREAT25 for 60% off shoes this Friday.,medium
+We could not verify your email details. Update them within 12 hours or lose access.,high
+Please remember our appointment tomorrow.,low
+Exclusive deal just for you: 30% off groceries at our outlet.,medium
+Your insurance account will be permanently deleted in the next hour unless you verify now.,high
+Could you review the invoice before Thursday?,low
+Use code SAVE10 for 80% off clothing this midnight.,medium
+Use code TREAT25 for 20% off electronics this Friday.,medium
+"""Receive cashback after completing your purchase.""",medium
+Can you send me the document for the class?,low
+Use code WELCOME5 for 25% off home goods this tonight.,medium
+The report contains the latest information.,low
+Use code EXTRA15 for 10% off clothing this Friday.,medium
+"""New customers get free rewards instantly.""",medium
+"""Your account requires a security check before access is restored.""",high
+Can you send me the meeting schedule?,low
+"""Act fast! Free membership available for limited users.""",medium
+Your appointment reminder is scheduled for tomorrow.,low
+Can we reschedule the meeting to Friday?,low
+"""Your account is suspended. Verify at https://account-check.example""",high
+Use code SAVE10 for 30% off home goods this the end of the week.,medium
+Use code EXTRA15 for 10% off beauty products this tonight.,medium
+We noticed suspicious activity on your Microsoft account. Confirm your details now.,high
+Exclusive deal just for you: 10% off shoes at our outlet.,medium
+Use code TREAT25 for 70% off clothing this Friday.,medium
+Your government tax account will be permanently deleted in the next hour unless you verify now.,high
+"Get 20% off your next furniture purchase, use code WELCOME5!",medium
+Could you review the summary before Thursday?,low
+Your email password will expire today. Click here to reset it.,high
+"""Security alert from your bank. Confirm recent activity.""",high
+"Get 80% off your next clothing purchase, use code FREESHIP!",medium
+Final notice: your insurance account will be suspended in 3 days. Act now.,high
+See you at the gym tomorrow at 5 PM.,low
+Use code WELCOME5 for 60% off clothing this Friday.,medium
+Could you review the report before tomorrow?,low
+Security alert: someone tried to access your Instagram account from a new device.,high
+Use code DEAL30 for 70% off groceries this this weekend.,medium
+Exclusive deal just for you: 25% off clothing at the retailer.,medium
+Use code EXTRA15 for 70% off accessories this midnight.,medium
+Your Apple account will be permanently deleted in 2 hours unless you verify now.,high
+Your government tax account will be permanently deleted in 12 hours unless you verify now.,high
+"""Your bank requires additional verification for your safety.""",high
+"""Your account verification link will expire soon.""",high
+See you at the library tomorrow at 5 PM.,low
+"""Unlock premium features with our special deal.""",medium
+"""Your account has been marked as unsafe. Secure it now.""",high
+Use code TREAT25 for 30% off accessories this Friday.,medium
+Use code WELCOME5 for 25% off shoes this midnight.,medium
+The payment has been received successfully.,low
+Could you review the report before Wednesday?,low
+Use code BONUS20 for 15% off home goods this the end of the week.,medium
+LinkedIn: someone viewed your profile. Login to see who.,high
+Thanks for your help with the project.,low
+"Get 20% off your next groceries purchase, use code DEAL30!",medium
+Use code FREESHIP for 50% off beauty products this midnight.,medium
+Free mug with every groceries order this week only.,medium
+Final notice: your government tax account will be suspended in 2 hours. Act now.,high
+the retailer rewards: claim your spa day worth $1000 today.,medium
+Use code FREESHIP for 15% off electronics this Friday.,medium
+Can we reschedule the training session to Tuesday?,low
+Final notice: your PayPal account will be suspended in 24 hours. Act now.,high
+Click here to confirm your Instagram login before your session expires in 12 hours.,high
+Use code WELCOME5 for 60% off accessories this midnight.,medium
+Reminder: the appointment starts at 2 PM.,low
+Please send me the details when you are ready.,low
+Use code SAVE10 for 30% off groceries this this weekend.,medium
+We could not verify your your employer details. Update them within 2 hours or lose access.,high
+Use code WELCOME5 for 15% off accessories this Friday.,medium
+Thanks for your help with the assignment.,low
+I will be at the airport around 5 PM.,low
+"""Your bank security team requests confirmation of your details.""",high
+Use code DEAL30 for 10% off electronics this midnight.,medium
+Use code WELCOME5 for 10% off beauty products this this weekend.,medium
+Immediate action required: your Apple account will be closed in 48 hours.,high
+The delivery driver is nearby.,low
+I've attached the report you requested.,low
+"""Your account access will expire soon. Confirm now.""",high
+Please check the new timetable.,low
+Exclusive deal just for you: 25% off home goods at our store.,medium
+Your Microsoft account will be permanently deleted in today unless you verify now.,high
+The weather looks great for a walk this weekend.,low
+"""Save up to 80% with our special shopping event.""",medium
+"""Special reward available for loyal customers.""",medium
+I will prepare the final presentation.,low
+"""Final chance! Claim your offer today.""",medium
+Your PayPal password will expire today. Click here to reset it.,high
+Reminder: the conference starts at noon.,low
+Use code VIP50 for 80% off beauty products this Monday.,medium
+Invoice attached. Open link to review secure document.,high
+Use code DEAL30 for 40% off furniture this Monday.,medium
+Final notice: your email account will be suspended in 12 hours. Act now.,high
+I will submit the form before the deadline.,low
+"Get 30% off your next beauty products purchase, use code VIP50!",medium
+"""Google account warning: Sign-in attempt detected. Confirm your identity.""",high
+I have received your payment details.,low
+Your Netflix password will expire 48 hours. Click here to reset it.,high
+"""Get your free Amazon gift card today. Claim before midnight.""",medium
+Final notice: your Microsoft account will be suspended in 2 hours. Act now.,high
+Immediate action required: your social media account will be closed in 2 hours.,high
+"""Activate your reward account today.""",medium
+"""Your account has been compromised. Reset your password immediately.""",high
+Use code TREAT25 for 20% off home goods this this weekend.,medium
+"""Claim your promotion before it ends.""",medium
+Don't miss out: 10% off shoes ends the end of the week.,medium
+See you at the station tomorrow at noon.,low
+our outlet rewards: claim your cash prize worth $750 today.,medium
+We could not verify your Netflix details. Update them within the next hour or lose access.,high
+Can we reschedule the conference to Thursday?,low
+The staff meeting is scheduled for Monday.,low
+I will send the information soon.,low
+Click here to confirm your your employer login before your session expires in 12 hours.,high
+Let me know if you need anything else for project.,low
+"""Your payment account needs urgent verification.""",high
+"""Free promotional items available now.""",medium
+I will provide the details during the meeting.,low
+Your order confirmation has been received.,low
+Can you send me the invoice for the interview?,low
+Your request is being processed now.,low
+"""Limited offer! Subscribe and get extra rewards.""",medium
+Thanks for your help with the presentation.,low
+Can you send me the file for the appointment?,low
+"""Your payment details are outdated. Update them immediately.""",high
+The report has been submitted for approval.,low
+See you at the gym tomorrow at 9 AM.,low
+Your Apple account will be permanently deleted in the next hour unless you verify now.,high
+"""Amazing opportunity! Start earning money immediately.""",medium
+"""Save money with our amazing limited promotion.""",medium
+"Flash sale! 25% off everything at our store, today only.",medium
+The team will meet online at 3 PM.,low
+Special offer: subscribe to our partner now and save 40%.,medium
+The staff meeting is scheduled for Tuesday.,low
+The weather looks great for hiking this weekend.,low
+"Get 40% off your next beauty products purchase, use code BONUS20!",medium
+Your insurance account shows unauthorized charges. Confirm your identity to dispute them.,high
+Thanks for sharing the information.,low
+Please check the updated schedule.,low
+Use code VIP50 for 50% off home goods this Monday.,medium
+Use code EXTRA15 for 60% off shoes this Monday.,medium
+Immediate action required: your Instagram account will be closed in 24 hours.,high
+Can you send me the report for the interview?,low
+Your Netflix invoice is overdue. Provide your payment information immediately.,high
+"""Get a surprise reward after completing this survey.""",medium
+Your tax refund is pending. Confirm your bank details within 2 hours to receive it.,high
+"""Your payment has been declined. Update your billing information to continue.""",high
+Please remember to bring the report copies tomorrow.,low
+Unusual login detected on your insurance account. Confirm your identity within 3 days.,high
+"""Your account has an important notification. Login to review.""",high
+Use code FREESHIP for 30% off electronics this this weekend.,medium
+Reminder: the interview starts at 2 PM.,low
+We could not verify your Instagram details. Update them within 2 hours or lose access.,high
+"""Your security settings require verification.""",high
+"""Your chance to save money starts today.""",medium
+Your Instagram account requires urgent verification to prevent permanent closure.,high
+Your university email will be deactivated. Update password now.,high
+We could not verify your government tax details. Update them within 2 hours or lose access.,high
+Could you review the schedule before Thursday?,low
+"""Your account has been marked as suspicious. Verify now.""",high
+I have completed the required registration.,low
+I am waiting near the main entrance.,low
+"""Your account needs urgent attention. Verify immediately.""",high
+Could you review the document before tomorrow?,low
+Update your payment details to avoid account closure.,high
+The weather looks great for cycling this weekend.,low
+Use code BONUS20 for 20% off accessories this Friday.,medium
+The customer information has been updated.,low
+Use code TREAT25 for 10% off home goods this midnight.,medium
+"""Massive sale event! Prices reduced for a limited time.""",medium
+Your social media password will expire 48 hours. Click here to reset it.,high
+Exclusive deal just for you: 15% off furniture at our outlet.,medium
+"""Get free access to premium services.""",medium
+See you at the station tomorrow at 2 PM.,low
+"""Your email account has suspicious activity. Secure it now.""",high
+Immediate action required: your Apple account will be closed in 12 hours.,high
+"Your our store cart is waiting, complete your order and save 25%.",medium
+Let's catch up over lunch this next week.,low
+Can you send me the presentation for the class?,low
+Please confirm your availability for the training session.,low
+Your account information has been updated successfully.,low
