@@ -1104,10 +1104,10 @@ def render_hero(title: str = "EMAIL DETECTION", dark: bool = True, component_hei
 
 
 def apply_theme() -> None:
-    st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
     st.session_state.dark_mode = True
-    st.markdown(
-        """
+    st.html(
+        GLOBAL_CSS
+        + """
         <style>
         .stApp { background: #05070a; color: #d7dee8; }
         div[data-testid='stMetric'] { background:#0c1016; border-color: rgba(0, 229, 255, 0.18); }
@@ -1213,8 +1213,7 @@ def apply_theme() -> None:
             letter-spacing: 0.04em;
         }
         </style>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -1222,10 +1221,13 @@ RISK_COLORS = {"low": "#39ff88", "medium": "#ffb020", "high": "#ff3b5c"}
 RISK_ICONS = {"low": "✅", "medium": "⚠️", "high": "🚨"}
 
 
-def page_header(icon: str, title: str, subtitle: str) -> None:
-    """Render the consistent terminal-style header used on every inner page."""
+def page_header(icon: str, title: str, subtitle: str, extra_style: str = "") -> None:
+    """Render the consistent terminal-style header used on every inner page.
+    `extra_style` lets a page fold its own scoped <style> tag into this same
+    element instead of issuing a separate, otherwise-empty st.markdown call."""
     st.markdown(
         f"""
+        {extra_style}
         <div class="mg-page-header cf-fade">
             <span class="mg-prompt">{icon}</span>
             <span class="mg-title">{title}</span>
@@ -1285,7 +1287,7 @@ def home() -> None:
     # Full-bleed home page: strip the block-container's padding/max-width
     # just for this render so the hero can fill the entire browser viewport
     # edge-to-edge instead of sitting inside a small centered card.
-    st.markdown(
+    st.html(
         """
         <style>
         .block-container {
@@ -1296,23 +1298,18 @@ def home() -> None:
             max-width: 100% !important;
         }
         </style>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     render_hero("EMAIL DETECTION", dark=True)
 
 
 def analyze() -> None:
-    st.markdown(
-        """
-        <style>
-        .block-container { max-width: 1280px !important; }
-        </style>
-        """,
-        unsafe_allow_html=True,
+    page_header(
+        "🔍", "Analyze Message",
+        "root@messageguard:~$ paste a message or email to classify its risk",
+        extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
     )
-    page_header("🔍", "Analyze Message", "root@messageguard:~$ paste a message or email to classify its risk")
 
     sample = "URGENT! Verify your account now at https://secure-check.example or it will be suspended!!"
 
