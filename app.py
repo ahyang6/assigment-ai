@@ -1340,10 +1340,16 @@ def analyze() -> None:
                 st.error(f"Unable to read file: {e}")
                 return
 
+    if "message_input" not in st.session_state:
+        st.session_state.message_input = ""
+    if uploaded_message and st.session_state.get("_last_upload_id") != (uploaded_file.name, uploaded_file.size):
+        st.session_state.message_input = uploaded_message
+        st.session_state._last_upload_id = (uploaded_file.name, uploaded_file.size)
+
     # Text area
     message = st.text_area(
         "Paste a text message or email",
-        value=uploaded_message or st.session_state.get("message", ""),
+        key="message_input",
         height=120,
         placeholder=sample
     )
