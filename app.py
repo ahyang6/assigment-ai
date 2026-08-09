@@ -1117,8 +1117,45 @@ def apply_theme() -> None:
             background: #030405;
             border-right: 1px solid rgba(0, 229, 255, 0.10);
         }
-        section[data-testid="stSidebar"] .block-container { padding-top: 1.4rem; }
+        section[data-testid="stSidebar"] .block-container { padding-top: 1rem; }
         section[data-testid="stSidebar"] hr { border-top: 1px solid rgba(0, 229, 255, 0.10); }
+
+        /* pin the footer status card to the bottom of the sidebar */
+        section[data-testid="stSidebar"] > div:first-child {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .mg-sidebar-spacer { flex-grow: 1; }
+
+        /* ---- mini terminal titlebar at the top of the sidebar ---- */
+        .mg-sidebar-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.5rem 0.1rem 0.9rem 0.1rem;
+            margin-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(0, 229, 255, 0.10);
+        }
+        .mg-sidebar-titlebar span.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .mg-sidebar-titlebar .dot.r { background: #ff5f56; }
+        .mg-sidebar-titlebar .dot.y { background: #ffbd2e; }
+        .mg-sidebar-titlebar .dot.g { background: #27c93f; }
+        .mg-sidebar-titlebar .brand {
+            color: var(--mg-text);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            margin-left: 0.35rem;
+        }
+
+        .mg-sidebar-label {
+            color: #566373;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 0.2rem 0 0.5rem 0.1rem;
+        }
 
         /* ---- nav radio list (shown after "Get Started") ---- */
         section[data-testid="stSidebar"] div[role="radiogroup"] {
@@ -1127,26 +1164,53 @@ def apply_theme() -> None:
             gap: 4px;
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label {
-            padding: 0.6rem 0.85rem;
-            border-radius: 2px;
+            padding: 0.65rem 0.85rem;
+            border-radius: 4px;
             border: 1px solid transparent;
-            border-left: 2px solid transparent;
             color: #7d8b9c;
             transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
             background: rgba(0, 229, 255, 0.06);
-            border-left-color: rgba(0, 229, 255, 0.4);
             color: #f5f7fa;
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"],
         section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
-            background: rgba(246, 130, 31, 0.14);
-            border-left-color: #f6821f;
+            background: #f6821f;
+            box-shadow: 0 0 14px rgba(246, 130, 31, 0.35);
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) div {
-            color: #ffb066;
+            color: #0a0604;
             font-weight: 700;
+        }
+
+        /* ---- status footer card, pinned to the bottom via the spacer above ---- */
+        .mg-sidebar-footer {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 0.8rem;
+            border: 1px solid rgba(0, 229, 255, 0.14);
+            border-radius: 4px;
+            background: rgba(0, 229, 255, 0.03);
+            margin: 0.8rem 0 1rem 0;
+        }
+        .mg-sidebar-footer .pulse {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #39ff88;
+            box-shadow: 0 0 8px #39ff88;
+            flex-shrink: 0;
+        }
+        .mg-sidebar-footer .meta { line-height: 1.3; }
+        .mg-sidebar-footer .meta .model {
+            color: var(--mg-text);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .mg-sidebar-footer .meta .status {
+            color: #566373;
+            font-size: 0.68rem;
+            letter-spacing: 0.04em;
         }
         </style>
         """,
@@ -1537,11 +1601,21 @@ NAV_ICONS = {
 NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "About"]
 
 if st.session_state.started:
+    st.sidebar.markdown(
+        """
+        <div class="mg-sidebar-titlebar">
+            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+            <span class="brand">MESSAGE_GUARD</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     if st.sidebar.button("← Back to Home", use_container_width=True):
         st.session_state.started = False
         go_to("Home")
 
-    st.sidebar.markdown("#### Navigate")
+    st.sidebar.markdown('<div class="mg-sidebar-label">&gt; Navigate</div>', unsafe_allow_html=True)
     current_index = (
         NAV_ITEMS.index(st.session_state.nav_page)
         if st.session_state.nav_page in NAV_ITEMS
@@ -1556,6 +1630,21 @@ if st.session_state.started:
     )
     if selected != st.session_state.nav_page:
         st.session_state.nav_page = selected
+
+    best_model = metrics().get("best_model", "Not trained yet")
+    st.sidebar.markdown('<div class="mg-sidebar-spacer"></div>', unsafe_allow_html=True)
+    st.sidebar.markdown(
+        f"""
+        <div class="mg-sidebar-footer">
+            <span class="pulse"></span>
+            <div class="meta">
+                <div class="model">{best_model}</div>
+                <div class="status">MODEL ONLINE</div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 # else: nothing rendered in the sidebar on Home — it stays collapsed
 
 pages[st.session_state.nav_page]()
