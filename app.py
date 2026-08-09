@@ -1619,15 +1619,15 @@ if st.session_state.started:
         go_to("Home")
 
     st.sidebar.markdown('<div class="mg-sidebar-label">&gt; Navigate</div>', unsafe_allow_html=True)
-    current_index = (
-        NAV_ITEMS.index(st.session_state.nav_page)
-        if st.session_state.nav_page in NAV_ITEMS
-        else 0
-    )
+    if "nav_radio" not in st.session_state or st.session_state.nav_radio != st.session_state.nav_page:
+        # Keep the radio's own state in sync when nav_page changes via another
+        # path (e.g. the "Get Started" hero button), without ever passing a
+        # dynamically-changing index= to the widget itself.
+        st.session_state.nav_radio = st.session_state.nav_page
     selected = st.sidebar.radio(
         "Navigate",
         NAV_ITEMS,
-        index=current_index,
+        key="nav_radio",
         format_func=lambda p: f"{NAV_ICONS.get(p, '')}  {p}",
         label_visibility="collapsed",
     )
