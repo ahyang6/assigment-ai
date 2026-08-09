@@ -1133,6 +1133,27 @@ def render_hero(title: str = "EMAIL DETECTION", dark: bool = True, component_hei
             }});
         }})();
       }})();
+
+      // Resize this iframe to the real browser viewport height. "100vh" CSS
+      // inside an iframe only ever refers to the iframe's own fixed height
+      // (set below via the `height` prop passed to components.html), not the
+      // actual browser window — without this, tall screens are left with
+      // empty space below a hero sized to the smaller fallback height.
+      (function() {{
+        function resizeToViewport() {{
+          try {{
+            var target = window.parent.innerHeight;
+            if (window.frameElement && target && window.frameElement.style.height !== target + 'px') {{
+              window.frameElement.style.height = target + 'px';
+              // let the glyph-grid's own resize listener recompute its
+              // row/column count against the corrected height
+              window.dispatchEvent(new Event('resize'));
+            }}
+          }} catch (e) {{}}
+        }}
+        resizeToViewport();
+        window.addEventListener('resize', resizeToViewport);
+      }})();
     </script>
     """
     components.html(html, height=component_height, scrolling=False)
