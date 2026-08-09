@@ -1260,7 +1260,7 @@ def page_header(icon: str, title: str, subtitle: str, extra_style: str = "") -> 
     """Render the consistent terminal-style header used on every inner page.
     `extra_style` lets a page fold its own scoped <style> tag into this same
     element instead of issuing a separate, otherwise-empty st.markdown call."""
-    st.markdown(
+    st.html(
         f"""
         {extra_style}
         <div class="mg-page-header cf-fade">
@@ -1268,8 +1268,7 @@ def page_header(icon: str, title: str, subtitle: str, extra_style: str = "") -> 
             <span class="mg-title">{title}</span>
         </div>
         <div class="mg-page-subtitle cf-fade">{subtitle}</div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -1288,14 +1287,13 @@ def style_fig(fig):
 
 def stat_card(value, label: str, color: str = "#00e5ff", value_size: str = "1.5rem") -> None:
     """Render a compact KPI stat card matching the Analyze page's card language."""
-    st.markdown(
+    st.html(
         f"""
         <div class="mg-stat-card cf-fade">
             <div class="value" style="color:{color}; font-size:{value_size};">{value}</div>
             <div class="label">{label}</div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -1433,7 +1431,7 @@ def analyze() -> None:
 
     # --- panel 1: verdict + gauge -------------------------------------------------
     with row1[0]:
-        st.markdown(
+        st.html(
             f"""
             <div class="mg-terminal-card cf-fade" style="border-color:{risk_color}55; box-shadow:0 0 26px {risk_color}22; height:230px;">
                 <div class="mg-terminal-card-bar">
@@ -1457,8 +1455,7 @@ def analyze() -> None:
                     </div>
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     # --- panel 2: probability distribution donut -----------------------------------
@@ -1471,7 +1468,7 @@ def analyze() -> None:
         fig = style_fig(fig)
         fig.update_layout(height=230, showlegend=True, legend=dict(orientation="h", y=-0.15))
         fig.update_traces(textinfo="percent")
-        st.markdown('<div class="mg-panel-title">Probability Distribution</div>', unsafe_allow_html=True)
+        st.html('<div class="mg-panel-title">Probability Distribution</div>')
         st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
     # --- panel 3: detected indicators ------------------------------------------------
@@ -1483,7 +1480,7 @@ def analyze() -> None:
         ]
         badges = "".join(f'<span class="mg-badge">{w}</span>' for w in words) or '<span class="mg-panel-title">None detected</span>'
         url_badges = "".join(f'<span class="mg-badge danger">{u}</span>' for u in result["indicators"]["urls"])
-        st.markdown(
+        st.html(
             f"""
             <div class="mg-terminal-card cf-fade" style="height:230px; overflow-y:auto;">
                 <div class="mg-terminal-card-bar">
@@ -1496,15 +1493,14 @@ def analyze() -> None:
                     {"<div class='mg-panel-title' style='margin-top:0.7rem;'>Suspicious URLs</div><div>" + url_badges + "</div>" if url_badges else ""}
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     row2 = st.columns([2, 1])
 
     # --- panel 4: explanation ------------------------------------------------------
     with row2[0]:
-        st.markdown(
+        st.html(
             f"""
             <div class="mg-terminal-card cf-fade" style="height:120px;">
                 <div class="mg-terminal-card-bar">
@@ -1515,8 +1511,7 @@ def analyze() -> None:
                     {result['explanation']}
                 </div>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
     # --- panel 5: export -------------------------------------------------------------
@@ -1548,18 +1543,18 @@ def dashboard() -> None:
     with kpi[3]:
         stat_card(len(history), "Total Analyses", color="#ffb020")
 
-    st.markdown("<div style='margin-top:1rem;'></div>", unsafe_allow_html=True)
+    st.html("<div style='margin-top:1rem;'></div>")
 
     left, right = st.columns(2)
     with left:
-        st.markdown('<div class="mg-panel-title">Dataset Class Distribution</div>', unsafe_allow_html=True)
+        st.html('<div class="mg-panel-title">Dataset Class Distribution</div>')
         st.plotly_chart(
             style_fig(px.pie(data, names="label", color="label", color_discrete_map=RISK_COLORS)),
             use_container_width=True,
         )
     if info:
         with right:
-            st.markdown('<div class="mg-panel-title">Model Comparison</div>', unsafe_allow_html=True)
+            st.html('<div class="mg-panel-title">Model Comparison</div>')
             scores = pd.DataFrame([{"Model": name, "Accuracy": value["accuracy"], "F1": value["f1"]} for name, value in info["models"].items()])
             st.plotly_chart(
                 style_fig(px.bar(
@@ -1575,14 +1570,14 @@ def dashboard() -> None:
         daily = history.groupby(history["Date"].dt.date).size().reset_index(name="Analyses")
         bottom_left, bottom_right = st.columns(2)
         with bottom_left:
-            st.markdown('<div class="mg-panel-title">Daily Analysis Count</div>', unsafe_allow_html=True)
+            st.html('<div class="mg-panel-title">Daily Analysis Count</div>')
             st.plotly_chart(
                 style_fig(px.line(daily, x="Date", y="Analyses", markers=True,
                                    color_discrete_sequence=["#00e5ff"])),
                 use_container_width=True,
             )
         with bottom_right:
-            st.markdown('<div class="mg-panel-title">Risk Score Distribution</div>', unsafe_allow_html=True)
+            st.html('<div class="mg-panel-title">Risk Score Distribution</div>')
             st.plotly_chart(
                 style_fig(px.histogram(history, x="Risk Score", nbins=10,
                                         color_discrete_sequence=["#f6821f"])),
@@ -1610,7 +1605,7 @@ def history_page() -> None:
     with kpi[3]:
         stat_card(int(counts.get("high", 0)), "High Risk", color=RISK_COLORS["high"])
 
-    st.markdown("<div style='margin-top:1rem;'></div>", unsafe_allow_html=True)
+    st.html("<div style='margin-top:1rem;'></div>")
 
     search = st.text_input("Search messages or predictions")
     if search:
@@ -1620,7 +1615,7 @@ def history_page() -> None:
         color = RISK_COLORS.get(str(value).lower())
         return f"background-color:{color}22; color:{color}; font-weight:700;" if color else ""
 
-    st.markdown('<div class="mg-panel-title">Prediction Log</div>', unsafe_allow_html=True)
+    st.html('<div class="mg-panel-title">Prediction Log</div>')
     styled_history = history.style.map(_highlight_prediction, subset=["Prediction"])
     st.dataframe(styled_history, use_container_width=True, hide_index=True)
 
@@ -1705,21 +1700,20 @@ NAV_ICONS = {
 NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "About"]
 
 if st.session_state.started:
-    st.sidebar.markdown(
+    st.sidebar.html(
         """
         <div class="mg-sidebar-titlebar">
             <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
             <span class="brand">MESSAGE_GUARD</span>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     if st.sidebar.button("← Back to Home", use_container_width=True):
         st.session_state.started = False
         go_to("Home")
 
-    st.sidebar.markdown('<div class="mg-sidebar-label">&gt; Navigate</div>', unsafe_allow_html=True)
+    st.sidebar.html('<div class="mg-sidebar-label">&gt; Navigate</div>')
     if st.session_state.nav_page not in NAV_ITEMS:
         st.session_state.nav_page = NAV_ITEMS[0]
     st.sidebar.radio(
@@ -1731,8 +1725,8 @@ if st.session_state.started:
     )
 
     best_model = metrics().get("best_model", "Not trained yet")
-    st.sidebar.markdown('<div class="mg-sidebar-spacer"></div>', unsafe_allow_html=True)
-    st.sidebar.markdown(
+    st.sidebar.html('<div class="mg-sidebar-spacer"></div>')
+    st.sidebar.html(
         f"""
         <div class="mg-sidebar-footer">
             <span class="pulse"></span>
@@ -1741,8 +1735,7 @@ if st.session_state.started:
                 <div class="status">MODEL ONLINE</div>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 # else: nothing rendered in the sidebar on Home — it stays collapsed
 
