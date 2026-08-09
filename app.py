@@ -564,6 +564,27 @@ GLOBAL_CSS = """
         font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
     }
 
+    /* themed scrollbar so the browser's default (light) scrollbar doesn't
+       clash against the dark terminal background */
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 229, 255, 0.3) #05070a;
+    }
+    ::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #05070a;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 229, 255, 0.25);
+        border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 229, 255, 0.45);
+    }
+
     .stApp {
         background-color: var(--mg-bg);
     }
