@@ -757,6 +757,41 @@ GLOBAL_CSS = """
         text-transform: uppercase;
         margin-bottom: 0.5rem;
     }
+
+    /* give native Plotly / dataframe widgets the same bordered card look
+       as the pure-HTML terminal cards, so charts and tables match the
+       Analyze page's visual language */
+    div[data-testid="stPlotlyChart"],
+    div[data-testid="stDataFrame"] {
+        border: 1px solid var(--mg-border);
+        border-radius: 2px;
+        background: var(--mg-surface);
+        padding: 0.5rem;
+    }
+
+    /* compact KPI stat card (value + label, no dot-bar) */
+    .mg-stat-card {
+        border: 1px solid var(--mg-border);
+        border-radius: 2px;
+        background: var(--mg-surface);
+        padding: 0.9rem 1rem;
+        height: 92px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .mg-stat-card .value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+    .mg-stat-card .label {
+        color: var(--mg-text-dim);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 0.35rem;
+    }
 </style>
 """
 
@@ -1251,6 +1286,19 @@ def style_fig(fig):
     return fig
 
 
+def stat_card(value, label: str, color: str = "#00e5ff", value_size: str = "1.5rem") -> None:
+    """Render a compact KPI stat card matching the Analyze page's card language."""
+    st.markdown(
+        f"""
+        <div class="mg-stat-card cf-fade">
+            <div class="value" style="color:{color}; font-size:{value_size};">{value}</div>
+            <div class="label">{label}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 @st.cache_resource
 def detector() -> SpamDetector:
     """Load an existing model, or train one automatically on first deployment."""
@@ -1483,43 +1531,88 @@ def analyze() -> None:
 
 
 def dashboard() -> None:
-    page_header("📊", "Statistics Dashboard", "root@messageguard:~$ tail -f model_metrics.log")
-    data, info, history = pd.read_csv(DATASET_PATH), metrics(), load_history()
-    left, right = st.columns(2)
-    left.plotly_chart(
-        style_fig(px.pie(data, names="label", title="Dataset class distribution", color="label", color_discrete_map=RISK_COLORS)),
-        use_container_width=True,
+    page_header(
+        "📊", "Statistics Dashboard", "root@messageguard:~$ tail -f model_metrics.log",
+        extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
     )
-    if info:
-        scores = pd.DataFrame([{"Model": name, "Accuracy": value["accuracy"], "F1": value["f1"]} for name, value in info["models"].items()])
-        right.plotly_chart(
-            style_fig(px.bar(
-                scores, x="Model", y=["Accuracy", "F1"], barmode="group", title="Model comparison",
-                color_discrete_sequence=["#00e5ff", "#f6821f"],
-            )),
+    data, info, history = pd.read_csv(DATASET_PATH), metrics(), load_history()
+
+    kpi = st.columns(4)
+    with kpi[0]:
+        stat_card(len(data), "Dataset Rows", color="#00e5ff")
+    with kpi[1]:
+        stat_card(info.get("best_model", "—"), "Best Model", color="#f6821f", value_size="1.05rem")
+    with kpi[2]:
+        acc = info.get("models", {}).get(info.get("best_model", ""), {}).get("accuracy")
+        stat_card(f"{acc:.1%}" if acc is not None else "—", "Model Accuracy", color="#39ff88")
+    with kpi[3]:
+        stat_card(len(history), "Total Analyses", color="#ffb020")
+
+    st.markdown("<div style='margin-top:1rem;'></div>", unsafe_allow_html=True)
+
+    left, right = st.columns(2)
+    with left:
+        st.markdown('<div class="mg-panel-title">Dataset Class Distribution</div>', unsafe_allow_html=True)
+        st.plotly_chart(
+            style_fig(px.pie(data, names="label", color="label", color_discrete_map=RISK_COLORS)),
             use_container_width=True,
         )
-        st.caption(f"Selected model: {info['best_model']} · accuracy: {info['models'][info['best_model']]['accuracy']:.1%}")
+    if info:
+        with right:
+            st.markdown('<div class="mg-panel-title">Model Comparison</div>', unsafe_allow_html=True)
+            scores = pd.DataFrame([{"Model": name, "Accuracy": value["accuracy"], "F1": value["f1"]} for name, value in info["models"].items()])
+            st.plotly_chart(
+                style_fig(px.bar(
+                    scores, x="Model", y=["Accuracy", "F1"], barmode="group",
+                    color_discrete_sequence=["#00e5ff", "#f6821f"],
+                )),
+                use_container_width=True,
+            )
+            st.caption(f"Selected model: {info['best_model']} · accuracy: {info['models'][info['best_model']]['accuracy']:.1%}")
+
     if not history.empty:
         history["Date"] = pd.to_datetime(history["Date"])
         daily = history.groupby(history["Date"].dt.date).size().reset_index(name="Analyses")
-        st.plotly_chart(
-            style_fig(px.line(daily, x="Date", y="Analyses", markers=True, title="Daily analysis count",
-                               color_discrete_sequence=["#00e5ff"])),
-            use_container_width=True,
-        )
-        st.plotly_chart(
-            style_fig(px.histogram(history, x="Risk Score", nbins=10, title="Risk distribution",
-                                    color_discrete_sequence=["#f6821f"])),
-            use_container_width=True,
-        )
+        bottom_left, bottom_right = st.columns(2)
+        with bottom_left:
+            st.markdown('<div class="mg-panel-title">Daily Analysis Count</div>', unsafe_allow_html=True)
+            st.plotly_chart(
+                style_fig(px.line(daily, x="Date", y="Analyses", markers=True,
+                                   color_discrete_sequence=["#00e5ff"])),
+                use_container_width=True,
+            )
+        with bottom_right:
+            st.markdown('<div class="mg-panel-title">Risk Score Distribution</div>', unsafe_allow_html=True)
+            st.plotly_chart(
+                style_fig(px.histogram(history, x="Risk Score", nbins=10,
+                                        color_discrete_sequence=["#f6821f"])),
+                use_container_width=True,
+            )
     else:
         st.info("Analyse messages to populate prediction activity charts.")
 
 
 def history_page() -> None:
-    page_header("🕘", "Prediction History", "root@messageguard:~$ cat prediction_history.csv")
-    history = load_history(); search = st.text_input("Search messages or predictions")
+    page_header(
+        "🕘", "Prediction History", "root@messageguard:~$ cat prediction_history.csv",
+        extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
+    )
+    history = load_history()
+
+    counts = history["Prediction"].str.lower().value_counts() if not history.empty else pd.Series(dtype=int)
+    kpi = st.columns(4)
+    with kpi[0]:
+        stat_card(len(history), "Total Analyses", color="#00e5ff")
+    with kpi[1]:
+        stat_card(int(counts.get("low", 0)), "Low Risk", color=RISK_COLORS["low"])
+    with kpi[2]:
+        stat_card(int(counts.get("medium", 0)), "Medium Risk", color=RISK_COLORS["medium"])
+    with kpi[3]:
+        stat_card(int(counts.get("high", 0)), "High Risk", color=RISK_COLORS["high"])
+
+    st.markdown("<div style='margin-top:1rem;'></div>", unsafe_allow_html=True)
+
+    search = st.text_input("Search messages or predictions")
     if search:
         history = history[history.astype(str).apply(lambda row: row.str.contains(search, case=False).any(), axis=1)]
 
@@ -1527,11 +1620,19 @@ def history_page() -> None:
         color = RISK_COLORS.get(str(value).lower())
         return f"background-color:{color}22; color:{color}; font-weight:700;" if color else ""
 
+    st.markdown('<div class="mg-panel-title">Prediction Log</div>', unsafe_allow_html=True)
     styled_history = history.style.map(_highlight_prediction, subset=["Prediction"])
     st.dataframe(styled_history, use_container_width=True, hide_index=True)
-    st.download_button("Export history as CSV", history.to_csv(index=False).encode(), "prediction-history.csv", "text/csv")
-    if st.button("Delete all history"):
-        clear_history(); st.rerun()
+
+    export_col, delete_col = st.columns(2)
+    with export_col:
+        st.download_button(
+            "Export history as CSV", history.to_csv(index=False).encode(),
+            "prediction-history.csv", "text/csv", use_container_width=True,
+        )
+    with delete_col:
+        if st.button("Delete all history", use_container_width=True):
+            clear_history(); st.rerun()
 
 
 def about() -> None:
