@@ -731,6 +731,32 @@ GLOBAL_CSS = """
         color: var(--mg-text-dim);
         margin-top: 2px;
     }
+
+    /* small inline tags used for detected keywords / URLs / signals */
+    .mg-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        margin: 2px 5px 2px 0;
+        border: 1px solid var(--mg-border);
+        border-radius: 2px;
+        font-size: 0.72rem;
+        color: var(--mg-cyan);
+        background: rgba(0, 229, 255, 0.06);
+    }
+    .mg-badge.danger {
+        color: var(--mg-high);
+        border-color: rgba(255, 59, 92, 0.4);
+        background: rgba(255, 59, 92, 0.08);
+    }
+
+    /* compact panel used in the dashboard-style Analyze grid */
+    .mg-panel-title {
+        color: var(--mg-text-dim);
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        margin-bottom: 0.5rem;
+    }
 </style>
 """
 
@@ -1214,46 +1240,50 @@ def home() -> None:
 
 
 def analyze() -> None:
+    st.markdown(
+        """
+        <style>
+        .block-container { max-width: 1280px !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
     page_header("🔍", "Analyze Message", "root@messageguard:~$ paste a message or email to classify its risk")
 
     sample = "URGENT! Verify your account now at https://secure-check.example or it will be suspended!!"
 
-    # Upload file
-    uploaded_file = st.file_uploader(
-        "Or drag and drop an email or text file",
-        type=["txt", "eml"]
-    )
-
     uploaded_message = ""
+    with st.expander("Or drag and drop an email or text file (.txt / .eml)"):
+        uploaded_file = st.file_uploader("Upload file", type=["txt", "eml"], label_visibility="collapsed")
 
-    if uploaded_file is not None:
-        try:
-            if uploaded_file.name.lower().endswith(".eml"):
-                email_message = BytesParser(
-                    policy=policy.default
-                ).parse(uploaded_file)
+        if uploaded_file is not None:
+            try:
+                if uploaded_file.name.lower().endswith(".eml"):
+                    email_message = BytesParser(
+                        policy=policy.default
+                    ).parse(uploaded_file)
 
-                if email_message.is_multipart():
-                    body = email_message.get_body(preferencelist=("plain",))
-                    uploaded_message = body.get_content() if body else ""
+                    if email_message.is_multipart():
+                        body = email_message.get_body(preferencelist=("plain",))
+                        uploaded_message = body.get_content() if body else ""
+                    else:
+                        uploaded_message = email_message.get_content()
+
                 else:
-                    uploaded_message = email_message.get_content()
+                    uploaded_message = uploaded_file.read().decode(
+                        "utf-8",
+                        errors="ignore"
+                    )
 
-            else:
-                uploaded_message = uploaded_file.read().decode(
-                    "utf-8",
-                    errors="ignore"
-                )
-
-        except Exception as e:
-            st.error(f"Unable to read file: {e}")
-            return
+            except Exception as e:
+                st.error(f"Unable to read file: {e}")
+                return
 
     # Text area
     message = st.text_area(
         "Paste a text message or email",
         value=uploaded_message or st.session_state.get("message", ""),
-        height=170,
+        height=120,
         placeholder=sample
     )
 
@@ -1284,15 +1314,18 @@ def analyze() -> None:
     risk_color = RISK_COLORS[result["prediction"]]
     icon = RISK_ICONS[result["prediction"]]
 
-    st.markdown(
-        f"""
-        <div class="mg-terminal-card cf-fade" style="border-color:{risk_color}55; box-shadow:0 0 26px {risk_color}22;">
-            <div class="mg-terminal-card-bar">
-                <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-                <span class="label">analysis_result.log</span>
-            </div>
-            <div class="mg-terminal-card-body">
-                <div style="display:flex; align-items:center; gap:1.6rem; flex-wrap:wrap;">
+    row1 = st.columns([1.1, 1, 1])
+
+    # --- panel 1: verdict + gauge -------------------------------------------------
+    with row1[0]:
+        st.markdown(
+            f"""
+            <div class="mg-terminal-card cf-fade" style="border-color:{risk_color}55; box-shadow:0 0 26px {risk_color}22; height:230px;">
+                <div class="mg-terminal-card-bar">
+                    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+                    <span class="label">verdict.log</span>
+                </div>
+                <div class="mg-terminal-card-body" style="display:flex; align-items:center; gap:1rem;">
                     <div class="mg-gauge" style="--gauge-pct:{result['risk_score']}; --gauge-color:{risk_color}; --gauge-glow:{risk_color}33;">
                         <div class="mg-gauge-inner">
                             <div class="mg-gauge-value">{result['risk_score']}</div>
@@ -1300,70 +1333,86 @@ def analyze() -> None:
                         </div>
                     </div>
                     <div>
-                        <div style="color:{risk_color}; font-size:1.7rem; font-weight:800; letter-spacing:0.03em;">
+                        <div style="color:{risk_color}; font-size:1.35rem; font-weight:800; letter-spacing:0.02em;">
                             {icon}&nbsp;{result['prediction'].upper()}
                         </div>
-                        <div style="color:var(--mg-text-dim); font-size:0.85rem; margin-top:0.2rem;">
-                            RISK_LEVEL: {result['risk_level']} &nbsp;·&nbsp; CONFIDENCE: {result['confidence']:.1%}
+                        <div style="color:var(--mg-text-dim); font-size:0.78rem; margin-top:0.3rem;">
+                            RISK: {result['risk_level']}<br>CONF: {result['confidence']:.1%}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.write(result["explanation"])
-
-    words = [
-        word.upper()
-        for values in result["indicators"]["keywords"].values()
-        for word in values
-    ]
-
-    st.caption(
-        "Detected Keywords: " +
-        (", ".join(words) if words else "None")
-    )
-
-    st.code(
-        f"Prediction: {result['prediction'].title()}\n"
-        f"Confidence: {result['confidence']:.1%}\n"
-        f"Risk: {result['risk_score']}/100 ({result['risk_level']})\n"
-        f"{result['explanation']}",
-        language=None,
-    )
-
-    if result["indicators"]["urls"]:
-        st.warning(
-            "Suspicious URL detected: " +
-            ", ".join(result["indicators"]["urls"])
+            """,
+            unsafe_allow_html=True,
         )
 
-    chart = pd.DataFrame({
-        "Class": list(result["probabilities"]),
-        "Probability": list(result["probabilities"].values())
-    })
+    # --- panel 2: probability distribution donut -----------------------------------
+    with row1[1]:
+        chart = pd.DataFrame({
+            "Class": list(result["probabilities"]),
+            "Probability": list(result["probabilities"].values())
+        })
+        fig = px.pie(chart, names="Class", values="Probability", hole=0.55, color="Class", color_discrete_map=RISK_COLORS)
+        fig = style_fig(fig)
+        fig.update_layout(height=230, showlegend=True, legend=dict(orientation="h", y=-0.15))
+        fig.update_traces(textinfo="percent")
+        st.markdown('<div class="mg-panel-title">Probability Distribution</div>', unsafe_allow_html=True)
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
-    st.plotly_chart(
-        style_fig(px.bar(
-            chart,
-            x="Class",
-            y="Probability",
-            range_y=[0, 1],
-            color="Class",
-            color_discrete_map=RISK_COLORS
-        )),
-        use_container_width=True
-    )
+    # --- panel 3: detected indicators ------------------------------------------------
+    with row1[2]:
+        words = [
+            word.upper()
+            for values in result["indicators"]["keywords"].values()
+            for word in values
+        ]
+        badges = "".join(f'<span class="mg-badge">{w}</span>' for w in words) or '<span class="mg-panel-title">None detected</span>'
+        url_badges = "".join(f'<span class="mg-badge danger">{u}</span>' for u in result["indicators"]["urls"])
+        st.markdown(
+            f"""
+            <div class="mg-terminal-card cf-fade" style="height:230px; overflow-y:auto;">
+                <div class="mg-terminal-card-bar">
+                    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+                    <span class="label">indicators.log</span>
+                </div>
+                <div class="mg-terminal-card-body">
+                    <div class="mg-panel-title">Keywords</div>
+                    <div>{badges}</div>
+                    {"<div class='mg-panel-title' style='margin-top:0.7rem;'>Suspicious URLs</div><div>" + url_badges + "</div>" if url_badges else ""}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-    st.download_button(
-        "Download Result as PDF",
-        result_pdf(st.session_state.message, result),
-        "message-analysis.pdf",
-        "application/pdf"
-    )
+    row2 = st.columns([2, 1])
+
+    # --- panel 4: explanation ------------------------------------------------------
+    with row2[0]:
+        st.markdown(
+            f"""
+            <div class="mg-terminal-card cf-fade" style="height:120px;">
+                <div class="mg-terminal-card-bar">
+                    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+                    <span class="label">explanation.log</span>
+                </div>
+                <div class="mg-terminal-card-body" style="color:var(--mg-text); font-size:0.88rem;">
+                    {result['explanation']}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # --- panel 5: export -------------------------------------------------------------
+    with row2[1]:
+        st.download_button(
+            "Download Result as PDF",
+            result_pdf(st.session_state.message, result),
+            "message-analysis.pdf",
+            "application/pdf",
+            use_container_width=True,
+        )
 
 
 def dashboard() -> None:
