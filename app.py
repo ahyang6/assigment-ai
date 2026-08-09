@@ -545,12 +545,27 @@ PAGES = ["Home", "Analyze Message", "Dashboard", "History", "About"]
 # ---------------------------------------------------------------------------
 GLOBAL_CSS = """
 <style>
-    html, body, [class*="css"]  {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap');
+
+    :root {
+        --mg-bg: #05070a;
+        --mg-surface: #0c1016;
+        --mg-border: rgba(0, 229, 255, 0.18);
+        --mg-cyan: #00e5ff;
+        --mg-orange: #f6821f;
+        --mg-text: #d7dee8;
+        --mg-text-dim: #7d8b9c;
+        --mg-low: #39ff88;
+        --mg-medium: #ffb020;
+        --mg-high: #ff3b5c;
+    }
+
+    html, body, [class*="css"] {
+        font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
     }
 
     .stApp {
-        background-color: #ffffff;
+        background-color: var(--mg-bg);
     }
 
     .block-container {
@@ -561,7 +576,7 @@ GLOBAL_CSS = """
 
     hr {
         border: none;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid var(--mg-border);
         margin: 2rem 0;
     }
 
@@ -571,40 +586,150 @@ GLOBAL_CSS = """
         to   { opacity: 1; transform: translateY(0); }
     }
     .cf-fade {
-        animation: fadeInUp 0.6s ease-out both;
+        animation: fadeInUp 0.5s ease-out both;
     }
 
-    /* Get Started / primary buttons: prominent, animated on hover */
+    /* Consistent terminal-style page header used across every inner page */
+    .mg-page-header {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        margin-bottom: 0.2rem;
+    }
+    .mg-page-header .mg-prompt {
+        color: var(--mg-cyan);
+        font-weight: 700;
+        font-size: 1.6rem;
+    }
+    .mg-page-header .mg-title {
+        color: var(--mg-text);
+        font-weight: 800;
+        font-size: 1.6rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+    }
+    .mg-page-subtitle {
+        color: var(--mg-text-dim);
+        font-size: 0.9rem;
+        margin: 0.15rem 0 1.6rem 0;
+        border-left: 2px solid var(--mg-border);
+        padding-left: 0.6rem;
+    }
+
+    /* Get Started / primary buttons: sharp, neon-edged, animated on hover */
     .stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #f6821f, #ff9d3d);
-        border: none;
-        border-radius: 6px;
+        border: 1px solid rgba(255, 157, 61, 0.6);
+        border-radius: 2px;
         color: #ffffff;
         font-weight: 700;
-        font-size: 1.05rem;
+        font-size: 1.0rem;
+        letter-spacing: 0.03em;
         padding: 0.75rem 1.6rem;
-        box-shadow: 0 4px 14px rgba(246, 130, 31, 0.35);
+        box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
         transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
     }
     .stButton > button[kind="primary"]:hover {
-        transform: translateY(-2px) scale(1.015);
-        box-shadow: 0 8px 22px rgba(246, 130, 31, 0.45);
+        transform: translateY(-2px);
+        box-shadow: 0 0 26px rgba(246, 130, 31, 0.55);
         background: linear-gradient(135deg, #e0740f, #f6821f);
         color: #ffffff;
     }
     .stButton > button[kind="primary"]:active {
-        transform: translateY(0px) scale(0.99);
+        transform: translateY(0px);
+    }
+    .stButton > button:not([kind="primary"]) {
+        border-radius: 2px;
+        border: 1px solid var(--mg-border);
+        background: var(--mg-surface);
+        color: var(--mg-text);
+    }
+    .stButton > button:not([kind="primary"]):hover {
+        border-color: var(--mg-cyan);
+        color: var(--mg-cyan);
+        box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
     }
 
     div[data-testid="stMetric"] {
-        background: #fafafa;
-        border: 1px solid #ececec;
-        border-radius: 8px;
+        background: var(--mg-surface);
+        border: 1px solid var(--mg-border);
+        border-radius: 2px;
         padding: 0.9rem 1rem;
-        transition: box-shadow 0.2s ease;
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
     }
     div[data-testid="stMetric"]:hover {
-        box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+        border-color: var(--mg-cyan);
+        box-shadow: 0 0 16px rgba(0, 229, 255, 0.18);
+    }
+    div[data-testid="stMetricValue"] {
+        font-family: "JetBrains Mono", monospace;
+    }
+
+    /* Generic terminal-panel card, used for the analysis verdict etc. */
+    .mg-terminal-card {
+        background: var(--mg-surface);
+        border: 1px solid var(--mg-border);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 1.2rem;
+    }
+    .mg-terminal-card-bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.5rem 0.8rem;
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid var(--mg-border);
+    }
+    .mg-terminal-card-bar span.dot {
+        width: 9px; height: 9px; border-radius: 50%;
+        display: inline-block;
+    }
+    .mg-terminal-card-bar .dot.r { background: #ff5f56; }
+    .mg-terminal-card-bar .dot.y { background: #ffbd2e; }
+    .mg-terminal-card-bar .dot.g { background: #27c93f; }
+    .mg-terminal-card-bar .label {
+        color: var(--mg-text-dim);
+        font-size: 0.78rem;
+        margin-left: 0.4rem;
+        letter-spacing: 0.03em;
+    }
+    .mg-terminal-card-body {
+        padding: 1.4rem 1.5rem;
+    }
+
+    /* Circular risk-score gauge (pure CSS conic-gradient ring) */
+    .mg-gauge {
+        width: 108px;
+        height: 108px;
+        border-radius: 50%;
+        background: conic-gradient(var(--gauge-color) calc(var(--gauge-pct) * 1%), rgba(255,255,255,0.08) 0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 0 18px var(--gauge-glow);
+    }
+    .mg-gauge-inner {
+        width: 82px;
+        height: 82px;
+        border-radius: 50%;
+        background: var(--mg-surface);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .mg-gauge-value {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #f1f4f8;
+        line-height: 1;
+    }
+    .mg-gauge-label {
+        font-size: 0.68rem;
+        color: var(--mg-text-dim);
+        margin-top: 2px;
     }
 </style>
 """
@@ -958,16 +1083,16 @@ def apply_theme() -> None:
     st.markdown(
         """
         <style>
-        .stApp { background: #0b0d12; color: #e5e7eb; }
-        div[data-testid='stMetric'] { background:#171a21; border-color:#2a2e38; }
+        .stApp { background: #05070a; color: #d7dee8; }
+        div[data-testid='stMetric'] { background:#0c1016; border-color: rgba(0, 229, 255, 0.18); }
 
         /* ---- sidebar shell ---- */
         section[data-testid="stSidebar"] {
-            background: #05070c;
-            border-right: 1px solid rgba(255,255,255,0.06);
+            background: #030405;
+            border-right: 1px solid rgba(0, 229, 255, 0.10);
         }
         section[data-testid="stSidebar"] .block-container { padding-top: 1.4rem; }
-        section[data-testid="stSidebar"] hr { border-top: 1px solid rgba(255,255,255,0.08); }
+        section[data-testid="stSidebar"] hr { border-top: 1px solid rgba(0, 229, 255, 0.10); }
 
         /* ---- nav radio list (shown after "Get Started") ---- */
         section[data-testid="stSidebar"] div[role="radiogroup"] {
@@ -977,20 +1102,21 @@ def apply_theme() -> None:
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label {
             padding: 0.6rem 0.85rem;
-            border-radius: 9px;
+            border-radius: 2px;
             border: 1px solid transparent;
-            color: #aab3c2;
+            border-left: 2px solid transparent;
+            color: #7d8b9c;
             transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
-            background: rgba(246, 130, 31, 0.10);
-            border-color: rgba(246, 130, 31, 0.25);
+            background: rgba(0, 229, 255, 0.06);
+            border-left-color: rgba(0, 229, 255, 0.4);
             color: #f5f7fa;
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"],
         section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
-            background: rgba(246, 130, 31, 0.16);
-            border-color: rgba(246, 130, 31, 0.4);
+            background: rgba(246, 130, 31, 0.14);
+            border-left-color: #f6821f;
         }
         section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) div {
             color: #ffb066;
@@ -1000,6 +1126,37 @@ def apply_theme() -> None:
         """,
         unsafe_allow_html=True,
     )
+
+
+RISK_COLORS = {"low": "#39ff88", "medium": "#ffb020", "high": "#ff3b5c"}
+RISK_ICONS = {"low": "✅", "medium": "⚠️", "high": "🚨"}
+
+
+def page_header(icon: str, title: str, subtitle: str) -> None:
+    """Render the consistent terminal-style header used on every inner page."""
+    st.markdown(
+        f"""
+        <div class="mg-page-header cf-fade">
+            <span class="mg-prompt">{icon}</span>
+            <span class="mg-title">{title}</span>
+        </div>
+        <div class="mg-page-subtitle cf-fade">{subtitle}</div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def style_fig(fig):
+    """Apply the dark terminal theme to a Plotly figure so charts blend with the app."""
+    fig.update_layout(
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        font_family="JetBrains Mono, monospace",
+        font_color="#d7dee8",
+        margin=dict(t=40, b=10, l=10, r=10),
+    )
+    return fig
 
 
 @st.cache_resource
@@ -1057,7 +1214,7 @@ def home() -> None:
 
 
 def analyze() -> None:
-    st.title("Analyze Message")
+    page_header("🔍", "Analyze Message", "root@messageguard:~$ paste a message or email to classify its risk")
 
     sample = "URGENT! Verify your account now at https://secure-check.example or it will be suspended!!"
 
@@ -1124,21 +1281,38 @@ def analyze() -> None:
     if not result:
         return
 
-    color = {
-        "low": "✅",
-        "medium": "⚠️",
-        "high": "🚨"
-    }[result["prediction"]]
+    risk_color = RISK_COLORS[result["prediction"]]
+    icon = RISK_ICONS[result["prediction"]]
 
-    st.subheader(f"{color} {result['prediction'].title()}")
-
-    a, b, c = st.columns(3)
-
-    a.metric("Confidence", f"{result['confidence']:.1%}")
-    b.metric("Risk Score", f"{result['risk_score']}/100")
-    c.metric("Risk Level", result["risk_level"])
-
-    st.progress(result["risk_score"] / 100)
+    st.markdown(
+        f"""
+        <div class="mg-terminal-card cf-fade" style="border-color:{risk_color}55; box-shadow:0 0 26px {risk_color}22;">
+            <div class="mg-terminal-card-bar">
+                <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+                <span class="label">analysis_result.log</span>
+            </div>
+            <div class="mg-terminal-card-body">
+                <div style="display:flex; align-items:center; gap:1.6rem; flex-wrap:wrap;">
+                    <div class="mg-gauge" style="--gauge-pct:{result['risk_score']}; --gauge-color:{risk_color}; --gauge-glow:{risk_color}33;">
+                        <div class="mg-gauge-inner">
+                            <div class="mg-gauge-value">{result['risk_score']}</div>
+                            <div class="mg-gauge-label">/ 100</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="color:{risk_color}; font-size:1.7rem; font-weight:800; letter-spacing:0.03em;">
+                            {icon}&nbsp;{result['prediction'].upper()}
+                        </div>
+                        <div style="color:var(--mg-text-dim); font-size:0.85rem; margin-top:0.2rem;">
+                            RISK_LEVEL: {result['risk_level']} &nbsp;·&nbsp; CONFIDENCE: {result['confidence']:.1%}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.write(result["explanation"])
 
@@ -1173,13 +1347,14 @@ def analyze() -> None:
     })
 
     st.plotly_chart(
-        px.bar(
+        style_fig(px.bar(
             chart,
             x="Class",
             y="Probability",
             range_y=[0, 1],
-            color="Class"
-        ),
+            color="Class",
+            color_discrete_map=RISK_COLORS
+        )),
         use_container_width=True
     )
 
@@ -1192,29 +1367,52 @@ def analyze() -> None:
 
 
 def dashboard() -> None:
-    st.title("Statistics Dashboard")
+    page_header("📊", "Statistics Dashboard", "root@messageguard:~$ tail -f model_metrics.log")
     data, info, history = pd.read_csv(DATASET_PATH), metrics(), load_history()
     left, right = st.columns(2)
-    left.plotly_chart(px.pie(data, names="label", title="Dataset class distribution"), use_container_width=True)
+    left.plotly_chart(
+        style_fig(px.pie(data, names="label", title="Dataset class distribution", color="label", color_discrete_map=RISK_COLORS)),
+        use_container_width=True,
+    )
     if info:
         scores = pd.DataFrame([{"Model": name, "Accuracy": value["accuracy"], "F1": value["f1"]} for name, value in info["models"].items()])
-        right.plotly_chart(px.bar(scores, x="Model", y=["Accuracy", "F1"], barmode="group", title="Model comparison"), use_container_width=True)
+        right.plotly_chart(
+            style_fig(px.bar(
+                scores, x="Model", y=["Accuracy", "F1"], barmode="group", title="Model comparison",
+                color_discrete_sequence=["#00e5ff", "#f6821f"],
+            )),
+            use_container_width=True,
+        )
         st.caption(f"Selected model: {info['best_model']} · accuracy: {info['models'][info['best_model']]['accuracy']:.1%}")
     if not history.empty:
         history["Date"] = pd.to_datetime(history["Date"])
         daily = history.groupby(history["Date"].dt.date).size().reset_index(name="Analyses")
-        st.plotly_chart(px.line(daily, x="Date", y="Analyses", markers=True, title="Daily analysis count"), use_container_width=True)
-        st.plotly_chart(px.histogram(history, x="Risk Score", nbins=10, title="Risk distribution"), use_container_width=True)
+        st.plotly_chart(
+            style_fig(px.line(daily, x="Date", y="Analyses", markers=True, title="Daily analysis count",
+                               color_discrete_sequence=["#00e5ff"])),
+            use_container_width=True,
+        )
+        st.plotly_chart(
+            style_fig(px.histogram(history, x="Risk Score", nbins=10, title="Risk distribution",
+                                    color_discrete_sequence=["#f6821f"])),
+            use_container_width=True,
+        )
     else:
         st.info("Analyse messages to populate prediction activity charts.")
 
 
 def history_page() -> None:
-    st.title("Prediction History")
+    page_header("🕘", "Prediction History", "root@messageguard:~$ cat prediction_history.csv")
     history = load_history(); search = st.text_input("Search messages or predictions")
     if search:
         history = history[history.astype(str).apply(lambda row: row.str.contains(search, case=False).any(), axis=1)]
-    st.dataframe(history, use_container_width=True, hide_index=True)
+
+    def _highlight_prediction(value):
+        color = RISK_COLORS.get(str(value).lower())
+        return f"background-color:{color}22; color:{color}; font-weight:700;" if color else ""
+
+    styled_history = history.style.map(_highlight_prediction, subset=["Prediction"])
+    st.dataframe(styled_history, use_container_width=True, hide_index=True)
     st.download_button("Export history as CSV", history.to_csv(index=False).encode(), "prediction-history.csv", "text/csv")
     if st.button("Delete all history"):
         clear_history(); st.rerun()
@@ -1224,7 +1422,7 @@ def about() -> None:
     # All of the informational content that used to live below the hero on
     # the Home page now lives here, shown once the user has clicked
     # "Get Started" and reached the About tab.
-    st.title("About")
+    page_header("ℹ️", "About", "root@messageguard:~$ man message-guard")
 
     st.markdown("## System Overview")
     cols = st.columns(3)
