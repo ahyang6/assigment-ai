@@ -534,7 +534,7 @@ st.set_page_config(
     page_title="Message Guard",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded" if st.session_state.started else "collapsed",
+    initial_sidebar_state="expanded",
 )
 
 PAGES = ["Home", "Analyze Message", "Dashboard", "History", "About"]
@@ -1374,7 +1374,11 @@ def go_to(page_name: str) -> None:
 def home() -> None:
     # Full-bleed home page: strip the block-container's padding/max-width
     # just for this render so the hero can fill the entire browser viewport
-    # edge-to-edge instead of sitting inside a small centered card.
+    # edge-to-edge instead of sitting inside a small centered card. The
+    # sidebar itself is always "expanded" per set_page_config (Streamlit's
+    # initial_sidebar_state only applies once at true first load and can't
+    # be reliably re-toggled dynamically across reruns), so it's hidden here
+    # via plain CSS instead — fully within our own control.
     st.html(
         """
         <style>
@@ -1384,6 +1388,9 @@ def home() -> None:
             padding-left: 0 !important;
             padding-right: 0 !important;
             max-width: 100% !important;
+        }
+        section[data-testid="stSidebar"] {
+            display: none;
         }
         </style>
         """
