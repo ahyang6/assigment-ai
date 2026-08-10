@@ -519,6 +519,8 @@ if "started" not in st.session_state:
     st.session_state.started = False
 if "nav_page" not in st.session_state:
     st.session_state.nav_page = "Home"
+if "sidebar_visible" not in st.session_state:
+    st.session_state.sidebar_visible = True
 
 # The "Get Started" button lives inside the hero's HTML component (so it's
 # visually one piece with the background) rather than as a normal Streamlit
@@ -1749,43 +1751,57 @@ NAV_ICONS = {
 NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "About"]
 
 if st.session_state.started:
-    st.sidebar.html(
-        """
-        <div class="mg-sidebar-titlebar">
-            <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-            <span class="brand">MESSAGE_GUARD</span>
-        </div>
-        """
-    )
-
-    if st.sidebar.button("← Back to Home", use_container_width=True):
-        st.session_state.started = False
-        go_to("Home")
-
-    st.sidebar.html('<div class="mg-sidebar-label">&gt; Navigate</div>')
-    if st.session_state.nav_page not in NAV_ITEMS:
-        st.session_state.nav_page = NAV_ITEMS[0]
-    st.sidebar.radio(
-        "Navigate",
-        NAV_ITEMS,
-        key="nav_page",
-        format_func=lambda p: f"{NAV_ICONS.get(p, '')}  {p}",
-        label_visibility="collapsed",
-    )
-
-    best_model = metrics().get("best_model", "Not trained yet")
-    st.sidebar.html('<div class="mg-sidebar-spacer"></div>')
-    st.sidebar.html(
-        f"""
-        <div class="mg-sidebar-footer">
-            <span class="pulse"></span>
-            <div class="meta">
-                <div class="model">{best_model}</div>
-                <div class="status">MODEL ONLINE</div>
+    if not st.session_state.sidebar_visible:
+        # Force-hide Streamlit's native sidebar via our own CSS (not relying
+        # on Streamlit's collapse mechanism, which only reliably applies once
+        # at first load) and give a normal, always-reachable button in the
+        # main content area to bring it back.
+        st.html("<style>section[data-testid='stSidebar']{display:none !important;}</style>")
+        if st.button("☰ Show Sidebar"):
+            st.session_state.sidebar_visible = True
+            st.rerun()
+    else:
+        st.sidebar.html(
+            """
+            <div class="mg-sidebar-titlebar">
+                <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+                <span class="brand">MESSAGE_GUARD</span>
             </div>
-        </div>
-        """
-    )
-# else: nothing rendered in the sidebar on Home — it stays collapsed
+            """
+        )
+
+        if st.sidebar.button("✕ Hide Sidebar", use_container_width=True):
+            st.session_state.sidebar_visible = False
+            st.rerun()
+
+        if st.sidebar.button("← Back to Home", use_container_width=True):
+            st.session_state.started = False
+            go_to("Home")
+
+        st.sidebar.html('<div class="mg-sidebar-label">&gt; Navigate</div>')
+        if st.session_state.nav_page not in NAV_ITEMS:
+            st.session_state.nav_page = NAV_ITEMS[0]
+        st.sidebar.radio(
+            "Navigate",
+            NAV_ITEMS,
+            key="nav_page",
+            format_func=lambda p: f"{NAV_ICONS.get(p, '')}  {p}",
+            label_visibility="collapsed",
+        )
+
+        best_model = metrics().get("best_model", "Not trained yet")
+        st.sidebar.html('<div class="mg-sidebar-spacer"></div>')
+        st.sidebar.html(
+            f"""
+            <div class="mg-sidebar-footer">
+                <span class="pulse"></span>
+                <div class="meta">
+                    <div class="model">{best_model}</div>
+                    <div class="status">MODEL ONLINE</div>
+                </div>
+            </div>
+            """
+        )
+# else: nothing rendered in the sidebar on Home — it stays hidden
 
 pages[st.session_state.nav_page]()
