@@ -570,21 +570,30 @@ GLOBAL_CSS = """
        clash against the dark terminal background */
     html {
         scrollbar-width: thin;
-        scrollbar-color: rgba(0, 229, 255, 0.3) #05070a;
+        scrollbar-color: rgba(0, 229, 255, 0.45) #05070a;
     }
-    ::-webkit-scrollbar {
-        width: 9px;
-        height: 9px;
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
     }
-    ::-webkit-scrollbar-track {
-        background: #05070a;
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    *::-webkit-scrollbar-track {
+        background: #0a0e14;
     }
-    ::-webkit-scrollbar-thumb {
-        background: rgba(0, 229, 255, 0.25);
-        border-radius: 2px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    *::-webkit-scrollbar-thumb {
         background: rgba(0, 229, 255, 0.45);
+        border-radius: 2px;
+        border: 2px solid #0a0e14;
+    }
+    html::-webkit-scrollbar-thumb:hover,
+    body::-webkit-scrollbar-thumb:hover,
+    *::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 229, 255, 0.7);
     }
 
     .stApp {
@@ -1236,31 +1245,44 @@ def apply_theme() -> None:
             margin: 0.2rem 0 0.5rem 0.1rem;
         }
 
-        /* ---- nav radio list (shown after "Get Started") ---- */
-        section[data-testid="stSidebar"] div[role="radiogroup"] {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        section[data-testid="stSidebar"] div[role="radiogroup"] label {
-            padding: 0.65rem 0.85rem;
+        /* ---- nav buttons (one real st.button per item, so each can carry
+           its own icon/badge and get a proper active-state accent bar —
+           a native st.radio can't support that per-option styling) ---- */
+        section[data-testid="stSidebar"] .stButton > button {
+            text-align: left;
+            justify-content: flex-start;
+            padding: 0.6rem 0.85rem;
             border-radius: 4px;
-            border: 1px solid transparent;
-            color: #7d8b9c;
+            font-size: 0.92rem;
+            letter-spacing: 0;
             transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
         }
-        section[data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+        section[data-testid="stSidebar"] .stButton > button[kind="secondary"] {
+            background: transparent;
+            border: 1px solid transparent;
+            border-left: 3px solid transparent;
+            color: #7d8b9c;
+            font-weight: 500;
+            box-shadow: none;
+        }
+        section[data-testid="stSidebar"] .stButton > button[kind="secondary"]:hover {
             background: rgba(0, 229, 255, 0.06);
+            border-left-color: rgba(0, 229, 255, 0.4);
             color: #f5f7fa;
+            box-shadow: none;
+            transform: none;
         }
-        section[data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"],
-        section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) {
-            background: #f6821f;
-            box-shadow: 0 0 14px rgba(246, 130, 31, 0.35);
-        }
-        section[data-testid="stSidebar"] div[role="radiogroup"] label:has(input:checked) div {
-            color: #0a0604;
+        section[data-testid="stSidebar"] .stButton > button[kind="primary"] {
+            background: rgba(246, 130, 31, 0.14) !important;
+            border: 1px solid transparent !important;
+            border-left: 3px solid #f6821f !important;
+            color: #ffb066 !important;
             font-weight: 700;
+            box-shadow: none !important;
+        }
+        section[data-testid="stSidebar"] .stButton > button[kind="primary"]:hover {
+            background: rgba(246, 130, 31, 0.22) !important;
+            transform: none;
         }
 
         /* ---- status footer card, pinned to the bottom via the spacer above ---- */
@@ -1268,9 +1290,9 @@ def apply_theme() -> None:
             display: flex;
             align-items: center;
             gap: 0.6rem;
-            padding: 0.7rem 0.8rem;
-            border: 1px solid rgba(0, 229, 255, 0.14);
-            border-radius: 4px;
+            padding: 0.8rem 0.9rem;
+            border: 1px dashed rgba(0, 229, 255, 0.3);
+            border-radius: 6px;
             background: rgba(0, 229, 255, 0.03);
             margin: 0.8rem 0 1rem 0;
         }
@@ -1781,13 +1803,22 @@ if st.session_state.started:
         st.sidebar.html('<div class="mg-sidebar-label">&gt; Navigate</div>')
         if st.session_state.nav_page not in NAV_ITEMS:
             st.session_state.nav_page = NAV_ITEMS[0]
-        st.sidebar.radio(
-            "Navigate",
-            NAV_ITEMS,
-            key="nav_page",
-            format_func=lambda p: f"{NAV_ICONS.get(p, '')}  {p}",
-            label_visibility="collapsed",
-        )
+
+        history_count = len(load_history())
+        nav_badges = {"History": history_count} if history_count else {}
+
+        for item in NAV_ITEMS:
+            label = f"{NAV_ICONS.get(item, '')}  {item}"
+            if item in nav_badges:
+                label += f"  ·  {nav_badges[item]}"
+            is_active = item == st.session_state.nav_page
+            if st.sidebar.button(
+                label, key=f"nav_btn_{item}",
+                type="primary" if is_active else "secondary",
+                use_container_width=True,
+            ) and not is_active:
+                st.session_state.nav_page = item
+                st.rerun()
 
         best_model = metrics().get("best_model", "Not trained yet")
         st.sidebar.html('<div class="mg-sidebar-spacer"></div>')
