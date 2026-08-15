@@ -27,7 +27,7 @@ from reportlab.pdfgen import canvas
 from scipy.spatial.distance import cdist
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.calibration import CalibratedClassifierCV
-from sklearn.cluster import AgglomerativeClustering, KMeans
+from sklearn.cluster import AgglomerativeClustering, Birch, KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -307,7 +307,7 @@ import pandas as pd
 from scipy.spatial.distance import cdist
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.calibration import CalibratedClassifierCV
-from sklearn.cluster import AgglomerativeClustering, KMeans
+from sklearn.cluster import AgglomerativeClustering, Birch, KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold, train_test_split
@@ -405,6 +405,53 @@ class AgglomerativeRiskClassifier(BaseEstimator, ClassifierMixin):
         return class_probabilities
 
 
+class BirchRiskClassifier(BaseEstimator, ClassifierMixin):
+    """Wrap unsupervised Birch so it fits the same fit/predict/predict_proba
+    interface as the other candidates. Birch's own predict() correctly
+    assigns new points to one of the final n_clusters, but its transform()
+    returns distances to internal CF-tree subclusters rather than the final
+    clusters, so predict_proba instead uses our own centroids of the final
+    clusters — the same approach used for AgglomerativeRiskClassifier."""
+
+    def __init__(self, n_clusters: int = 3, threshold: float = 0.5):
+        self.n_clusters = n_clusters
+        self.threshold = threshold
+
+    def fit(self, x, y):
+        x_dense = x.toarray() if hasattr(x, "toarray") else np.asarray(x)
+        self.birch_ = Birch(n_clusters=self.n_clusters, threshold=self.threshold)
+        clusters = self.birch_.fit_predict(x_dense)
+        y = pd.Series(y).reset_index(drop=True)
+        self.classes_ = np.array(sorted(y.unique()))
+        self.cluster_centers_ = np.array([
+            x_dense[clusters == cluster_id].mean(axis=0)
+            for cluster_id in range(self.n_clusters)
+        ])
+        self.cluster_to_label_ = {}
+        for cluster_id in range(self.n_clusters):
+            in_cluster = y[clusters == cluster_id]
+            self.cluster_to_label_[cluster_id] = (
+                in_cluster.value_counts().idxmax() if not in_cluster.empty else y.value_counts().idxmax()
+            )
+        return self
+
+    def predict(self, x):
+        x_dense = x.toarray() if hasattr(x, "toarray") else np.asarray(x)
+        clusters = self.birch_.predict(x_dense)
+        return np.array([self.cluster_to_label_[cluster_id] for cluster_id in clusters])
+
+    def predict_proba(self, x):
+        x_dense = x.toarray() if hasattr(x, "toarray") else np.asarray(x)
+        distances = cdist(x_dense, self.cluster_centers_)
+        similarities = 1 / (1 + distances)
+        cluster_probabilities = similarities / similarities.sum(axis=1, keepdims=True)
+        class_index = {label: index for index, label in enumerate(self.classes_)}
+        class_probabilities = np.zeros((x_dense.shape[0], len(self.classes_)))
+        for cluster_id, label in self.cluster_to_label_.items():
+            class_probabilities[:, class_index[label]] += cluster_probabilities[:, cluster_id]
+        return class_probabilities
+
+
 def load_dataset() -> pd.DataFrame:
     """Load, validate, de-duplicate, and clean the configured dataset."""
     data = pd.read_csv(DATASET_PATH)
@@ -457,6 +504,7 @@ def train() -> dict:
         ),
         "K-Means Clustering": KMeansRiskClassifier(n_clusters=len(LABELS), random_state=RANDOM_STATE),
         "Agglomerative Clustering": AgglomerativeRiskClassifier(n_clusters=len(LABELS)),
+        "BIRCH Clustering": BirchRiskClassifier(n_clusters=len(LABELS)),
     }
 
     results: dict[str, dict] = {}
