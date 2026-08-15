@@ -1590,7 +1590,7 @@ def analyze() -> None:
                 result["prediction"],
                 result["confidence"],
                 result["risk_score"],
-                result["category"]
+                result.get("category", "Suspicious Message")
             )
 
             st.session_state.result = result
