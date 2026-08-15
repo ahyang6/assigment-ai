@@ -1653,7 +1653,7 @@ def dashboard() -> None:
     )
     data, info, history = pd.read_csv(DATASET_PATH), metrics(), load_history()
 
-    kpi = st.columns(4)
+    kpi = st.columns(5)
     with kpi[0]:
         stat_card(len(data), "Dataset Rows", color="#00e5ff")
     with kpi[1]:
@@ -1663,6 +1663,8 @@ def dashboard() -> None:
         stat_card(f"{acc:.1%}" if acc is not None else "—", "Model Accuracy", color="#39ff88")
     with kpi[3]:
         stat_card(len(history), "Total Analyses", color="#ffb020")
+    with kpi[4]:
+        stat_card(len(info.get("models", {})) or "—", "Algorithms Compared", color="#00e5ff")
 
     st.html("<div style='margin-top:1rem;'></div>")
 
@@ -1685,6 +1687,33 @@ def dashboard() -> None:
                 use_container_width=True,
             )
             st.caption(f"Selected model: {info['best_model']} · accuracy: {info['models'][info['best_model']]['accuracy']:.1%}")
+
+    if info:
+        st.html("<div style='margin-top:1rem;'></div>")
+        st.html('<div class="mg-panel-title">Algorithm Comparison</div>')
+        model_rows = [
+            {
+                "Algorithm": name,
+                "Type": "Clustering" if "Clustering" in name else "Supervised",
+                "Accuracy": m["accuracy"],
+                "F1 Score": m["f1"],
+                "CV F1": m["cv_f1"],
+            }
+            for name, m in info["models"].items()
+        ]
+        models_df = pd.DataFrame(model_rows).sort_values("F1 Score", ascending=False).reset_index(drop=True)
+
+        def _highlight_best(row):
+            is_best = row["Algorithm"] == info["best_model"]
+            style = "background-color: rgba(246,130,31,0.16); color:#ffb066; font-weight:700;" if is_best else ""
+            return [style] * len(row)
+
+        styled_models = (
+            models_df.style
+            .apply(_highlight_best, axis=1)
+            .format({"Accuracy": "{:.1%}", "F1 Score": "{:.3f}", "CV F1": "{:.3f}"})
+        )
+        st.dataframe(styled_models, use_container_width=True, hide_index=True)
 
     if not history.empty:
         history["Date"] = pd.to_datetime(history["Date"])
