@@ -1512,8 +1512,9 @@ def result_pdf(message: str, result: dict) -> bytes:
     """Make a small downloadable report for one result."""
     buffer = BytesIO(); pdf = canvas.Canvas(buffer, pagesize=letter)
     text = pdf.beginText(48, 740); text.setFont("Helvetica", 11)
+    category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
     lines = ["Message Guard - Analysis Report", "", f"Prediction: {result['prediction'].title()}",
-             f"Category: {result.get('category', '—')}",
+             f"Category: {category}",
              f"Confidence: {result['confidence']:.1%}", f"Risk: {result['risk_score']}/100 ({result['risk_level']})", "",
              "Explanation:", result['explanation'], "",
              "Probability Distribution:"]
@@ -1617,12 +1618,13 @@ def analyze() -> None:
             with st.spinner("Checking language patterns and risk indicators..."):
                 result = detector().analyze(message)
 
+            category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
             append_history(
                 message,
                 result["prediction"],
                 result["confidence"],
                 result["risk_score"],
-                result.get("category", "Suspicious Message")
+                category
             )
 
             st.session_state.result = result
@@ -1643,7 +1645,7 @@ def analyze() -> None:
     row1 = st.columns([1.4, 1])
 
     # --- panel 1: verdict + gauge -------------------------------------------------
-    category = result.get("category", "")
+    category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
     category_icon = CATEGORY_ICONS.get(category, "⚠️")
     with row1[0]:
         st.html(
