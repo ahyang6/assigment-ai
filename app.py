@@ -127,20 +127,61 @@ def explanation(prediction: str, indicators: dict[str, Any]) -> str:
     return "The message was flagged because it contains " + (", ".join(parts) or "patterns associated with unsafe messages") + "."
 
 
-def append_history(message: str, prediction: str, confidence: float, risk: int) -> None:
+CATEGORY_ICONS = {
+    "Legitimate Message": "✅",
+    "Phishing Attempt": "🎣",
+    "Spam / Promotional": "📣",
+    "Urgent Action Scam": "⏰",
+    "Suspicious Message": "⚠️",
+}
+CATEGORY_COLORS = {
+    "Legitimate Message": "#39ff88",
+    "Phishing Attempt": "#ff3b5c",
+    "Spam / Promotional": "#ffb020",
+    "Urgent Action Scam": "#ff6b3b",
+    "Suspicious Message": "#00e5ff",
+}
+
+
+def categorize_message(prediction: str, indicators: dict[str, Any]) -> str:
+    """Derive a human-readable message category (Phishing / Spam / Scam / etc.)
+    from the risk level and the same rule-based indicators used elsewhere,
+    without requiring a separately trained category model."""
+    if prediction == "low":
+        return "Legitimate Message"
+
+    groups = set(indicators["keywords"].keys())
+    has_suspicious_url = bool(indicators.get("suspicious_urls"))
+    has_url = bool(indicators["urls"])
+
+    if "security" in groups and (has_suspicious_url or has_url):
+        return "Phishing Attempt"
+    if "promotional" in groups:
+        return "Spam / Promotional"
+    if "urgency" in groups and "action" in groups:
+        return "Urgent Action Scam"
+    return "Suspicious Message"
+
+
+def append_history(message: str, prediction: str, confidence: float, risk: int, category: str) -> None:
     """Persist one analysis result to the local CSV history."""
     new_file = not HISTORY_PATH.exists()
     with HISTORY_PATH.open("a", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         if new_file:
-            writer.writerow(["Date", "Message", "Prediction", "Confidence", "Risk Score"])
-        writer.writerow([datetime.now().isoformat(timespec="seconds"), message, prediction, round(confidence, 4), risk])
+            writer.writerow(["Date", "Message", "Prediction", "Confidence", "Risk Score", "Category"])
+        writer.writerow([datetime.now().isoformat(timespec="seconds"), message, prediction, round(confidence, 4), risk, category])
 
 
 def load_history() -> pd.DataFrame:
     """Return saved predictions, or an empty table with the expected columns."""
-    columns = ["Date", "Message", "Prediction", "Confidence", "Risk Score"]
-    return pd.read_csv(HISTORY_PATH) if HISTORY_PATH.exists() else pd.DataFrame(columns=columns)
+    columns = ["Date", "Message", "Prediction", "Confidence", "Risk Score", "Category"]
+    if not HISTORY_PATH.exists():
+        return pd.DataFrame(columns=columns)
+    history = pd.read_csv(HISTORY_PATH)
+    if "Category" not in history.columns:
+        history["Category"] = "—"  # rows saved before categorisation was added
+    return history
 
 
 def clear_history() -> None:
@@ -301,9 +342,10 @@ class SpamDetector:
         prediction = max(probabilities, key=probabilities.get)
         indicators = find_indicators(message)
         risk, risk_level = calculate_risk(probabilities, indicators)
+        category = categorize_message(prediction, indicators)
         return {"prediction": prediction, "confidence": float(probabilities[prediction]), "probabilities": probabilities,
                 "risk_score": risk, "risk_level": risk_level, "indicators": indicators,
-                "explanation": explanation(prediction, indicators)}
+                "explanation": explanation(prediction, indicators), "category": category}
 
 # =========================================================================
 # train_model.py
@@ -1439,6 +1481,7 @@ def result_pdf(message: str, result: dict) -> bytes:
     buffer = BytesIO(); pdf = canvas.Canvas(buffer, pagesize=letter)
     text = pdf.beginText(48, 740); text.setFont("Helvetica", 11)
     lines = ["Message Guard - Analysis Report", "", f"Prediction: {result['prediction'].title()}",
+             f"Category: {result.get('category', '—')}",
              f"Confidence: {result['confidence']:.1%}", f"Risk: {result['risk_score']}/100 ({result['risk_level']})", "",
              "Explanation:", result['explanation'], "",
              "Probability Distribution:"]
@@ -1546,7 +1589,8 @@ def analyze() -> None:
                 message,
                 result["prediction"],
                 result["confidence"],
-                result["risk_score"]
+                result["risk_score"],
+                result["category"]
             )
 
             st.session_state.result = result
@@ -1567,6 +1611,8 @@ def analyze() -> None:
     row1 = st.columns([1.4, 1])
 
     # --- panel 1: verdict + gauge -------------------------------------------------
+    category = result.get("category", "")
+    category_icon = CATEGORY_ICONS.get(category, "⚠️")
     with row1[0]:
         st.html(
             f"""
@@ -1588,6 +1634,9 @@ def analyze() -> None:
                         </div>
                         <div style="color:var(--mg-text-dim); font-size:0.78rem; margin-top:0.3rem;">
                             RISK: {result['risk_level']}<br>CONF: {result['confidence']:.1%}
+                        </div>
+                        <div style="margin-top:0.5rem;">
+                            <span class="mg-badge">{category_icon}&nbsp;{category}</span>
                         </div>
                     </div>
                 </div>
@@ -1790,6 +1839,18 @@ def dashboard() -> None:
                                         color_discrete_sequence=["#f6821f"])),
                 use_container_width=True,
             )
+
+        st.html("<div style='margin-top:1rem;'></div>")
+        st.html('<div class="mg-panel-title">Message Category Breakdown</div>')
+        category_counts = history["Category"].value_counts().reset_index()
+        category_counts.columns = ["Category", "Count"]
+        st.plotly_chart(
+            style_fig(px.bar(
+                category_counts, x="Category", y="Count", color="Category",
+                color_discrete_map=CATEGORY_COLORS,
+            )).update_layout(showlegend=False),
+            use_container_width=True,
+        )
     else:
         st.info("Analyse messages to populate prediction activity charts.")
 
@@ -1845,8 +1906,8 @@ def history_page() -> None:
         key="history_editor",
         hide_index=True,
         use_container_width=True,
-        disabled=["Date", "Message", "Prediction", "Confidence", "Risk Score"],
-        column_order=["Select", "Date", "Message", "Prediction", "Confidence", "Risk Score"],
+        disabled=["Date", "Message", "Prediction", "Category", "Confidence", "Risk Score"],
+        column_order=["Select", "Date", "Message", "Prediction", "Category", "Confidence", "Risk Score"],
         column_config={"Select": st.column_config.CheckboxColumn("", width="small")},
     )
     selected_rows = edited[edited["Select"]]
