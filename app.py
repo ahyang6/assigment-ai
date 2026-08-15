@@ -342,7 +342,7 @@ def cross_validate_scores(model: Any, x_data: Any, y_data: Any, cv: Any) -> dict
         y_data,
         cv=cv,
         scoring={"accuracy": "accuracy", "f1": "f1_weighted"},
-        n_jobs=-1,
+        n_jobs=1,
     )
     return {
         "cv_accuracy": round(float(np.mean(scores["test_accuracy"])), 4),
@@ -568,7 +568,7 @@ def train() -> dict:
         ngram_range=(1, 2),
         min_df=1,
         max_df=0.95,
-        max_features=8000,
+        max_features=3000,
         sublinear_tf=True,
     )
     x_train_vec = vectorizer.fit_transform(x_train)
