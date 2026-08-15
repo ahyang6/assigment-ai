@@ -548,6 +548,17 @@ def load_dataset() -> pd.DataFrame:
     return data
 
 
+# Kept in sync with the keys of the `candidates` dict inside train() below.
+# detector() compares this against what's saved in metrics.json to detect
+# when a newly added/removed algorithm means the saved model is stale and
+# needs retraining - not just when metrics.json is completely missing.
+EXPECTED_CANDIDATE_NAMES = sorted([
+    "Multinomial Naive Bayes", "Complement Naive Bayes", "Logistic Regression",
+    "Support Vector Machine", "K-Means Clustering", "Agglomerative Clustering",
+    "BIRCH Clustering",
+])
+
+
 def train() -> dict:
     """Train candidates with cross-validation, select highest CV F1, and save artifacts."""
     data = load_dataset()
@@ -620,6 +631,7 @@ def train() -> dict:
         "class_distribution": data["label"].value_counts().to_dict(),
         "models": results,
         "holdout": results[best_name],
+        "candidate_names": sorted(candidates.keys()),
     }
     METRICS_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     logging.info(
@@ -1496,8 +1508,17 @@ def stat_card(value, label: str, color: str = "#00e5ff", value_size: str = "1.5r
 
 @st.cache_resource
 def detector() -> SpamDetector:
-    """Load an existing model, or train one automatically on first deployment."""
-    if not METRICS_PATH.exists():
+    """Load an existing model, or train one automatically on first deployment
+    or whenever the set of candidate algorithms has changed since the saved
+    model was trained (e.g. a new algorithm was added to the code)."""
+    needs_training = not METRICS_PATH.exists()
+    if not needs_training:
+        try:
+            saved = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
+            needs_training = sorted(saved.get("candidate_names", [])) != EXPECTED_CANDIDATE_NAMES
+        except (json.JSONDecodeError, OSError):
+            needs_training = True
+    if needs_training:
         with st.spinner("Preparing the AI model for first use…"):
             train()
     return SpamDetector()
