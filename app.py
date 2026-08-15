@@ -1824,8 +1824,6 @@ def history_page() -> None:
     if search:
         history = history[history.astype(str).apply(lambda row: row.str.contains(search, case=False).any(), axis=1)]
 
-    st.html('<div class="mg-panel-title">Prediction Log</div>')
-
     display_history = history.copy()
     display_history.insert(0, "Select", False)
 
@@ -1834,7 +1832,9 @@ def history_page() -> None:
         st.session_state.pop("_select_all_history", None)
         st.session_state.pop("history_editor", None)  # force the editor to reinit with all rows checked
 
-    select_all_col, _ = st.columns([1, 5])
+    log_label_col, select_all_col = st.columns([4, 1])
+    with log_label_col:
+        st.html('<div class="mg-panel-title" style="margin-top:0.4rem;">Prediction Log</div>')
     with select_all_col:
         if st.button("Select All", use_container_width=True, disabled=display_history.empty):
             st.session_state._select_all_history = True
@@ -1963,7 +1963,7 @@ if st.session_state.started:
         # at first load) and give a normal, always-reachable button in the
         # main content area to bring it back.
         st.html("<style>section[data-testid='stSidebar']{display:none !important;}</style>")
-        if st.button("☰ Show Sidebar"):
+        if st.button("☰  Show Sidebar", type="primary"):
             st.session_state.sidebar_visible = True
             st.rerun()
     else:
