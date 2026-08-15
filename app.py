@@ -163,25 +163,56 @@ def categorize_message(prediction: str, indicators: dict[str, Any]) -> str:
     return "Suspicious Message"
 
 
+HISTORY_COLUMNS = ["Date", "Message", "Prediction", "Confidence", "Risk Score", "Category"]
+
+
+def _ensure_history_schema() -> None:
+    """Self-heal the history file if it was created under an older column
+    layout (e.g. before Category existed). Appending new-format rows to an
+    old-format file produces a ragged CSV with a different field count per
+    row, which pandas' parser can't read at all - so this rewrites the whole
+    file to the current schema, padding any missing trailing fields, before
+    any other read or write touches it."""
+    if not HISTORY_PATH.exists():
+        return
+    with HISTORY_PATH.open("r", newline="", encoding="utf-8") as handle:
+        rows = list(csv.reader(handle))
+    if not rows:
+        return
+    header, data_rows = rows[0], rows[1:]
+    if header == HISTORY_COLUMNS and all(len(row) == len(HISTORY_COLUMNS) for row in data_rows):
+        return  # already consistent, nothing to migrate
+
+    fixed_rows = []
+    for row in data_rows:
+        row = list(row[:len(HISTORY_COLUMNS)])  # trim any unexpected extra fields
+        while len(row) < len(HISTORY_COLUMNS):
+            row.append("—" if HISTORY_COLUMNS[len(row)] == "Category" else "")
+        fixed_rows.append(row)
+
+    with HISTORY_PATH.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(HISTORY_COLUMNS)
+        writer.writerows(fixed_rows)
+
+
 def append_history(message: str, prediction: str, confidence: float, risk: int, category: str) -> None:
     """Persist one analysis result to the local CSV history."""
+    _ensure_history_schema()
     new_file = not HISTORY_PATH.exists()
     with HISTORY_PATH.open("a", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         if new_file:
-            writer.writerow(["Date", "Message", "Prediction", "Confidence", "Risk Score", "Category"])
+            writer.writerow(HISTORY_COLUMNS)
         writer.writerow([datetime.now().isoformat(timespec="seconds"), message, prediction, round(confidence, 4), risk, category])
 
 
 def load_history() -> pd.DataFrame:
     """Return saved predictions, or an empty table with the expected columns."""
-    columns = ["Date", "Message", "Prediction", "Confidence", "Risk Score", "Category"]
     if not HISTORY_PATH.exists():
-        return pd.DataFrame(columns=columns)
-    history = pd.read_csv(HISTORY_PATH)
-    if "Category" not in history.columns:
-        history["Category"] = "—"  # rows saved before categorisation was added
-    return history
+        return pd.DataFrame(columns=HISTORY_COLUMNS)
+    _ensure_history_schema()
+    return pd.read_csv(HISTORY_PATH)
 
 
 def clear_history() -> None:
@@ -194,6 +225,7 @@ def delete_history_rows(row_positions: list[int]) -> None:
     """Remove specific rows (by their position in the saved file) from history."""
     if not HISTORY_PATH.exists():
         return
+    _ensure_history_schema()
     history = pd.read_csv(HISTORY_PATH)
     history = history.drop(index=row_positions, errors="ignore").reset_index(drop=True)
     history.to_csv(HISTORY_PATH, index=False)
