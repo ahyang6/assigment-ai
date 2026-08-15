@@ -110,6 +110,20 @@ def calculate_risk(probabilities: dict[str, float], indicators: dict[str, Any]) 
     return score, level
 
 
+SEVERITY_RANK = {"low": 0, "medium": 1, "high": 2}
+
+
+def reconcile_severity(prediction: str, risk_level: str) -> str:
+    """The model's raw class prediction and the separately-computed 0-100
+    risk score can genuinely disagree - the score also factors in keyword,
+    URL, and formatting signals that the classifier's probabilities alone
+    don't fully capture. Rather than show a headline that undersells what
+    the risk score underneath it says (e.g. "MEDIUM" next to "High Risk"),
+    always surface the more severe of the two."""
+    risk_key = risk_level.split()[0].lower()  # "High Risk" -> "high"
+    return prediction if SEVERITY_RANK[prediction] >= SEVERITY_RANK.get(risk_key, 0) else risk_key
+
+
 def explanation(prediction: str, indicators: dict[str, Any]) -> str:
     """Turn detected signals into a concise human-readable reason."""
     parts = []
@@ -371,9 +385,10 @@ class SpamDetector:
             raise ValueError("Please enter a message to analyse.")
         features = self.vectorizer.transform([preprocess_text(message)])
         probabilities = dict(zip(self.model.classes_, self.model.predict_proba(features)[0]))
-        prediction = max(probabilities, key=probabilities.get)
+        raw_prediction = max(probabilities, key=probabilities.get)
         indicators = find_indicators(message)
         risk, risk_level = calculate_risk(probabilities, indicators)
+        prediction = reconcile_severity(raw_prediction, risk_level)
         category = categorize_message(prediction, indicators)
         return {"prediction": prediction, "confidence": float(probabilities[prediction]), "probabilities": probabilities,
                 "risk_score": risk, "risk_level": risk_level, "indicators": indicators,
