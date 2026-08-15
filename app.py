@@ -658,7 +658,7 @@ GLOBAL_CSS = """
     }
 
     .block-container {
-        padding-top: 1.5rem;
+        padding-top: 2.25rem;
         padding-bottom: 3rem;
         max-width: 1000px;
     }
