@@ -342,7 +342,7 @@ def cross_validate_scores(model: Any, x_data: Any, y_data: Any, cv: Any) -> dict
         y_data,
         cv=cv,
         scoring={"accuracy": "accuracy", "f1": "f1_weighted"},
-        n_jobs=-1,
+        n_jobs=1,
     )
     return {
         "cv_accuracy": round(float(np.mean(scores["test_accuracy"])), 4),
