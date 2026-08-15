@@ -148,6 +148,15 @@ def clear_history() -> None:
     if HISTORY_PATH.exists():
         HISTORY_PATH.unlink()
 
+
+def delete_history_rows(row_positions: list[int]) -> None:
+    """Remove specific rows (by their position in the saved file) from history."""
+    if not HISTORY_PATH.exists():
+        return
+    history = pd.read_csv(HISTORY_PATH)
+    history = history.drop(index=row_positions, errors="ignore").reset_index(drop=True)
+    history.to_csv(HISTORY_PATH, index=False)
+
 # =========================================================================
 # preprocess.py
 # =========================================================================
@@ -1805,27 +1814,76 @@ def history_page() -> None:
 
     st.html("<div style='margin-top:1rem;'></div>")
 
+    # Track each row's position in the underlying saved file (via a hidden
+    # column) so deletion still targets the right rows even when a search
+    # filter has changed which rows are currently displayed.
+    history = history.reset_index(drop=True)
+    history["_orig_idx"] = history.index
+
     search = st.text_input("Search messages or predictions")
     if search:
         history = history[history.astype(str).apply(lambda row: row.str.contains(search, case=False).any(), axis=1)]
 
-    def _highlight_prediction(value):
-        color = RISK_COLORS.get(str(value).lower())
-        return f"background-color:{color}22; color:{color}; font-weight:700;" if color else ""
-
     st.html('<div class="mg-panel-title">Prediction Log</div>')
-    styled_history = history.style.map(_highlight_prediction, subset=["Prediction"])
-    st.dataframe(styled_history, use_container_width=True, hide_index=True)
 
-    export_col, delete_col = st.columns(2)
+    display_history = history.copy()
+    display_history.insert(0, "Select", False)
+
+    if st.session_state.get("_select_all_history"):
+        display_history["Select"] = True
+        st.session_state.pop("_select_all_history", None)
+        st.session_state.pop("history_editor", None)  # force the editor to reinit with all rows checked
+
+    select_all_col, _ = st.columns([1, 5])
+    with select_all_col:
+        if st.button("Select All", use_container_width=True, disabled=display_history.empty):
+            st.session_state._select_all_history = True
+            st.rerun()
+
+    edited = st.data_editor(
+        display_history,
+        key="history_editor",
+        hide_index=True,
+        use_container_width=True,
+        disabled=["Date", "Message", "Prediction", "Confidence", "Risk Score"],
+        column_order=["Select", "Date", "Message", "Prediction", "Confidence", "Risk Score"],
+        column_config={"Select": st.column_config.CheckboxColumn("", width="small")},
+    )
+    selected_rows = edited[edited["Select"]]
+
+    export_col, delete_selected_col, delete_all_col = st.columns(3)
     with export_col:
         st.download_button(
-            "Export history as CSV", history.to_csv(index=False).encode(),
+            "Export history as CSV", history.drop(columns=["_orig_idx"]).to_csv(index=False).encode(),
             "prediction-history.csv", "text/csv", use_container_width=True,
         )
-    with delete_col:
-        if st.button("Delete all history", use_container_width=True):
-            clear_history(); st.rerun()
+    with delete_selected_col:
+        if st.button(
+            f"Delete Selected ({len(selected_rows)})",
+            use_container_width=True, disabled=selected_rows.empty,
+        ):
+            confirm_delete_dialog(selected_rows["_orig_idx"].tolist(), f"{len(selected_rows)} selected record(s)")
+    with delete_all_col:
+        if st.button("Delete All History", use_container_width=True, disabled=load_history().empty):
+            confirm_delete_dialog(None, f"all {len(load_history())} record(s)")
+
+
+@st.dialog("Confirm Deletion")
+def confirm_delete_dialog(row_positions: list[int] | None, description: str) -> None:
+    """Modal confirmation shown before any history deletion — row_positions=None means delete everything."""
+    st.warning(f"This will permanently delete {description}. This action cannot be undone.")
+    cancel_col, confirm_col = st.columns(2)
+    with cancel_col:
+        if st.button("Cancel", use_container_width=True):
+            st.rerun()
+    with confirm_col:
+        if st.button("Yes, Delete", type="primary", use_container_width=True):
+            if row_positions is None:
+                clear_history()
+            else:
+                delete_history_rows(row_positions)
+            st.session_state.pop("history_editor", None)
+            st.rerun()
 
 
 def about() -> None:
