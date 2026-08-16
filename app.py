@@ -1,4 +1,5 @@
 """Streamlit interface for the AI-powered spam and phishing detector."""
+import base64
 import csv
 import json
 import logging
@@ -21,6 +22,11 @@ import streamlit.components.v1 as components
 from email import policy
 from email.message import EmailMessage
 from email.parser import BytesParser
+from google.auth.transport.requests import Request as GoogleAuthRequest
+from google.oauth2.credentials import Credentials as GoogleCredentials
+from google_auth_oauthlib.flow import Flow as GoogleOAuthFlow
+from googleapiclient.discovery import build as build_google_service
+from googleapiclient.errors import HttpError as GoogleApiError
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
@@ -666,6 +672,11 @@ from reportlab.pdfgen import canvas
 from email import policy
 from email.message import EmailMessage
 from email.parser import BytesParser
+from google.auth.transport.requests import Request as GoogleAuthRequest
+from google.oauth2.credentials import Credentials as GoogleCredentials
+from google_auth_oauthlib.flow import Flow as GoogleOAuthFlow
+from googleapiclient.discovery import build as build_google_service
+from googleapiclient.errors import HttpError as GoogleApiError
 from pypdf import PdfReader
 
 
@@ -693,7 +704,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-PAGES = ["Home", "Analyze Message", "Dashboard", "History", "About"]
+PAGES = ["Home", "Analyze Message", "Dashboard", "History", "File Translation"]
 
 
 # ---------------------------------------------------------------------------
@@ -1862,107 +1873,177 @@ def analysis_details() -> None:
     )
 
 
+GMAIL_SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+GMAIL_SETUP_HELP = (
+    "Add `google_client_id`, `google_client_secret`, and `google_redirect_uri` "
+    "to this app's Streamlit secrets to enable Gmail scanning."
+)
+
+
+def gmail_oauth_configured() -> bool:
+    """Whether the required Google OAuth secrets have been set up."""
+    return all(key in st.secrets for key in ("google_client_id", "google_client_secret", "google_redirect_uri"))
+
+
+def build_gmail_oauth_flow() -> GoogleOAuthFlow:
+    """Build the OAuth flow using credentials from Streamlit secrets."""
+    client_config = {
+        "web": {
+            "client_id": st.secrets["google_client_id"],
+            "client_secret": st.secrets["google_client_secret"],
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "redirect_uris": [st.secrets["google_redirect_uri"]],
+        }
+    }
+    flow = GoogleOAuthFlow.from_client_config(client_config, scopes=GMAIL_SCOPES)
+    flow.redirect_uri = st.secrets["google_redirect_uri"]
+    return flow
+
+
+def _extract_gmail_body(payload: dict) -> str:
+    """Recursively find and decode the plain-text (or HTML, as fallback)
+    body from a Gmail API message payload."""
+    if payload.get("mimeType") == "text/plain" and payload.get("body", {}).get("data"):
+        return base64.urlsafe_b64decode(payload["body"]["data"]).decode("utf-8", errors="ignore")
+
+    html_fallback = ""
+    for part in payload.get("parts", []) or []:
+        if part.get("mimeType") == "text/plain" and part.get("body", {}).get("data"):
+            return base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8", errors="ignore")
+        if part.get("mimeType") == "text/html" and part.get("body", {}).get("data") and not html_fallback:
+            html_fallback = base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8", errors="ignore")
+        if part.get("parts"):
+            nested = _extract_gmail_body(part)
+            if nested:
+                return nested
+
+    if html_fallback:
+        return re.sub(r"<[^>]+>", " ", html_fallback)  # strip HTML tags as a simple fallback
+    return ""
+
+
+def fetch_gmail_messages(credentials, max_results, progress_callback=None) -> list[str]:
+    """Fetch and decode the body text of messages in the user's inbox
+    (paginated through the full inbox), up to max_results if given
+    (None/0 = no limit, scan everything)."""
+    service = build_google_service("gmail", "v1", credentials=credentials)
+    message_refs = []
+    page_token = None
+    while True:
+        response = service.users().messages().list(
+            userId="me", labelIds=["INBOX"], maxResults=500, pageToken=page_token
+        ).execute()
+        message_refs.extend(response.get("messages", []))
+        page_token = response.get("nextPageToken")
+        if not page_token or (max_results and len(message_refs) >= max_results):
+            break
+    if max_results:
+        message_refs = message_refs[:max_results]
+
+    bodies = []
+    total = len(message_refs)
+    for i, msg_ref in enumerate(message_refs):
+        full_message = service.users().messages().get(userId="me", id=msg_ref["id"], format="full").execute()
+        body = _extract_gmail_body(full_message.get("payload", {}))
+        if body.strip():
+            bodies.append(body)
+        if progress_callback:
+            progress_callback(i + 1, total)
+    return bodies
+
+
 def dashboard() -> None:
     page_header(
-        "📊", "Statistics Dashboard", "root@messageguard:~$ tail -f model_metrics.log",
+        "📊", "Statistics Dashboard", "root@messageguard:~$ connect a gmail inbox to scan its risk",
         extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
     )
-    data, info, history = pd.read_csv(DATASET_PATH), metrics(), load_history()
 
-    kpi = st.columns(5)
-    with kpi[0]:
-        stat_card(len(data), "Dataset Rows", color="#00e5ff")
-    with kpi[1]:
-        stat_card(info.get("best_model", "—"), "Best Model", color="#f6821f", value_size="1.05rem")
-    with kpi[2]:
-        acc = info.get("models", {}).get(info.get("best_model", ""), {}).get("accuracy")
-        stat_card(f"{acc:.1%}" if acc is not None else "—", "Model Accuracy", color="#39ff88")
-    with kpi[3]:
-        stat_card(len(history), "Total Analyses", color="#ffb020")
-    with kpi[4]:
-        stat_card(len(info.get("models", {})) or "—", "Algorithms Compared", color="#00e5ff")
+    if not gmail_oauth_configured():
+        st.warning(f"Gmail integration isn't configured yet. {GMAIL_SETUP_HELP}")
+        return
 
-    st.html("<div style='margin-top:1rem;'></div>")
+    if "gmail_credentials" not in st.session_state:
+        auth_code = st.query_params.get("code")
+        if auth_code:
+            try:
+                flow = build_gmail_oauth_flow()
+                flow.fetch_token(code=auth_code)
+                st.session_state.gmail_credentials = flow.credentials
+                st.query_params.clear()
+                st.rerun()
+            except Exception as e:
+                st.error(f"Gmail authorization failed: {e}")
+        else:
+            st.write("Connect your Gmail account to scan your inbox and see how many emails are Low, Medium, or High risk.")
+            flow = build_gmail_oauth_flow()
+            auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
+            st.link_button("🔗 Connect Gmail Account", auth_url, type="primary", use_container_width=True)
+        return
 
-    left, right = st.columns(2)
-    with left:
-        st.html('<div class="mg-panel-title">Dataset Class Distribution</div>')
-        st.plotly_chart(
-            style_fig(px.pie(data, names="label", color="label", color_discrete_map=RISK_COLORS)),
-            use_container_width=True,
-        )
-    if info:
-        with right:
-            st.html('<div class="mg-panel-title">Model Comparison</div>')
-            scores = pd.DataFrame([{"Model": name, "Accuracy": value["accuracy"], "F1": value["f1"]} for name, value in info["models"].items()])
-            st.plotly_chart(
-                style_fig(px.bar(
-                    scores, x="Model", y=["Accuracy", "F1"], barmode="group",
-                    color_discrete_sequence=["#00e5ff", "#f6821f"],
-                )),
-                use_container_width=True,
-            )
-            st.caption(f"Selected model: {info['best_model']} · accuracy: {info['models'][info['best_model']]['accuracy']:.1%}")
+    credentials = st.session_state.gmail_credentials
+    if credentials.expired and credentials.refresh_token:
+        credentials.refresh(GoogleAuthRequest())
+        st.session_state.gmail_credentials = credentials
 
-    if info:
-        st.html("<div style='margin-top:1rem;'></div>")
-        st.html('<div class="mg-panel-title">Algorithm Comparison</div>')
-        model_rows = [
-            {
-                "Algorithm": name,
-                "Type": "Clustering" if "Clustering" in name else "Supervised",
-                "Accuracy": m["accuracy"],
-                "F1 Score": m["f1"],
-                "CV F1": m["cv_f1"],
-            }
-            for name, m in info["models"].items()
-        ]
-        models_df = pd.DataFrame(model_rows).sort_values("F1 Score", ascending=False).reset_index(drop=True)
+    status_col, disconnect_col = st.columns([3, 1])
+    with status_col:
+        st.success("✅ Gmail account connected.")
+    with disconnect_col:
+        if st.button("Disconnect Gmail", use_container_width=True):
+            del st.session_state.gmail_credentials
+            st.session_state.pop("gmail_scan_results", None)
+            st.rerun()
 
-        def _highlight_best(row):
-            is_best = row["Algorithm"] == info["best_model"]
-            style = "background-color: rgba(246,130,31,0.16); color:#ffb066; font-weight:700;" if is_best else ""
-            return [style] * len(row)
+    limit_input = st.number_input(
+        "Max emails to scan (0 = entire inbox)", min_value=0, value=0, step=50,
+    )
 
-        styled_models = (
-            models_df.style
-            .apply(_highlight_best, axis=1)
-            .format({"Accuracy": "{:.1%}", "F1 Score": "{:.3f}", "CV F1": "{:.3f}"})
-        )
-        st.dataframe(styled_models, use_container_width=True, hide_index=True)
+    if st.button("🔍 Scan Inbox", type="primary", use_container_width=True):
+        try:
+            progress_bar = st.progress(0.0, text="Fetching inbox...")
 
-    if not history.empty:
-        history["Date"] = pd.to_datetime(history["Date"])
-        daily = history.groupby(history["Date"].dt.date).size().reset_index(name="Analyses")
-        bottom_left, bottom_right = st.columns(2)
-        with bottom_left:
-            st.html('<div class="mg-panel-title">Daily Analysis Count</div>')
-            st.plotly_chart(
-                style_fig(px.line(daily, x="Date", y="Analyses", markers=True,
-                                   color_discrete_sequence=["#00e5ff"])),
-                use_container_width=True,
-            )
-        with bottom_right:
-            st.html('<div class="mg-panel-title">Risk Score Distribution</div>')
-            st.plotly_chart(
-                style_fig(px.histogram(history, x="Risk Score", nbins=10,
-                                        color_discrete_sequence=["#f6821f"])),
-                use_container_width=True,
-            )
+            def update_progress(done, total):
+                progress_bar.progress(done / total if total else 0.0, text=f"Analysing email {done}/{total}...")
+
+            bodies = fetch_gmail_messages(credentials, max_results=limit_input or None, progress_callback=update_progress)
+            results = []
+            for body in bodies:
+                try:
+                    result = detector().analyze(body)
+                    results.append(result["prediction"])
+                except ValueError:
+                    continue  # empty/unanalyzable message body
+            progress_bar.empty()
+            st.session_state.gmail_scan_results = results
+            st.success(f"Scanned {len(bodies)} emails.")
+        except GoogleApiError as e:
+            st.error(f"Gmail API error: {e}")
+        except Exception as e:
+            st.error(f"Scan failed: {e}")
+
+    results = st.session_state.get("gmail_scan_results")
+    if results:
+        counts = pd.Series(results).value_counts()
+        chart_df = pd.DataFrame({"Risk": counts.index, "Count": counts.values})
 
         st.html("<div style='margin-top:1rem;'></div>")
-        st.html('<div class="mg-panel-title">Message Category Breakdown</div>')
-        category_counts = history["Category"].value_counts().reset_index()
-        category_counts.columns = ["Category", "Count"]
+        kpi = st.columns(4)
+        with kpi[0]:
+            stat_card(len(results), "Emails Scanned", color="#00e5ff")
+        with kpi[1]:
+            stat_card(int(counts.get("low", 0)), "Low Risk", color=RISK_COLORS["low"])
+        with kpi[2]:
+            stat_card(int(counts.get("medium", 0)), "Medium Risk", color=RISK_COLORS["medium"])
+        with kpi[3]:
+            stat_card(int(counts.get("high", 0)), "High Risk", color=RISK_COLORS["high"])
+
+        st.html("<div style='margin-top:1rem;'></div>")
+        st.html('<div class="mg-panel-title">Inbox Risk Breakdown</div>')
         st.plotly_chart(
-            style_fig(px.bar(
-                category_counts, x="Category", y="Count", color="Category",
-                color_discrete_map=CATEGORY_COLORS,
-            )).update_layout(showlegend=False),
+            style_fig(px.pie(chart_df, names="Risk", values="Count", color="Risk", color_discrete_map=RISK_COLORS)),
             use_container_width=True,
         )
-    else:
-        st.info("Analyse messages to populate prediction activity charts.")
 
 
 def history_page() -> None:
@@ -2104,57 +2185,6 @@ def file_translation() -> None:
         )
 
 
-def about() -> None:
-    # All of the informational content that used to live below the hero on
-    # the Home page now lives here, shown once the user has clicked
-    # "Get Started" and reached the About tab.
-    page_header("ℹ️", "About", "root@messageguard:~$ man message-guard")
-
-    st.markdown("## System Overview")
-    cols = st.columns(3)
-    cols[0].metric("Detection Classes", "Low · Medium · High Risk")
-    cols[1].metric("Best AI Model", metrics().get("best_model", "Train model"))
-    cols[2].metric("Training Dataset", metrics().get("dataset_rows", "—"))
-
-    st.divider()
-
-    st.markdown("## Navigation Guide")
-    st.markdown(
-        """
-    **Home** — Learn about the purpose of Message Guard and view system information.
-
-    **Analyze Message** — Paste an email or text message to detect whether it is
-    Low, Medium, or High risk. Shows prediction, confidence, risk score, explanation,
-    suspicious keywords/URLs, and a downloadable PDF report.
-
-    **Dashboard** — Dataset class distribution, model comparison, daily analysis
-    activity, and risk score distribution.
-
-    **History** — View, search, export, or delete previous prediction records.
-
-    **About** — Technologies used, machine learning models, and project purpose.
-    """
-    )
-
-    st.divider()
-
-    st.markdown("## How Message Guard Works")
-    st.markdown(
-        """
-    1. Paste a message or email into **Analyze Message**.
-    2. The system preprocesses the text using NLP techniques.
-    3. The trained machine learning model analyses the message.
-    4. A prediction, confidence score, risk score, and explanation are generated.
-    5. The analysis is saved to the local prediction history.
-    """
-    )
-
-    st.divider()
-
-    st.write("This educational project compares a Support Vector Machine against K-Means, Agglomerative, and BIRCH clustering on TF-IDF features. The best weighted-F1 model is saved locally.")
-    st.warning("Predictions are decision support, not a replacement for security controls. Do not open unexpected links or disclose credentials.")
-
-
 apply_theme()
 
 pages = {
@@ -2164,7 +2194,6 @@ pages = {
     "Dashboard": dashboard,
     "History": history_page,
     "File Translation": file_translation,
-    "About": about,
 }
 
 NAV_ICONS = {
@@ -2172,9 +2201,8 @@ NAV_ICONS = {
     "Dashboard": "📊",
     "History": "🕘",
     "File Translation": "🔄",
-    "About": "ℹ️",
 }
-NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation", "About"]
+NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation"]
 
 if st.session_state.started:
     if not st.session_state.sidebar_visible:
@@ -2208,13 +2236,8 @@ if st.session_state.started:
         if st.session_state.nav_page not in pages:
             st.session_state.nav_page = NAV_ITEMS[0]
 
-        history_count = len(load_history())
-        nav_badges = {"History": history_count} if history_count else {}
-
         for item in NAV_ITEMS:
             label = f"{NAV_ICONS.get(item, '')}  {item}"
-            if item in nav_badges:
-                label += f"  ·  {nav_badges[item]}"
             is_active = item == st.session_state.nav_page
             if st.sidebar.button(
                 label, key=f"nav_btn_{item}",
