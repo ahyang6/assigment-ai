@@ -1988,7 +1988,21 @@ def dashboard() -> None:
             st.write("Connect your Gmail account to scan your inbox and see how many emails are Low, Medium, or High risk.")
             flow = build_gmail_oauth_flow()
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
-            st.link_button("🔗 Connect Gmail Account", auth_url, type="primary", use_container_width=True)
+            # A plain <a> (no target="_blank") navigates the *same* tab, so
+            # Google's redirect back lands here too - st.link_button always
+            # opens a new tab instead, with no way to turn that off.
+            st.html(
+                f"""
+                <a href="{auth_url}" target="_top" style="
+                    display:block; text-align:center; text-decoration:none;
+                    background: linear-gradient(135deg, #f6821f, #ff9d3d);
+                    border: 1px solid rgba(255, 157, 61, 0.6);
+                    border-radius: 2px; color: #ffffff; font-weight: 700;
+                    font-size: 1.0rem; letter-spacing: 0.03em;
+                    padding: 0.75rem 1.6rem; box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
+                ">🔗 Connect Gmail Account</a>
+                """
+            )
         return
 
     credentials = st.session_state.gmail_credentials
