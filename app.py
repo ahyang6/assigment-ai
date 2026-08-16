@@ -58,6 +58,7 @@ VECTORIZER_PATH = MODEL_DIR / "tfidf.pkl"
 METRICS_PATH = MODEL_DIR / "metrics.json"
 HISTORY_PATH = BASE_DIR / "prediction_history.csv"
 GMAIL_TOKEN_PATH = BASE_DIR / "gmail_token.json"
+GMAIL_PKCE_PATH = BASE_DIR / "gmail_pkce_verifier.txt"
 RANDOM_STATE = 42
 LABELS = ["low", "medium", "high"]
 
@@ -2012,6 +2013,14 @@ def dashboard() -> None:
         if auth_code:
             try:
                 flow = build_gmail_oauth_flow()
+                # The auth URL was generated in a (possibly different)
+                # session/tab, so the PKCE code_verifier that belongs to it
+                # has to be recovered from the shared file rather than
+                # regenerated here - it must match exactly what was sent
+                # to Google originally.
+                if GMAIL_PKCE_PATH.exists():
+                    flow.code_verifier = GMAIL_PKCE_PATH.read_text(encoding="utf-8").strip()
+                    GMAIL_PKCE_PATH.unlink()  # one-time use
                 flow.fetch_token(code=auth_code)
                 st.session_state.gmail_credentials = flow.credentials
                 save_gmail_credentials(flow.credentials)
@@ -2030,7 +2039,12 @@ def dashboard() -> None:
         else:
             st.write("Connect your Gmail account to scan your inbox and see how many emails are Low, Medium, or High risk.")
             flow = build_gmail_oauth_flow()
+            flow.autogenerate_code_verifier = True
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
+            # Persist the verifier this Flow instance just generated, so
+            # whichever session ends up exchanging the code (this tab or a
+            # separate new one) can retrieve the matching value.
+            GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
             st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
             st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
             # Poll for the connection completing in the other tab by
