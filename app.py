@@ -2045,7 +2045,22 @@ def dashboard() -> None:
             # whichever session ends up exchanging the code (this tab or a
             # separate new one) can retrieve the matching value.
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
-            st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
+            # window.open() (not a plain <a>/link_button) is required here:
+            # browsers only allow a tab to call window.close() on itself if
+            # it was opened *by script* - a tab opened via a normal link
+            # click is refused, which is why auto-close wasn't working.
+            st.html(
+                f"""
+                <button onclick="window.open('{auth_url}', '_blank')" style="
+                    display:block; width:100%; text-align:center; cursor:pointer;
+                    background: linear-gradient(135deg, #f6821f, #ff9d3d);
+                    border: 1px solid rgba(255, 157, 61, 0.6);
+                    border-radius: 2px; color: #ffffff; font-weight: 700;
+                    font-size: 1.0rem; letter-spacing: 0.03em;
+                    padding: 0.75rem 1.6rem; box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
+                ">🔗 Connect Gmail Account (opens a new tab)</button>
+                """
+            )
             st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
             # Poll for the connection completing in the other tab by
             # reloading this tab periodically - session_state can't be
