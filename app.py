@@ -2045,22 +2045,15 @@ def dashboard() -> None:
             # whichever session ends up exchanging the code (this tab or a
             # separate new one) can retrieve the matching value.
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
-            # window.open() (not a plain <a>/link_button) is required here:
-            # browsers only allow a tab to call window.close() on itself if
-            # it was opened *by script* - a tab opened via a normal link
-            # click is refused, which is why auto-close wasn't working.
-            st.html(
-                f"""
-                <button onclick="window.open('{auth_url}', '_blank')" style="
-                    display:block; width:100%; text-align:center; cursor:pointer;
-                    background: linear-gradient(135deg, #f6821f, #ff9d3d);
-                    border: 1px solid rgba(255, 157, 61, 0.6);
-                    border-radius: 2px; color: #ffffff; font-weight: 700;
-                    font-size: 1.0rem; letter-spacing: 0.03em;
-                    padding: 0.75rem 1.6rem; box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
-                ">🔗 Connect Gmail Account (opens a new tab)</button>
-                """
-            )
+            # A script-triggered window.open() would let the resulting tab
+            # legitimately call window.close() on itself later, but browsers
+            # block that popup here since Streamlit's own rendering isn't
+            # treated as a direct user click - st.link_button (a plain link)
+            # is the version that reliably opens. Returning to the original
+            # tab doesn't depend on this new one closing itself anyway: the
+            # original tab's own auto-refresh below is what actually notices
+            # the connection completing.
+            st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
             st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
             # Poll for the connection completing in the other tab by
             # reloading this tab periodically - session_state can't be
