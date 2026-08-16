@@ -1993,7 +1993,7 @@ def dashboard() -> None:
             # opens a new tab instead, with no way to turn that off.
             st.html(
                 f"""
-                <a href="{auth_url}" style="
+                <a href="{auth_url}" target="_top" style="
                     display:block; text-align:center; text-decoration:none;
                     background: linear-gradient(135deg, #f6821f, #ff9d3d);
                     border: 1px solid rgba(255, 157, 61, 0.6);
