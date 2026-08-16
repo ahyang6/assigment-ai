@@ -696,6 +696,16 @@ if st.query_params.get("start") == "1":
     st.session_state.started = True
     st.session_state.nav_page = "Analyze Message"
     st.query_params.clear()
+elif st.query_params.get("code"):
+    # Returning from the Google OAuth redirect (Dashboard's Gmail connect
+    # flow). This is a fresh page load, so without this check the user
+    # would land back on the Home hero instead - and clicking "Get Started"
+    # from there would wipe the ?code= param (it navigates to a bare
+    # "?start=1") before Dashboard ever gets a chance to exchange it for a
+    # token. Skip straight to Dashboard and leave the param in place; its
+    # own OAuth handling reads and clears it after a successful exchange.
+    st.session_state.started = True
+    st.session_state.nav_page = "Dashboard"
 
 st.set_page_config(
     page_title="Message Guard",
