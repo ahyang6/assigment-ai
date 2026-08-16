@@ -10,6 +10,7 @@ from io import BytesIO
 from pathlib import Path
 from typing import Any
 
+import docx
 import joblib
 import nltk
 import numpy as np
@@ -18,10 +19,12 @@ import plotly.express as px
 import streamlit as st
 import streamlit.components.v1 as components
 from email import policy
+from email.message import EmailMessage
 from email.parser import BytesParser
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
+from pypdf import PdfReader
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from scipy.spatial.distance import cdist
@@ -29,7 +32,6 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.cluster import AgglomerativeClustering, Birch, KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -37,7 +39,6 @@ from sklearn.metrics import (
     precision_recall_fscore_support,
 )
 from sklearn.model_selection import StratifiedKFold, train_test_split
-from sklearn.naive_bayes import ComplementNB, MultinomialNB
 from sklearn.svm import LinearSVC
 
 # =========================================================================
@@ -407,9 +408,7 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.cluster import AgglomerativeClustering, Birch, KMeans
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold, train_test_split
-from sklearn.naive_bayes import ComplementNB, MultinomialNB
 from sklearn.svm import LinearSVC
 
 
@@ -563,6 +562,16 @@ def load_dataset() -> pd.DataFrame:
     return data
 
 
+# Kept in sync with the keys of the `candidates` dict inside train() below.
+# detector() compares this against what's saved in metrics.json to detect
+# when a newly added/removed algorithm means the saved model is stale and
+# needs retraining - not just when metrics.json is completely missing.
+EXPECTED_CANDIDATE_NAMES = sorted([
+    "Support Vector Machine", "K-Means Clustering",
+    "Agglomerative Clustering", "BIRCH Clustering",
+])
+
+
 def train() -> dict:
     """Train candidates with cross-validation, select highest CV F1, and save artifacts."""
     data = load_dataset()
@@ -591,11 +600,6 @@ def train() -> dict:
     x_all_vec = vectorizer.transform(data["processed"])
 
     candidates = {
-        "Multinomial Naive Bayes": MultinomialNB(),
-        "Complement Naive Bayes": ComplementNB(),
-        "Logistic Regression": LogisticRegression(
-            max_iter=2000, class_weight="balanced", random_state=RANDOM_STATE
-        ),
         "Support Vector Machine": CalibratedClassifierCV(
             LinearSVC(class_weight="balanced", random_state=RANDOM_STATE),
             ensemble=False,
@@ -635,6 +639,7 @@ def train() -> dict:
         "class_distribution": data["label"].value_counts().to_dict(),
         "models": results,
         "holdout": results[best_name],
+        "candidate_names": sorted(candidates.keys()),
     }
     METRICS_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     logging.info(
@@ -651,6 +656,7 @@ def train() -> dict:
 # =========================================================================
 import json
 from io import BytesIO
+import docx
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -658,7 +664,9 @@ import streamlit.components.v1 as components
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from email import policy
+from email.message import EmailMessage
 from email.parser import BytesParser
+from pypdf import PdfReader
 
 
 if "started" not in st.session_state:
@@ -1544,6 +1552,69 @@ def result_pdf(message: str, result: dict) -> bytes:
     pdf.drawText(text); pdf.save(); return buffer.getvalue()
 
 
+TEXT_DECODABLE_EXTENSIONS = {".txt", ".csv", ".json", ".html", ".htm", ".md", ".log", ".xml", ".rtf"}
+SUPPORTED_UPLOAD_FORMATS_MESSAGE = "Supported formats: .txt, .csv, .json, .html, .md, .log, .xml, .eml, .pdf, .docx"
+
+
+def extract_text_from_upload(filename: str, raw_bytes: bytes) -> str:
+    """Extract plain text from an uploaded file of (almost) any common
+    format, for use either as an analyzable message or as input to the
+    File Translation converter. Raises ValueError with a clear message for
+    formats that don't contain extractable text (images, old .doc, other
+    unrecognised binaries, scanned/image-only PDFs, etc.)."""
+    suffix = Path(filename).suffix.lower()
+
+    if suffix in TEXT_DECODABLE_EXTENSIONS:
+        return raw_bytes.decode("utf-8", errors="ignore")
+
+    if suffix == ".eml":
+        email_message = BytesParser(policy=policy.default).parse(BytesIO(raw_bytes))
+        if email_message.is_multipart():
+            body = email_message.get_body(preferencelist=("plain",))
+            return body.get_content() if body else ""
+        return email_message.get_content()
+
+    if suffix == ".pdf":
+        reader = PdfReader(BytesIO(raw_bytes))
+        text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        if not text.strip():
+            raise ValueError("This PDF has no extractable text (it may be a scanned/image-only PDF).")
+        return text
+
+    if suffix == ".docx":
+        document = docx.Document(BytesIO(raw_bytes))
+        text = "\n".join(paragraph.text for paragraph in document.paragraphs)
+        if not text.strip():
+            raise ValueError("This Word document appears to be empty.")
+        return text
+
+    if suffix == ".doc":
+        raise ValueError("Old-format .doc files aren't supported - only modern .docx.")
+
+    raise ValueError(f"Unsupported file format: {suffix or '(no extension)'}. {SUPPORTED_UPLOAD_FORMATS_MESSAGE}")
+
+
+def build_eml_bytes(subject: str, body_text: str) -> bytes:
+    """Wrap plain text into a minimal, valid .eml file (RFC822 email)."""
+    message = EmailMessage()
+    message["Subject"] = subject
+    message["From"] = "converted@message-guard.local"
+    message["To"] = "recipient@message-guard.local"
+    message.set_content(body_text)
+    return message.as_bytes()
+
+
+@st.dialog("Unsupported File Format")
+def unsupported_format_dialog(filename: str) -> None:
+    """Shown when Analyze Message receives a file that isn't .txt/.eml."""
+    suffix = Path(filename).suffix or "(no extension)"
+    st.error(f"**{filename}** — the file type `{suffix}` isn't supported here.")
+    st.write("Analyze Message only accepts **.txt** and **.eml** files directly.")
+    st.write("Use **File Translation** in the sidebar to convert this file to .txt or .eml first, then upload the converted file here.")
+    if st.button("Got it", type="primary", use_container_width=True):
+        st.rerun()
+
+
 def go_to(page_name: str) -> None:
     """Central helper: change page + rerun (avoids duplicated rerun logic)."""
     st.session_state.nav_page = page_name
@@ -1588,31 +1659,21 @@ def analyze() -> None:
     sample = "URGENT! Verify your account now at https://secure-check.example or it will be suspended!!"
 
     uploaded_message = ""
-    with st.expander("Or drag and drop an email or text file (.txt / .eml)"):
-        uploaded_file = st.file_uploader("Upload file", type=["txt", "eml"], label_visibility="collapsed")
+    with st.expander("Or drag and drop a file to analyze (.txt / .eml — other formats can be converted first via File Translation)"):
+        uploaded_file = st.file_uploader("Upload file", type=None, label_visibility="collapsed")
 
         if uploaded_file is not None:
-            try:
-                if uploaded_file.name.lower().endswith(".eml"):
-                    email_message = BytesParser(
-                        policy=policy.default
-                    ).parse(uploaded_file)
-
-                    if email_message.is_multipart():
-                        body = email_message.get_body(preferencelist=("plain",))
-                        uploaded_message = body.get_content() if body else ""
-                    else:
-                        uploaded_message = email_message.get_content()
-
-                else:
-                    uploaded_message = uploaded_file.read().decode(
-                        "utf-8",
-                        errors="ignore"
-                    )
-
-            except Exception as e:
-                st.error(f"Unable to read file: {e}")
-                return
+            suffix = Path(uploaded_file.name).suffix.lower()
+            if suffix not in (".txt", ".eml"):
+                if st.session_state.get("_last_invalid_upload") != (uploaded_file.name, uploaded_file.size):
+                    st.session_state._last_invalid_upload = (uploaded_file.name, uploaded_file.size)
+                    unsupported_format_dialog(uploaded_file.name)
+            else:
+                try:
+                    uploaded_message = extract_text_from_upload(uploaded_file.name, uploaded_file.read())
+                except Exception as e:
+                    st.error(f"Unable to read file: {e}")
+                    return
 
     if "message_input" not in st.session_state:
         st.session_state.message_input = ""
@@ -1996,6 +2057,53 @@ def confirm_delete_dialog(row_positions: list[int] | None, description: str) -> 
             st.rerun()
 
 
+def file_translation() -> None:
+    page_header(
+        "🔄", "File Translation",
+        "root@messageguard:~$ convert any file into .txt or .eml",
+        extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
+    )
+
+    st.write(
+        "Analyze Message only accepts .txt and .eml files directly. Upload a file in any "
+        "supported format below, pick a target format, and convert it — you'll get a "
+        "download button for the converted file, which you can then upload to Analyze Message."
+    )
+    st.caption(SUPPORTED_UPLOAD_FORMATS_MESSAGE)
+
+    uploaded_file = st.file_uploader("Upload a file to convert", type=None)
+    target_format = st.radio("Convert to", [".txt", ".eml"], horizontal=True)
+
+    if st.button("Convert", type="primary", use_container_width=True, disabled=uploaded_file is None):
+        try:
+            with st.spinner("Extracting text and converting..."):
+                text = extract_text_from_upload(uploaded_file.name, uploaded_file.read())
+            base_name = Path(uploaded_file.name).stem
+            if target_format == ".txt":
+                converted_bytes = text.encode("utf-8")
+                out_name = f"{base_name}.txt"
+                mime = "text/plain"
+            else:
+                converted_bytes = build_eml_bytes(subject=base_name, body_text=text)
+                out_name = f"{base_name}.eml"
+                mime = "message/rfc822"
+            st.session_state.converted_file = {"bytes": converted_bytes, "name": out_name, "mime": mime}
+            st.success(f"Converted successfully — {out_name} is ready to download below.")
+        except Exception as e:
+            st.error(f"Conversion failed: {e}")
+            st.session_state.pop("converted_file", None)
+
+    converted = st.session_state.get("converted_file")
+    if converted:
+        st.download_button(
+            f"Download {converted['name']}",
+            converted["bytes"],
+            converted["name"],
+            converted["mime"],
+            use_container_width=True,
+        )
+
+
 def about() -> None:
     # All of the informational content that used to live below the hero on
     # the Home page now lives here, shown once the user has clicked
@@ -2043,7 +2151,7 @@ def about() -> None:
 
     st.divider()
 
-    st.write("This educational project compares Multinomial Naive Bayes, Logistic Regression, and SVM on TF-IDF features. The best weighted-F1 model is saved locally.")
+    st.write("This educational project compares a Support Vector Machine against K-Means, Agglomerative, and BIRCH clustering on TF-IDF features. The best weighted-F1 model is saved locally.")
     st.warning("Predictions are decision support, not a replacement for security controls. Do not open unexpected links or disclose credentials.")
 
 
@@ -2055,6 +2163,7 @@ pages = {
     "Analysis Details": analysis_details,
     "Dashboard": dashboard,
     "History": history_page,
+    "File Translation": file_translation,
     "About": about,
 }
 
@@ -2062,9 +2171,10 @@ NAV_ICONS = {
     "Analyze Message": "🔍",
     "Dashboard": "📊",
     "History": "🕘",
+    "File Translation": "🔄",
     "About": "ℹ️",
 }
-NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "About"]
+NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation", "About"]
 
 if st.session_state.started:
     if not st.session_state.sidebar_visible:
