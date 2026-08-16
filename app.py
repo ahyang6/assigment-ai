@@ -57,6 +57,7 @@ MODEL_PATH = MODEL_DIR / "spam_model.pkl"
 VECTORIZER_PATH = MODEL_DIR / "tfidf.pkl"
 METRICS_PATH = MODEL_DIR / "metrics.json"
 HISTORY_PATH = BASE_DIR / "prediction_history.csv"
+GMAIL_TOKEN_PATH = BASE_DIR / "gmail_token.json"
 RANDOM_STATE = 42
 LABELS = ["low", "medium", "high"]
 
@@ -1911,6 +1912,32 @@ def build_gmail_oauth_flow() -> GoogleOAuthFlow:
     return flow
 
 
+def save_gmail_credentials(credentials: GoogleCredentials) -> None:
+    """Persist credentials to a shared file (not just session_state), so a
+    connection completed in one browser tab is picked up by other tabs too
+    - each tab is its own independent Streamlit session and can't see
+    another tab's session_state directly."""
+    GMAIL_TOKEN_PATH.write_text(credentials.to_json(), encoding="utf-8")
+
+
+def load_gmail_credentials() -> GoogleCredentials | None:
+    """Load previously-saved credentials from the shared file, if any."""
+    if not GMAIL_TOKEN_PATH.exists():
+        return None
+    try:
+        return GoogleCredentials.from_authorized_user_info(
+            json.loads(GMAIL_TOKEN_PATH.read_text(encoding="utf-8")), scopes=GMAIL_SCOPES
+        )
+    except Exception:
+        return None
+
+
+def clear_gmail_credentials() -> None:
+    """Remove the saved credentials file (used on disconnect)."""
+    if GMAIL_TOKEN_PATH.exists():
+        GMAIL_TOKEN_PATH.unlink()
+
+
 def _extract_gmail_body(payload: dict) -> str:
     """Recursively find and decode the plain-text (or HTML, as fallback)
     body from a Gmail API message payload."""
@@ -1973,6 +2000,13 @@ def dashboard() -> None:
         st.warning(f"Gmail integration isn't configured yet. {GMAIL_SETUP_HELP}")
         return
 
+    # Pick up a connection from session_state first (fastest), then fall
+    # back to the shared file (covers a connection completed in another tab).
+    if "gmail_credentials" not in st.session_state:
+        loaded = load_gmail_credentials()
+        if loaded:
+            st.session_state.gmail_credentials = loaded
+
     if "gmail_credentials" not in st.session_state:
         auth_code = st.query_params.get("code")
         if auth_code:
@@ -1980,35 +2014,37 @@ def dashboard() -> None:
                 flow = build_gmail_oauth_flow()
                 flow.fetch_token(code=auth_code)
                 st.session_state.gmail_credentials = flow.credentials
+                save_gmail_credentials(flow.credentials)
                 st.query_params.clear()
+                st.session_state.gmail_just_connected = True
                 st.rerun()
             except Exception as e:
                 st.error(f"Gmail authorization failed: {e}")
+        elif st.session_state.get("gmail_just_connected"):
+            # This tab just finished the OAuth exchange (opened as the
+            # separate authorization tab) - the credentials are already
+            # saved to the shared file, so the original tab will pick them
+            # up on its next auto-refresh. Nothing more to do in this one.
+            st.success("✅ Gmail account connected! You can close this tab now and go back to your original tab.")
+            st.html("<script>setTimeout(function(){ window.close(); }, 2500);</script>")
         else:
             st.write("Connect your Gmail account to scan your inbox and see how many emails are Low, Medium, or High risk.")
             flow = build_gmail_oauth_flow()
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
-            # A plain <a> (no target="_blank") navigates the *same* tab, so
-            # Google's redirect back lands here too - st.link_button always
-            # opens a new tab instead, with no way to turn that off.
-            st.html(
-                f"""
-                <a href="{auth_url}" target="_top" style="
-                    display:block; text-align:center; text-decoration:none;
-                    background: linear-gradient(135deg, #f6821f, #ff9d3d);
-                    border: 1px solid rgba(255, 157, 61, 0.6);
-                    border-radius: 2px; color: #ffffff; font-weight: 700;
-                    font-size: 1.0rem; letter-spacing: 0.03em;
-                    padding: 0.75rem 1.6rem; box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
-                ">🔗 Connect Gmail Account</a>
-                """
-            )
+            st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
+            st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
+            # Poll for the connection completing in the other tab by
+            # reloading this tab periodically - session_state can't be
+            # shared across tabs directly, so this is what lets the
+            # *original* tab notice the shared credentials file appearing.
+            st.html("<script>setTimeout(function(){ window.location.reload(); }, 3000);</script>")
         return
 
     credentials = st.session_state.gmail_credentials
     if credentials.expired and credentials.refresh_token:
         credentials.refresh(GoogleAuthRequest())
         st.session_state.gmail_credentials = credentials
+        save_gmail_credentials(credentials)
 
     status_col, disconnect_col = st.columns([3, 1])
     with status_col:
@@ -2017,6 +2053,8 @@ def dashboard() -> None:
         if st.button("Disconnect Gmail", use_container_width=True):
             del st.session_state.gmail_credentials
             st.session_state.pop("gmail_scan_results", None)
+            st.session_state.pop("gmail_just_connected", None)
+            clear_gmail_credentials()
             st.rerun()
 
     limit_input = st.number_input(
