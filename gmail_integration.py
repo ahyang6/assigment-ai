@@ -150,41 +150,29 @@ def dashboard() -> None:
         if auth_code:
             try:
                 flow = build_gmail_oauth_flow()
-                # Navigating to Google and back is a fresh page load even
-                # within the same tab, so the PKCE code_verifier generated
-                # when the auth URL was built has to be recovered from the
-                # shared file rather than regenerated here.
                 if GMAIL_PKCE_PATH.exists():
                     flow.code_verifier = GMAIL_PKCE_PATH.read_text(encoding="utf-8").strip()
-                    GMAIL_PKCE_PATH.unlink()  # one-time use
+                    GMAIL_PKCE_PATH.unlink()
                 flow.fetch_token(code=auth_code)
                 st.session_state.gmail_credentials = flow.credentials
                 save_gmail_credentials(flow.credentials)
                 st.query_params.clear()
+                st.session_state.gmail_just_connected = True
                 st.rerun()
             except Exception as e:
                 st.error(f"Gmail authorization failed: {e}")
+        elif st.session_state.get("gmail_just_connected"):
+            st.success("✅ Gmail account connected! You can close this tab now and go back to your original tab.")
+            st.html("<script>setTimeout(function(){ window.close(); }, 2500);</script>")
         else:
             st.write("Connect your Gmail account to scan your inbox and see how many emails are Low, Medium, or High risk.")
             flow = build_gmail_oauth_flow()
             flow.autogenerate_code_verifier = True
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
-            # A plain <a> with target="_top" navigates *this* tab (not a
-            # new one) - st.link_button always opens a new tab with no way
-            # to turn that off, which is why it isn't used here.
-            st.html(
-                f"""
-                <a href="{auth_url}" target="_top" style="
-                    display:block; text-align:center; text-decoration:none;
-                    background: linear-gradient(135deg, #f6821f, #ff9d3d);
-                    border: 1px solid rgba(255, 157, 61, 0.6);
-                    border-radius: 2px; color: #ffffff; font-weight: 700;
-                    font-size: 1.0rem; letter-spacing: 0.03em;
-                    padding: 0.75rem 1.6rem; box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
-                ">🔗 Connect Gmail Account</a>
-                """
-            )
+            st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
+            st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
+            st.html("<script>setTimeout(function(){ window.location.reload(); }, 3000);</script>")
         return
 
     credentials = st.session_state.gmail_credentials
@@ -200,6 +188,7 @@ def dashboard() -> None:
         if st.button("Disconnect Gmail", use_container_width=True):
             del st.session_state.gmail_credentials
             st.session_state.pop("gmail_scan_results", None)
+            st.session_state.pop("gmail_just_connected", None)
             clear_gmail_credentials()
             st.rerun()
 
