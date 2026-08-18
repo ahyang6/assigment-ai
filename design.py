@@ -6,6 +6,8 @@ import json
 
 import streamlit as st
 import streamlit.components.v1 as components
+import pandas as pd
+import plotly.graph_objects as go
 
 CATEGORY_ICONS = {
     "Legitimate Message": "✅",
@@ -840,3 +842,48 @@ def stat_card(value, label: str, color: str = "#00e5ff", value_size: str = "1.5r
         </div>
         """
     )
+
+def render_sidebar_algorithm_comparison(info: dict, selected: str | None = None) -> None:
+    """Render a compact horizontal bar chart in the sidebar comparing every
+    trained algorithm's accuracy. The currently selected algorithm (on the
+    Analyze Message page) is highlighted in orange; the rest stay cyan."""
+    models = info.get("models", {})
+    if not models:
+        return
+
+    chart_df = pd.DataFrame([
+        {"Algorithm": name, "Accuracy": m["accuracy"], "F1": m["f1"]}
+        for name, m in models.items()
+    ]).sort_values("Accuracy")
+
+    bar_colors = [
+        "#f6821f" if name == selected else "#00e5ff"
+        for name in chart_df["Algorithm"]
+    ]
+
+    fig = go.Figure(
+        go.Bar(
+            x=chart_df["Accuracy"],
+            y=chart_df["Algorithm"],
+            orientation="h",
+            marker=dict(
+                color=bar_colors,
+                line=dict(color="rgba(255,255,255,0.15)", width=1),
+            ),
+            text=[f"{v:.1%}" for v in chart_df["Accuracy"]],
+            textposition="outside",
+            textfont=dict(color="#d7dee8", size=10),
+            hovertemplate="%{y}<br>Accuracy: %{x:.1%}<extra></extra>",
+        )
+    )
+    fig = style_fig(fig)
+    fig.update_layout(
+        height=170,
+        margin=dict(t=6, b=6, l=6, r=36),
+        xaxis=dict(range=[0, 1], tickformat=".0%", tickfont=dict(size=9), showgrid=False),
+        yaxis=dict(tickfont=dict(size=10)),
+        showlegend=False,
+    )
+
+    st.sidebar.html('<div class="mg-panel-title" style="margin-top:0.4rem;">Algorithm Accuracy</div>')
+    st.sidebar.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})

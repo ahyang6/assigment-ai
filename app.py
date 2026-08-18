@@ -20,7 +20,8 @@ from reportlab.pdfgen import canvas
 
 from design import (
     CATEGORY_ICONS, RISK_COLORS, RISK_ICONS,
-    apply_theme, page_header, render_hero, stat_card, style_fig,
+    apply_theme, page_header, render_hero, render_sidebar_algorithm_comparison,
+    stat_card, style_fig,
 )
 from detection import (
     append_history, categorize_message, clear_history, delete_history_rows,
@@ -201,25 +202,8 @@ def analyze() -> None:
         index=default_index,
         help="Choose which trained algorithm analyzes the message below.",
     )
-
-    with st.expander("Compare algorithm accuracy"):
-        if info.get("models"):
-            comparison_df = pd.DataFrame([
-                {"Algorithm": name, "Accuracy": m["accuracy"], "F1 Score": m["f1"], "CV F1": m["cv_f1"]}
-                for name, m in info["models"].items()
-            ]).sort_values("Accuracy", ascending=False).reset_index(drop=True)
-
-            def _highlight_selected(row):
-                style = "background-color: rgba(246,130,31,0.16); color:#ffb066; font-weight:700;" if row["Algorithm"] == selected_algorithm else ""
-                return [style] * len(row)
-
-            st.dataframe(
-                comparison_df.style.apply(_highlight_selected, axis=1)
-                .format({"Accuracy": "{:.1%}", "F1 Score": "{:.3f}", "CV F1": "{:.3f}"}),
-                use_container_width=True, hide_index=True,
-            )
-        else:
-            st.caption("Train the model first (run an analysis) to see a comparison.")
+    # 记录当前选中的算法,让 sidebar 的对比图知道要高亮哪一条
+    st.session_state.selected_algorithm = selected_algorithm
 
     sample = "URGENT! Verify your account now at https://secure-check.example or it will be suspended!!"
 
@@ -630,7 +614,13 @@ if st.session_state.started:
                 st.session_state.nav_page = item
                 st.rerun()
 
-        best_model = metrics().get("best_model", "Not trained yet")
+        # --- algorithm comparison chart (graphical, replaces the old table
+        # that used to live inside an expander on Analyze Message) ---
+        info = metrics()
+        if info.get("models"):
+            render_sidebar_algorithm_comparison(info, st.session_state.get("selected_algorithm"))
+
+        best_model = info.get("best_model", "Not trained yet")
         st.sidebar.html('<div class="mg-sidebar-spacer"></div>')
         st.sidebar.html(
             f"""
