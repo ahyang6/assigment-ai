@@ -637,11 +637,8 @@ def train() -> dict:
 
 @st.cache_resource
 def detector(model_name: str | None = None) -> SpamDetector:
-    """Load an existing model (or train from scratch on first deployment),
-    then return a SpamDetector using the given algorithm - or the best one
-    by default. Cached per model_name, so switching algorithms on the
-    Analyze Message page doesn't require reloading anything already used."""
-    if not METRICS_PATH.exists():
+    """Load an existing model (or train from scratch on first deployment)..."""
+    if not METRICS_PATH.exists() or not MODELS_PATH.exists() or not VECTORIZER_PATH.exists():
         with st.spinner("Preparing the AI model for first use…"):
             train()
     return SpamDetector(model_name)
