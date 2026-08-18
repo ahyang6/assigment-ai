@@ -4,10 +4,10 @@ styling, KPI cards). Kept separate from app.py so styling can be edited
 without touching any application logic."""
 import json
 
-import streamlit as st
-import streamlit.components.v1 as components
 import pandas as pd
 import plotly.graph_objects as go
+import streamlit as st
+import streamlit.components.v1 as components
 
 CATEGORY_ICONS = {
     "Legitimate Message": "✅",
@@ -842,6 +842,7 @@ def stat_card(value, label: str, color: str = "#00e5ff", value_size: str = "1.5r
         </div>
         """
     )
+
 
 def render_sidebar_algorithm_comparison(info: dict, selected: str | None = None) -> None:
     """Render a compact horizontal bar chart in the sidebar comparing every
