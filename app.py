@@ -551,6 +551,61 @@ def file_translation() -> None:
             use_container_width=True,
         )
 
+def algorithm_comparison() -> None:
+    page_header(
+        "📈", "Algorithm Comparison",
+        "root@messageguard:~$ cat algorithm_accuracy_report.log",
+        extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
+    )
+
+    info = metrics()
+    models = info.get("models", {})
+    if not models:
+        st.info("No trained models found yet.")
+        return
+
+    best_algorithm = info.get("best_model")
+
+    comparison_df = pd.DataFrame([
+        {
+            "Algorithm": name,
+            "Accuracy": m["accuracy"],
+            "Precision": m["precision"],
+            "Recall": m["recall"],
+            "F1 Score": m["f1"],
+            "CV Accuracy": m.get("cv_accuracy"),
+            "CV F1": m.get("cv_f1"),
+        }
+        for name, m in models.items()
+    ]).sort_values("Accuracy", ascending=False).reset_index(drop=True)
+
+    st.html('<div class="mg-panel-title">Accuracy Comparison — All Algorithms</div>')
+
+    percent_cols = ["Accuracy", "Precision", "Recall", "F1 Score", "CV Accuracy", "CV F1"]
+    st.dataframe(
+        comparison_df.style.format({col: "{:.1%}" for col in percent_cols}).apply(
+            lambda row: [
+                "background-color: rgba(246,130,31,0.18); color:#ffb066; font-weight:700;"
+                if row["Algorithm"] == best_algorithm else ""
+                for _ in row
+            ],
+            axis=1,
+        ),
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.caption(f"🏆 Best performing algorithm (by cross-validated F1): **{best_algorithm}**")
+
+    st.html("<div style='margin-top:1.2rem;'></div>")
+    fig = px.bar(
+        comparison_df, x="Algorithm", y="Accuracy", color="Algorithm",
+        text=comparison_df["Accuracy"].apply(lambda v: f"{v:.1%}"),
+    )
+    fig = style_fig(fig)
+    fig.update_layout(showlegend=False, yaxis=dict(tickformat=".0%", range=[0, 1]))
+    st.html('<div class="mg-panel-title">Accuracy Chart</div>')
+    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+
 
 apply_theme()
 
@@ -561,6 +616,7 @@ pages = {
     "Dashboard": dashboard,
     "History": history_page,
     "File Translation": file_translation,
+    "Algorithm Comparison": algorithm_comparison,
 }
 
 NAV_ICONS = {
@@ -568,8 +624,9 @@ NAV_ICONS = {
     "Dashboard": "📊",
     "History": "🕘",
     "File Translation": "🔄",
+    "Algorithm Comparison": "📈",   # 新增
 }
-NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation"]
+NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation", "Algorithm Comparison"]
 
 if st.session_state.started:
     if not st.session_state.sidebar_visible:

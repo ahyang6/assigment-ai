@@ -637,10 +637,21 @@ def train() -> dict:
 
 @st.cache_resource
 def detector(model_name: str | None = None) -> SpamDetector:
-    """Load an existing model (or train from scratch on first deployment)..."""
-    if not METRICS_PATH.exists() or not MODELS_PATH.exists() or not VECTORIZER_PATH.exists():
+    """Load an existing model (or train from scratch on first deployment,
+    or retrain if the saved model's algorithm set is stale - e.g. it was
+    trained before a new candidate algorithm was added)."""
+    needs_training = not METRICS_PATH.exists() or not MODELS_PATH.exists() or not VECTORIZER_PATH.exists()
+    if not needs_training:
+        try:
+            saved_info = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
+            if sorted(saved_info.get("candidate_names", [])) != EXPECTED_CANDIDATE_NAMES:
+                needs_training = True
+        except Exception:
+            needs_training = True
+    if needs_training:
         with st.spinner("Preparing the AI model for first use…"):
             train()
+        metrics.clear()  # invalidate cached metrics() so the new candidate_names show up immediately
     return SpamDetector(model_name)
 
 
