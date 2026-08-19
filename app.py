@@ -629,6 +629,8 @@ NAV_ICONS = {
 NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation", "Algorithm Comparison"]
 
 if st.session_state.started:
+    ensure_trained() 
+    
     if not st.session_state.sidebar_visible:
         # Force-hide Streamlit's native sidebar via our own CSS (not relying
         # on Streamlit's collapse mechanism, which only reliably applies once

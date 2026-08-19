@@ -654,6 +654,13 @@ def detector(model_name: str | None = None) -> SpamDetector:
         metrics.clear()  # invalidate cached metrics() so the new candidate_names show up immediately
     return SpamDetector(model_name)
 
+def ensure_trained() -> None:
+    """Make sure a trained model (all candidate algorithms) exists before
+    any page needs metrics() or a SpamDetector - so a first-time visitor
+    doesn't have to run an analysis first just to see the algorithm
+    dropdown or the comparison table populated."""
+    detector()  # st.cache_resource-cached: only actually trains once
+
 
 @st.cache_data
 def metrics() -> dict:
