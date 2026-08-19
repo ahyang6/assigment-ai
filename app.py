@@ -18,6 +18,10 @@ from pypdf import PdfReader
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
+from detection import (
+    append_history, categorize_message, clear_history, delete_history_rows,
+    detector, ensure_trained, load_history, metrics,
+)
 from design import (
     CATEGORY_ICONS, RISK_COLORS, RISK_ICONS,
     apply_theme, page_header, render_hero, render_sidebar_algorithm_comparison,
@@ -630,7 +634,7 @@ NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation", "Alg
 
 if st.session_state.started:
     ensure_trained() 
-    
+
     if not st.session_state.sidebar_visible:
         # Force-hide Streamlit's native sidebar via our own CSS (not relying
         # on Streamlit's collapse mechanism, which only reliably applies once
