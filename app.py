@@ -24,7 +24,7 @@ from detection import (
 )
 from design import (
     CATEGORY_ICONS, RISK_COLORS, RISK_ICONS,
-    apply_theme, page_header, render_hero, render_sidebar_algorithm_comparison,
+    apply_theme, page_header, render_hero,
     stat_card, style_fig,
 )
 from detection import (
@@ -206,8 +206,6 @@ def analyze() -> None:
         index=default_index,
         help="Choose which trained algorithm analyzes the message below.",
     )
-    # 记录当前选中的算法,让 sidebar 的对比图知道要高亮哪一条
-    st.session_state.selected_algorithm = selected_algorithm
 
     sample = "URGENT! Verify your account now at https://secure-check.example or it will be suspended!!"
 
@@ -677,13 +675,7 @@ if st.session_state.started:
                 st.session_state.nav_page = item
                 st.rerun()
 
-        # --- algorithm comparison chart (graphical, replaces the old table
-        # that used to live inside an expander on Analyze Message) ---
-        info = metrics()
-        if info.get("models"):
-            render_sidebar_algorithm_comparison(info, st.session_state.get("selected_algorithm"))
-
-        best_model = info.get("best_model", "Not trained yet")
+        best_model = metrics().get("best_model", "Not trained yet")
         st.sidebar.html('<div class="mg-sidebar-spacer"></div>')
         st.sidebar.html(
             f"""
