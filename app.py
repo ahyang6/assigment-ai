@@ -15,8 +15,11 @@ from email import policy
 from email.message import EmailMessage
 from email.parser import BytesParser
 from pypdf import PdfReader
+from reportlab.lib import colors
+from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.platypus import HRFlowable, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from detection import (
     append_history, categorize_message, clear_history, delete_history_rows,
@@ -26,10 +29,6 @@ from design import (
     CATEGORY_ICONS, RISK_COLORS, RISK_ICONS,
     apply_theme, page_header, render_hero,
     stat_card, style_fig,
-)
-from detection import (
-    append_history, categorize_message, clear_history, delete_history_rows,
-    detector, load_history, metrics,
 )
 from gmail_integration import dashboard
 
@@ -71,25 +70,145 @@ st.set_page_config(
 PAGES = ["Home", "Analyze Message", "Dashboard", "History", "File Translation"]
 
 
+KEYWORD_GROUP_DESCRIPTIONS = {
+    "urgency": "uses urgency tactics (words like {examples}) to pressure you into acting quickly without thinking it through",
+    "promotional": "uses promotional or prize-related language (words like {examples}) typical of spam offers",
+    "security": "impersonates a security or account-verification request (words like {examples}), a common phishing tactic",
+    "action": "pushes you to take an immediate action (words like {examples}), such as clicking a link or replying",
+}
+
+CATEGORY_SUMMARIES = {
+    "Legitimate Message": "This message doesn't show the typical warning signs of spam or phishing.",
+    "Phishing Attempt": "This message shows signs of a <b>phishing attempt</b> \u2014 it's likely trying to trick you into giving away personal information, login details, or money by pretending to be a trustworthy source.",
+    "Spam / Promotional": "This message looks like unsolicited <b>spam or a promotional offer</b>.",
+    "Urgent Action Scam": "This message uses urgency and pressure tactics typical of a <b>scam</b> trying to rush you into acting before you think it through.",
+    "Suspicious Message": "This message has some suspicious characteristics, though it doesn't clearly fit a single spam or phishing pattern.",
+}
+
+SAFETY_TIPS = {
+    "Phishing Attempt": "Don't click any links or enter your login details. Verify by contacting the organization directly through their official website or phone number \u2014 not any contact info in this message.",
+    "Spam / Promotional": "You can usually ignore or delete messages like this. Avoid clicking links or providing personal information.",
+    "Urgent Action Scam": "Take a moment before acting. Legitimate organizations rarely demand immediate action. Verify independently before doing anything.",
+    "Suspicious Message": "Be cautious. If you weren't expecting this message or don't recognize the sender, avoid clicking links or sharing information.",
+    "Legitimate Message": "No specific action needed, but always stay alert for unexpected requests for personal information.",
+}
+
+
+def build_friendly_explanation(result: dict, category: str) -> list[str]:
+    """Turn the raw indicators into a few plain-language paragraphs
+    explaining *why* the message was flagged this way, for the PDF report
+    - not just a dump of matched keywords."""
+    paragraphs = [CATEGORY_SUMMARIES.get(category, "")]
+    paragraphs.append(
+        f"Message Guard rated this a <b>{result['prediction']} risk</b> message "
+        f"(score {result['risk_score']}/100)."
+    )
+
+    reasons = []
+    for group, words in result["indicators"]["keywords"].items():
+        if not words:
+            continue
+        examples = ", ".join(f"'{w}'" for w in words[:3])
+        template = KEYWORD_GROUP_DESCRIPTIONS.get(group)
+        if template:
+            reasons.append("It " + template.format(examples=examples) + ".")
+
+    if result["indicators"].get("suspicious_urls"):
+        reasons.append("It contains a link that looks suspicious (it mimics a login/security page, or uses a shortened or unusual web address).")
+    elif result["indicators"]["urls"]:
+        reasons.append("It contains a link, which is worth checking carefully before clicking.")
+
+    if result["indicators"].get("repeated_punctuation"):
+        reasons.append("It uses repeated punctuation (like '!!!'), often used to create excitement or urgency.")
+
+    if result["indicators"].get("caps"):
+        reasons.append("It uses several ALL-CAPS words, a common attention-grabbing tactic in spam.")
+
+    if reasons:
+        paragraphs.append(" ".join(reasons))
+    elif result["prediction"] == "low":
+        paragraphs.append("No strong spam or phishing signals were detected in the message.")
+
+    return [p for p in paragraphs if p]
+
+
 def result_pdf(message: str, result: dict) -> bytes:
-    """Make a small downloadable report for one result."""
-    buffer = BytesIO(); pdf = canvas.Canvas(buffer, pagesize=letter)
-    text = pdf.beginText(48, 740); text.setFont("Helvetica", 11)
+    """Build a user-friendly PDF report: a plain-language explanation of
+    why the message is spam/phishing/legitimate and what to do about it,
+    followed by supporting technical detail and the original message."""
     category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
-    lines = ["Message Guard - Analysis Report", "", f"Prediction: {result['prediction'].title()}",
-             f"Category: {category}",
-             f"Confidence: {result['confidence']:.1%}", f"Risk: {result['risk_score']}/100 ({result['risk_level']})", "",
-             "Explanation:", result['explanation'], "",
-             "Probability Distribution:"]
-    lines += [f"  {cls.title()}: {prob:.1%}" for cls, prob in result["probabilities"].items()]
+    risk_color = {"low": "#1a7f37", "medium": "#b35900", "high": "#c62828"}.get(result["prediction"], "#333333")
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=54, bottomMargin=54, leftMargin=56, rightMargin=56)
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle("MGTitle", parent=styles["Title"], fontSize=19, spaceAfter=4, alignment=TA_LEFT)
+    verdict_style = ParagraphStyle("MGVerdict", parent=styles["Heading1"], fontSize=17, textColor=colors.HexColor(risk_color), spaceAfter=2)
+    section_style = ParagraphStyle("MGSection", parent=styles["Heading2"], fontSize=13, spaceBefore=16, spaceAfter=6, textColor=colors.HexColor("#1f2937"))
+    body_style = ParagraphStyle("MGBody", parent=styles["Normal"], fontSize=11, leading=16)
+    tip_style = ParagraphStyle("MGTip", parent=styles["Normal"], fontSize=11, leading=16, backColor=colors.HexColor("#fff8e6"), borderPadding=8, borderColor=colors.HexColor("#f0c96b"), borderWidth=0.5)
+    small_style = ParagraphStyle("MGSmall", parent=styles["Normal"], fontSize=9, textColor=colors.grey, leading=13)
+    message_style = ParagraphStyle("MGMessage", parent=styles["Normal"], fontSize=10, leading=14, backColor=colors.HexColor("#f5f5f5"), borderPadding=10)
+
+    story = [
+        Paragraph("Message Guard \u2014 Analysis Report", title_style),
+        Paragraph(f"{result['prediction'].upper()} RISK \u2014 {result['risk_score']}/100", verdict_style),
+        Paragraph(f"Category: <b>{category}</b>", body_style),
+        Spacer(1, 10),
+        HRFlowable(width="100%", color=colors.HexColor("#e0e0e0")),
+        Paragraph("Why was this flagged?", section_style),
+    ]
+    for paragraph_text in build_friendly_explanation(result, category):
+        story.append(Paragraph(paragraph_text, body_style))
+        story.append(Spacer(1, 6))
+
+    tip = SAFETY_TIPS.get(category)
+    if tip:
+        story.append(Spacer(1, 4))
+        story.append(Paragraph(f"<b>What to do:</b> {tip}", tip_style))
+
+    story.append(Spacer(1, 16))
+    story.append(HRFlowable(width="100%", color=colors.HexColor("#e0e0e0")))
+    story.append(Paragraph("Technical Details", section_style))
+    detail_table = Table(
+        [
+            ["Prediction", result["prediction"].title()],
+            ["Confidence", f"{result['confidence']:.1%}"],
+            ["Risk Score", f"{result['risk_score']} / 100 ({result['risk_level']})"],
+            ["Algorithm Used", result.get("algorithm", "\u2014")],
+        ],
+        colWidths=[140, 320],
+    )
+    detail_table.setStyle(TableStyle([
+        ("FONTSIZE", (0, 0), (-1, -1), 10),
+        ("TEXTCOLOR", (0, 0), (0, -1), colors.grey),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+        ("TOPPADDING", (0, 0), (-1, -1), 4),
+    ]))
+    story.append(detail_table)
+
+    story.append(Spacer(1, 6))
+    prob_line = " &nbsp;|&nbsp; ".join(f"{cls.title()}: {prob:.1%}" for cls, prob in result["probabilities"].items())
+    story.append(Paragraph(f"<b>Probability breakdown:</b> {prob_line}", small_style))
+
     words = [w.upper() for values in result["indicators"]["keywords"].values() for w in values]
-    lines += ["", "Detected Keywords: " + (", ".join(words) if words else "None")]
+    if words:
+        story.append(Spacer(1, 8))
+        story.append(Paragraph(f"<b>Detected keywords:</b> {', '.join(words)}", small_style))
     if result["indicators"]["urls"]:
-        lines.append("Suspicious URLs: " + ", ".join(result["indicators"]["urls"]))
-    lines += ["", "Message:"]
-    for line in lines + [message[i:i+90] for i in range(0, len(message), 90)]:
-        text.textLine(line)
-    pdf.drawText(text); pdf.save(); return buffer.getvalue()
+        escaped_urls = ", ".join(u.replace("&", "&amp;") for u in result["indicators"]["urls"])
+        story.append(Paragraph(f"<b>URLs found:</b> {escaped_urls}", small_style))
+
+    story.append(Spacer(1, 16))
+    story.append(HRFlowable(width="100%", color=colors.HexColor("#e0e0e0")))
+    story.append(Paragraph("Original Message", section_style))
+    escaped_message = (
+        message.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br/>")
+    )
+    story.append(Paragraph(escaped_message, message_style))
+
+    doc.build(story)
+    return buffer.getvalue()
 
 
 TEXT_DECODABLE_EXTENSIONS = {".txt", ".csv", ".json", ".html", ".htm", ".md", ".log", ".xml", ".rtf"}
