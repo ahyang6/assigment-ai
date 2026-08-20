@@ -100,10 +100,23 @@ def _extract_gmail_body(payload: dict) -> str:
     return ""
 
 
-def fetch_gmail_messages(credentials, max_results, progress_callback=None) -> list[str]:
-    """Fetch and decode the body text of messages in the user's inbox
-    (paginated through the full inbox), up to max_results if given
-    (None/0 = no limit, scan everything)."""
+def _extract_gmail_headers(payload: dict) -> dict:
+    """Pull the Subject/From/Date headers out of a Gmail message payload,
+    so scan results can show which real email each verdict belongs to."""
+    headers = {h.get("name", ""): h.get("value", "") for h in payload.get("headers", [])}
+    return {
+        "subject": headers.get("Subject") or "(no subject)",
+        "from": headers.get("From") or "(unknown sender)",
+        "date": headers.get("Date") or "",
+    }
+
+
+def fetch_gmail_messages(credentials, max_results, progress_callback=None) -> list[dict]:
+    """Fetch messages in the user's inbox (paginated through the full
+    inbox), up to max_results if given (None/0 = no limit, scan
+    everything). Returns a list of dicts with subject/from/date/body for
+    each message, so callers can show which real email a result belongs
+    to - not just an anonymous risk count."""
     service = build_google_service("gmail", "v1", credentials=credentials)
     message_refs = []
     page_token = None
@@ -118,16 +131,17 @@ def fetch_gmail_messages(credentials, max_results, progress_callback=None) -> li
     if max_results:
         message_refs = message_refs[:max_results]
 
-    bodies = []
+    emails = []
     total = len(message_refs)
     for i, msg_ref in enumerate(message_refs):
         full_message = service.users().messages().get(userId="me", id=msg_ref["id"], format="full").execute()
-        body = _extract_gmail_body(full_message.get("payload", {}))
+        payload = full_message.get("payload", {})
+        body = _extract_gmail_body(payload)
         if body.strip():
-            bodies.append(body)
+            emails.append({**_extract_gmail_headers(payload), "body": body})
         if progress_callback:
             progress_callback(i + 1, total)
-    return bodies
+    return emails
 
 
 def dashboard() -> None:
@@ -150,29 +164,54 @@ def dashboard() -> None:
         if auth_code:
             try:
                 flow = build_gmail_oauth_flow()
+                # Navigating to Google and back is a fresh page load even
+                # within the same tab, so the PKCE code_verifier generated
+                # when the auth URL was built has to be recovered from the
+                # shared file rather than regenerated here.
                 if GMAIL_PKCE_PATH.exists():
                     flow.code_verifier = GMAIL_PKCE_PATH.read_text(encoding="utf-8").strip()
-                    GMAIL_PKCE_PATH.unlink()
                 flow.fetch_token(code=auth_code)
+                # Only consume the verifier file once we know the exchange
+                # actually succeeded - deleting it unconditionally on read
+                # meant a Streamlit rerun that reached this code again after
+                # a failed attempt (with the same stale ?code= still in the
+                # URL) would find it already gone and fail with a confusing
+                # "missing code verifier" error instead of the real problem.
+                if GMAIL_PKCE_PATH.exists():
+                    GMAIL_PKCE_PATH.unlink()
                 st.session_state.gmail_credentials = flow.credentials
                 save_gmail_credentials(flow.credentials)
                 st.query_params.clear()
-                st.session_state.gmail_just_connected = True
                 st.rerun()
             except Exception as e:
                 st.error(f"Gmail authorization failed: {e}")
-        elif st.session_state.get("gmail_just_connected"):
-            st.success("✅ Gmail account connected! You can close this tab now and go back to your original tab.")
-            st.html("<script>setTimeout(function(){ window.close(); }, 2500);</script>")
+                # Authorization codes are single-use - clearing the code
+                # from the URL here prevents a later rerun from silently
+                # retrying (and failing on) this same already-spent code.
+                st.query_params.clear()
         else:
             st.write("Connect your Gmail account to scan your inbox and see how many emails are Low, Medium, or High risk.")
             flow = build_gmail_oauth_flow()
             flow.autogenerate_code_verifier = True
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
-            st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
-            st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
-            st.html("<script>setTimeout(function(){ window.location.reload(); }, 3000);</script>")
+            # A plain <a> with target="_top" navigates *this* tab (not a
+            # new one) - st.link_button always opens a new tab with no way
+            # to turn that off, and a plain <a> without target="_top" gets
+            # trapped inside Streamlit's own rendering iframe (Google then
+            # refuses to be framed, showing a generic 403).
+            st.html(
+                f"""
+                <a href="{auth_url}" target="_top" style="
+                    display:block; text-align:center; text-decoration:none;
+                    background: linear-gradient(135deg, #f6821f, #ff9d3d);
+                    border: 1px solid rgba(255, 157, 61, 0.6);
+                    border-radius: 2px; color: #ffffff; font-weight: 700;
+                    font-size: 1.0rem; letter-spacing: 0.03em;
+                    padding: 0.75rem 1.6rem; box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
+                ">🔗 Connect Gmail Account</a>
+                """
+            )
         return
 
     credentials = st.session_state.gmail_credentials
@@ -188,7 +227,6 @@ def dashboard() -> None:
         if st.button("Disconnect Gmail", use_container_width=True):
             del st.session_state.gmail_credentials
             st.session_state.pop("gmail_scan_results", None)
-            st.session_state.pop("gmail_just_connected", None)
             clear_gmail_credentials()
             st.rerun()
 
@@ -203,17 +241,26 @@ def dashboard() -> None:
             def update_progress(done, total):
                 progress_bar.progress(done / total if total else 0.0, text=f"Analysing email {done}/{total}...")
 
-            bodies = fetch_gmail_messages(credentials, max_results=limit_input or None, progress_callback=update_progress)
+            emails = fetch_gmail_messages(credentials, max_results=limit_input or None, progress_callback=update_progress)
             results = []
-            for body in bodies:
+            for email in emails:
                 try:
-                    result = detector().analyze(body)
-                    results.append(result["prediction"])
+                    result = detector().analyze(email["body"])
+                    results.append({
+                        "Subject": email["subject"],
+                        "From": email["from"],
+                        "Date": email["date"],
+                        "Prediction": result["prediction"],
+                        "Risk Score": result["risk_score"],
+                        "Confidence": result["confidence"],
+                        "Category": result["category"],
+                        "Explanation": result["explanation"],
+                    })
                 except ValueError:
                     continue  # empty/unanalyzable message body
             progress_bar.empty()
             st.session_state.gmail_scan_results = results
-            st.success(f"Scanned {len(bodies)} emails.")
+            st.success(f"Scanned {len(emails)} emails.")
         except GoogleApiError as e:
             st.error(f"Gmail API error: {e}")
         except Exception as e:
@@ -221,7 +268,8 @@ def dashboard() -> None:
 
     results = st.session_state.get("gmail_scan_results")
     if results:
-        counts = pd.Series(results).value_counts()
+        results_df = pd.DataFrame(results)
+        counts = results_df["Prediction"].value_counts()
         chart_df = pd.DataFrame({"Risk": counts.index, "Count": counts.values})
 
         st.html("<div style='margin-top:1rem;'></div>")
@@ -240,4 +288,28 @@ def dashboard() -> None:
         st.plotly_chart(
             style_fig(px.pie(chart_df, names="Risk", values="Count", color="Risk", color_discrete_map=RISK_COLORS)),
             use_container_width=True,
+        )
+
+        st.html("<div style='margin-top:1rem;'></div>")
+        st.html('<div class="mg-panel-title">Scanned Emails - Details</div>')
+
+        def _highlight_risk_row(row):
+            color = RISK_COLORS.get(row["Prediction"], "")
+            return [
+                f"color:{color}; font-weight:700;" if col in ("Prediction", "Risk Score") else ""
+                for col in row.index
+            ]
+
+        display_df = results_df.sort_values("Risk Score", ascending=False).reset_index(drop=True)
+        st.dataframe(
+            display_df[["Subject", "From", "Prediction", "Risk Score", "Category", "Explanation"]]
+            .style.apply(_highlight_risk_row, axis=1),
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Subject": st.column_config.TextColumn(width="medium"),
+                "From": st.column_config.TextColumn(width="small"),
+                "Risk Score": st.column_config.NumberColumn(format="%d/100"),
+                "Explanation": st.column_config.TextColumn(width="large"),
+            },
         )
