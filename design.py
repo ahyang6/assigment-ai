@@ -681,43 +681,6 @@ def apply_theme() -> None:
         .stApp { background: #05070a; color: #d7dee8; }
         div[data-testid='stMetric'] { background:#0c1016; border-color: rgba(0, 229, 255, 0.18); }
 
-        /* ---- native input widgets: text area, text input, selectbox,
-           number input, file uploader - these render with Streamlit's
-           default light theme unless explicitly overridden, which reads
-           as a jarring, low-contrast bright box against the rest of the
-           dark UI (placeholder text especially hard to read) ---- */
-        .stTextArea textarea,
-        .stTextInput input,
-        .stNumberInput input,
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="input"] {
-            background-color: #0c1016 !important;
-            color: #d7dee8 !important;
-            border-color: rgba(0, 229, 255, 0.25) !important;
-        }
-        .stTextArea textarea::placeholder,
-        .stTextInput input::placeholder {
-            color: #566373 !important;
-            opacity: 1 !important;
-        }
-        div[data-baseweb="select"] svg { fill: #d7dee8 !important; }
-        /* the dropdown options list itself (rendered in a floating popover) */
-        ul[data-testid="stSelectboxVirtualDropdown"] {
-            background-color: #0c1016 !important;
-        }
-        ul[data-testid="stSelectboxVirtualDropdown"] li {
-            color: #d7dee8 !important;
-        }
-        ul[data-testid="stSelectboxVirtualDropdown"] li:hover {
-            background-color: rgba(0, 229, 255, 0.12) !important;
-        }
-        div[data-testid="stFileUploaderDropzone"] {
-            background-color: #0c1016 !important;
-            border-color: rgba(0, 229, 255, 0.25) !important;
-        }
-        div[data-testid="stFileUploaderDropzone"] * { color: #d7dee8 !important; }
-        label, .stMarkdown p { color: #d7dee8 !important; }
-
         /* ---- sidebar shell ---- */
         section[data-testid="stSidebar"] {
             background: #030405;
