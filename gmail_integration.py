@@ -164,10 +164,10 @@ def dashboard() -> None:
         if auth_code:
             try:
                 flow = build_gmail_oauth_flow()
-                # Navigating to Google and back is a fresh page load even
-                # within the same tab, so the PKCE code_verifier generated
-                # when the auth URL was built has to be recovered from the
-                # shared file rather than regenerated here.
+                # The auth URL was generated in a separate tab/session, so
+                # the PKCE code_verifier that belongs to it has to be
+                # recovered from the shared file rather than regenerated
+                # here - it must match exactly what was sent to Google.
                 if GMAIL_PKCE_PATH.exists():
                     flow.code_verifier = GMAIL_PKCE_PATH.read_text(encoding="utf-8").strip()
                 flow.fetch_token(code=auth_code)
@@ -182,6 +182,7 @@ def dashboard() -> None:
                 st.session_state.gmail_credentials = flow.credentials
                 save_gmail_credentials(flow.credentials)
                 st.query_params.clear()
+                st.session_state.gmail_just_connected = True
                 st.rerun()
             except Exception as e:
                 st.error(f"Gmail authorization failed: {e}")
@@ -189,29 +190,35 @@ def dashboard() -> None:
                 # from the URL here prevents a later rerun from silently
                 # retrying (and failing on) this same already-spent code.
                 st.query_params.clear()
+        elif st.session_state.get("gmail_just_connected"):
+            # This tab just finished the OAuth exchange (opened as the
+            # separate authorization tab) - the credentials are already
+            # saved to the shared file, so the original tab will pick them
+            # up on its next auto-refresh. Nothing more to do in this one.
+            st.success("✅ Gmail account connected! You can close this tab now and go back to your original tab.")
+            st.html("<script>setTimeout(function(){ window.close(); }, 2500);</script>")
         else:
             st.write("Connect your Gmail account to scan your inbox and see how many emails are Low, Medium, or High risk.")
             flow = build_gmail_oauth_flow()
             flow.autogenerate_code_verifier = True
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
+            # Persist the verifier this Flow instance just generated, so
+            # whichever session ends up exchanging the code (this tab or a
+            # separate new one) can retrieve the matching value.
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
-            # A plain <a> with target="_top" navigates *this* tab (not a
-            # new one) - st.link_button always opens a new tab with no way
-            # to turn that off, and a plain <a> without target="_top" gets
-            # trapped inside Streamlit's own rendering iframe (Google then
-            # refuses to be framed, showing a generic 403).
-            st.html(
-                f"""
-                <a href="{auth_url}" target="_top" style="
-                    display:block; text-align:center; text-decoration:none;
-                    background: linear-gradient(135deg, #f6821f, #ff9d3d);
-                    border: 1px solid rgba(255, 157, 61, 0.6);
-                    border-radius: 2px; color: #ffffff; font-weight: 700;
-                    font-size: 1.0rem; letter-spacing: 0.03em;
-                    padding: 0.75rem 1.6rem; box-shadow: 0 0 16px rgba(246, 130, 31, 0.35);
-                ">🔗 Connect Gmail Account</a>
-                """
-            )
+            # Streamlit's own iframe sandboxing doesn't include
+            # allow-top-navigation (a known, still-open Streamlit platform
+            # limitation - see github.com/streamlit/streamlit/issues/6922),
+            # so target="_top" links reliably get blocked rather than
+            # navigating the tab. st.link_button (opens a new tab) is the
+            # only approach that's actually worked end-to-end.
+            st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
+            st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
+            # Poll for the connection completing in the other tab by
+            # reloading this tab periodically - session_state can't be
+            # shared across tabs directly, so this is what lets the
+            # *original* tab notice the shared credentials file appearing.
+            st.html("<script>setTimeout(function(){ window.location.reload(); }, 3000);</script>")
         return
 
     credentials = st.session_state.gmail_credentials
@@ -227,6 +234,7 @@ def dashboard() -> None:
         if st.button("Disconnect Gmail", use_container_width=True):
             del st.session_state.gmail_credentials
             st.session_state.pop("gmail_scan_results", None)
+            st.session_state.pop("gmail_just_connected", None)
             clear_gmail_credentials()
             st.rerun()
 
