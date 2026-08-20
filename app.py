@@ -330,33 +330,29 @@ def analyze() -> None:
             """
         )
 
-    row2 = st.columns([2, 1])
-
     # --- panel 4: explanation ------------------------------------------------------
-    with row2[0]:
-        st.html(
-            f"""
-            <div class="mg-terminal-card cf-fade" style="height:120px;">
-                <div class="mg-terminal-card-bar">
-                    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-                    <span class="label">explanation.log</span>
-                </div>
-                <div class="mg-terminal-card-body" style="color:var(--mg-text); font-size:0.88rem;">
-                    {result['explanation']}
-                </div>
+    st.html(
+        f"""
+        <div class="mg-terminal-card cf-fade">
+            <div class="mg-terminal-card-bar">
+                <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+                <span class="label">explanation.log</span>
             </div>
-            """
-        )
+            <div class="mg-terminal-card-body" style="color:var(--mg-text); font-size:0.88rem; line-height:1.6;">
+                {result['explanation']}
+            </div>
+        </div>
+        """
+    )
 
     # --- panel 5: export -------------------------------------------------------------
-    with row2[1]:
-        st.download_button(
-            "Download Result as PDF",
-            result_pdf(st.session_state.message, result),
-            "message-analysis.pdf",
-            "application/pdf",
-            use_container_width=True,
-        )
+    st.download_button(
+        "Download Result as PDF",
+        result_pdf(st.session_state.message, result),
+        "message-analysis.pdf",
+        "application/pdf",
+        use_container_width=True,
+    )
 
 
 def history_page() -> None:
