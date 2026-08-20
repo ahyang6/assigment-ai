@@ -164,21 +164,10 @@ def dashboard() -> None:
         if auth_code:
             try:
                 flow = build_gmail_oauth_flow()
-                # The auth URL was generated in a separate tab/session, so
-                # the PKCE code_verifier that belongs to it has to be
-                # recovered from the shared file rather than regenerated
-                # here - it must match exactly what was sent to Google.
                 if GMAIL_PKCE_PATH.exists():
                     flow.code_verifier = GMAIL_PKCE_PATH.read_text(encoding="utf-8").strip()
-                flow.fetch_token(code=auth_code)
-                # Only consume the verifier file once we know the exchange
-                # actually succeeded - deleting it unconditionally on read
-                # meant a Streamlit rerun that reached this code again after
-                # a failed attempt (with the same stale ?code= still in the
-                # URL) would find it already gone and fail with a confusing
-                # "missing code verifier" error instead of the real problem.
-                if GMAIL_PKCE_PATH.exists():
                     GMAIL_PKCE_PATH.unlink()
+                flow.fetch_token(code=auth_code)
                 st.session_state.gmail_credentials = flow.credentials
                 save_gmail_credentials(flow.credentials)
                 st.query_params.clear()
@@ -186,15 +175,7 @@ def dashboard() -> None:
                 st.rerun()
             except Exception as e:
                 st.error(f"Gmail authorization failed: {e}")
-                # Authorization codes are single-use - clearing the code
-                # from the URL here prevents a later rerun from silently
-                # retrying (and failing on) this same already-spent code.
-                st.query_params.clear()
         elif st.session_state.get("gmail_just_connected"):
-            # This tab just finished the OAuth exchange (opened as the
-            # separate authorization tab) - the credentials are already
-            # saved to the shared file, so the original tab will pick them
-            # up on its next auto-refresh. Nothing more to do in this one.
             st.success("✅ Gmail account connected! You can close this tab now and go back to your original tab.")
             st.html("<script>setTimeout(function(){ window.close(); }, 2500);</script>")
         else:
@@ -202,22 +183,9 @@ def dashboard() -> None:
             flow = build_gmail_oauth_flow()
             flow.autogenerate_code_verifier = True
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
-            # Persist the verifier this Flow instance just generated, so
-            # whichever session ends up exchanging the code (this tab or a
-            # separate new one) can retrieve the matching value.
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
-            # Streamlit's own iframe sandboxing doesn't include
-            # allow-top-navigation (a known, still-open Streamlit platform
-            # limitation - see github.com/streamlit/streamlit/issues/6922),
-            # so target="_top" links reliably get blocked rather than
-            # navigating the tab. st.link_button (opens a new tab) is the
-            # only approach that's actually worked end-to-end.
             st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
             st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
-            # Poll for the connection completing in the other tab by
-            # reloading this tab periodically - session_state can't be
-            # shared across tabs directly, so this is what lets the
-            # *original* tab notice the shared credentials file appearing.
             st.html("<script>setTimeout(function(){ window.location.reload(); }, 3000);</script>")
         return
 
@@ -237,6 +205,8 @@ def dashboard() -> None:
             st.session_state.pop("gmail_just_connected", None)
             clear_gmail_credentials()
             st.rerun()
+
+    # ...(下面 Scan Inbox 及结果展示部分和你现在的 gmail_integration.py 完全一样，不用改)
 
     limit_input = st.number_input(
         "Max emails to scan (0 = entire inbox)", min_value=0, value=0, step=50,
