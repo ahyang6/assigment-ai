@@ -305,19 +305,30 @@ def analyze() -> None:
             """
         )
 
-    # --- panel 2: link to the full breakdown (probability + indicators) -----------
+    # --- panel 2: detected keywords / suspicious URLs -----------------------------
     with row1[1]:
+        words = [
+            word.upper()
+            for values in result["indicators"]["keywords"].values()
+            for word in values
+        ]
+        badges = "".join(f'<span class="mg-badge">{w}</span>' for w in words) or '<span class="mg-panel-title">None detected</span>'
+        url_badges = "".join(f'<span class="mg-badge danger">{u}</span>' for u in result["indicators"]["urls"])
         st.html(
-            """
-            <div class="mg-terminal-card cf-fade" style="height:230px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:0.6rem;">
-                <div style="color:var(--mg-text-dim); font-size:0.85rem;">
-                    Full probability breakdown and<br>detected indicators are on a<br>dedicated details page.
+            f"""
+            <div class="mg-terminal-card cf-fade" style="height:230px;">
+                <div class="mg-terminal-card-bar">
+                    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+                    <span class="label">indicators.log</span>
+                </div>
+                <div class="mg-terminal-card-body">
+                    <div class="mg-panel-title">Keywords</div>
+                    <div>{badges}</div>
+                    {"<div class='mg-panel-title' style='margin-top:0.7rem;'>Suspicious URLs</div><div>" + url_badges + "</div>" if url_badges else ""}
                 </div>
             </div>
             """
         )
-        if st.button("🔗 View Full Analysis Details", use_container_width=True, key="view_details_btn"):
-            go_to("Analysis Details")
 
     row2 = st.columns([2, 1])
 
@@ -346,73 +357,6 @@ def analyze() -> None:
             "application/pdf",
             use_container_width=True,
         )
-
-
-def analysis_details() -> None:
-    page_header(
-        "📄", "Analysis Details",
-        "root@messageguard:~$ cat probability_distribution.log indicators.log",
-        extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
-    )
-
-    if st.button("← Back to Analyze Message"):
-        go_to("Analyze Message")
-
-    result = st.session_state.get("result")
-    if not result:
-        st.info("Run an analysis first from the Analyze Message page.")
-        return
-
-    left, right = st.columns(2)
-
-    # --- probability distribution donut --------------------------------------------
-    with left:
-        chart = pd.DataFrame({
-            "Class": list(result["probabilities"]),
-            "Probability": list(result["probabilities"].values())
-        })
-        fig = px.pie(chart, names="Class", values="Probability", hole=0.55, color="Class", color_discrete_map=RISK_COLORS)
-        fig = style_fig(fig)
-        fig.update_layout(showlegend=True, legend=dict(orientation="h", y=-0.15))
-        fig.update_traces(textinfo="percent")
-        st.html('<div class="mg-panel-title">Probability Distribution</div>')
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-
-    # --- detected indicators --------------------------------------------------------
-    with right:
-        words = [
-            word.upper()
-            for values in result["indicators"]["keywords"].values()
-            for word in values
-        ]
-        badges = "".join(f'<span class="mg-badge">{w}</span>' for w in words) or '<span class="mg-panel-title">None detected</span>'
-        url_badges = "".join(f'<span class="mg-badge danger">{u}</span>' for u in result["indicators"]["urls"])
-        st.html(
-            f"""
-            <div class="mg-terminal-card cf-fade">
-                <div class="mg-terminal-card-bar">
-                    <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-                    <span class="label">indicators.log</span>
-                </div>
-                <div class="mg-terminal-card-body">
-                    <div class="mg-panel-title">Keywords</div>
-                    <div>{badges}</div>
-                    {"<div class='mg-panel-title' style='margin-top:0.7rem;'>Suspicious URLs</div><div>" + url_badges + "</div>" if url_badges else ""}
-                </div>
-            </div>
-            """
-        )
-
-    st.html("<div style='margin-top:1rem;'></div>")
-    st.download_button(
-        "Download Result as PDF",
-        result_pdf(st.session_state.message, result),
-        "message-analysis.pdf",
-        "application/pdf",
-        use_container_width=True,
-    )
-
-
 
 
 def history_page() -> None:
@@ -614,7 +558,6 @@ apply_theme()
 pages = {
     "Home": home,
     "Analyze Message": analyze,
-    "Analysis Details": analysis_details,
     "Dashboard": dashboard,
     "History": history_page,
     "File Translation": file_translation,
