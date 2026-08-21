@@ -413,7 +413,7 @@ def analyze() -> None:
                             {icon}&nbsp;{result['prediction'].upper()}
                         </div>
                         <div style="color:var(--mg-text-dim); font-size:0.78rem; margin-top:0.3rem;">
-                            RISK: {result['risk_level']}<br>CONF: {result['confidence']:.1%}<br>ALGO: {result.get('algorithm', '—')}
+                            RISK: {result['risk_level']}<br>ALGO: {result.get('algorithm', '—')}
                         </div>
                         <div style="margin-top:0.5rem;">
                             <span class="mg-badge">{category_icon}&nbsp;{category}</span>
