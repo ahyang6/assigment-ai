@@ -628,23 +628,14 @@ def algorithm_comparison() -> None:
     best_algorithm = info.get("best_model")
 
     comparison_df = pd.DataFrame([
-        {
-            "Algorithm": name,
-            "Accuracy": m["accuracy"],
-            "Precision": m["precision"],
-            "Recall": m["recall"],
-            "F1 Score": m["f1"],
-            "CV Accuracy": m.get("cv_accuracy"),
-            "CV F1": m.get("cv_f1"),
-        }
+        {"Algorithm": name, "Accuracy": m["accuracy"]}
         for name, m in models.items()
     ]).sort_values("Accuracy", ascending=False).reset_index(drop=True)
 
     st.html('<div class="mg-panel-title">Accuracy Comparison — All Algorithms</div>')
 
-    percent_cols = ["Accuracy", "Precision", "Recall", "F1 Score", "CV Accuracy", "CV F1"]
     st.dataframe(
-        comparison_df.style.format({col: "{:.1%}" for col in percent_cols}).apply(
+        comparison_df.style.format({"Accuracy": "{:.1%}"}).apply(
             lambda row: [
                 "background-color: rgba(246,130,31,0.18); color:#ffb066; font-weight:700;"
                 if row["Algorithm"] == best_algorithm else ""
