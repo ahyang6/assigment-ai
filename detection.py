@@ -495,6 +495,7 @@ def train() -> dict:
         "models": results,
         "holdout": results[best_name],
         "candidate_names": sorted(candidates.keys()),
+        "dataset_fingerprint": _dataset_fingerprint(),
     }
     METRICS_PATH.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     logging.info(
@@ -507,16 +508,32 @@ def train() -> dict:
     return payload
 
 
+def _dataset_fingerprint() -> str:
+    """Content hash of the dataset file, used to detect when spam.csv has
+    changed (rows added/edited/removed) so the cached model can be
+    automatically retrained - comparing only the algorithm name list
+    wasn't enough, since editing the dataset without changing which
+    algorithms are used would otherwise keep silently serving the old
+    model trained on the old data."""
+    import hashlib
+    if not DATASET_PATH.exists():
+        return ""
+    return hashlib.md5(DATASET_PATH.read_bytes()).hexdigest()
+
+
 @st.cache_resource
 def detector(model_name: str | None = None) -> SpamDetector:
     """Load an existing model (or train from scratch on first deployment,
-    or retrain if the saved model's algorithm set is stale - e.g. it was
-    trained before a new candidate algorithm was added)."""
+    or retrain if the saved model's algorithm set or the underlying
+    dataset is stale - e.g. a new candidate algorithm was added, or
+    spam.csv was edited)."""
     needs_training = not METRICS_PATH.exists() or not MODELS_PATH.exists() or not VECTORIZER_PATH.exists()
     if not needs_training:
         try:
             saved_info = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
             if sorted(saved_info.get("candidate_names", [])) != EXPECTED_CANDIDATE_NAMES:
+                needs_training = True
+            elif saved_info.get("dataset_fingerprint") != _dataset_fingerprint():
                 needs_training = True
         except Exception:
             needs_training = True
