@@ -340,14 +340,20 @@ def analyze() -> None:
                     unsupported_format_dialog(uploaded_file.name)
             else:
                 try:
-                    uploaded_message = extract_text_from_upload(uploaded_file.name, uploaded_file.read())
+                    # .getvalue() always returns the full raw buffer regardless
+                    # of any internal read-cursor position - .read() could
+                    # return empty bytes here if something else (e.g.
+                    # Streamlit's own internal handling of the uploaded file)
+                    # already advanced the cursor earlier in this same run.
+                    uploaded_message = extract_text_from_upload(uploaded_file.name, uploaded_file.getvalue())
                 except Exception as e:
                     st.error(f"Unable to read file: {e}")
                     return
 
     if "message_input" not in st.session_state:
         st.session_state.message_input = ""
-    if uploaded_message and st.session_state.get("_last_upload_id") != (uploaded_file.name, uploaded_file.size):
+    is_new_upload = uploaded_message and st.session_state.get("_last_upload_id") != (uploaded_file.name, uploaded_file.size)
+    if is_new_upload:
         st.session_state.message_input = uploaded_message
         st.session_state._last_upload_id = (uploaded_file.name, uploaded_file.size)
 
@@ -358,6 +364,13 @@ def analyze() -> None:
         height=120,
         placeholder=sample
     )
+    # Safety net: if this is the same run that just extracted a fresh
+    # upload, use that extracted text directly for analysis even if the
+    # text_area's returned value hasn't visibly caught up yet - avoids a
+    # confusing "please enter a message" error right after a successful
+    # file upload.
+    if is_new_upload and not message.strip():
+        message = uploaded_message
 
     if st.button("Analyze Message", type="primary", use_container_width=True):
         try:
@@ -586,7 +599,7 @@ def file_translation() -> None:
     if st.button("Convert", type="primary", use_container_width=True, disabled=uploaded_file is None):
         try:
             with st.spinner("Extracting text and converting..."):
-                text = extract_text_from_upload(uploaded_file.name, uploaded_file.read())
+                text = extract_text_from_upload(uploaded_file.name, uploaded_file.getvalue())
             base_name = Path(uploaded_file.name).stem
             if target_format == ".txt":
                 converted_bytes = text.encode("utf-8")
