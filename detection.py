@@ -82,7 +82,15 @@ def find_indicators(message: str) -> dict[str, Any]:
 
 def calculate_risk(probabilities: dict[str, float], indicators: dict[str, Any]) -> tuple[int, str]:
     """Calculate transparent 0–100 risk score from model and observed indicators."""
-    base = 100 * (probabilities.get("medium", 0) + probabilities.get("high", 0))
+    # "medium" contributes at half the weight of "high" - treating them
+    # equally meant a message the model confidently called "medium" alone
+    # produced a base score near 100 (since medium+high probabilities
+    # summed to ~1), which always landed in the "High Risk" bucket and then
+    # got escalated over the model's own "medium" prediction. Extra points
+    # from genuinely risky signals below can still legitimately push a
+    # medium-leaning message into High Risk - the probability alone just
+    # no longer forces that outcome by itself.
+    base = 100 * (0.5 * probabilities.get("medium", 0) + probabilities.get("high", 0))
     keyword_count = sum(len(items) for items in indicators["keywords"].values())
     score = base + min(keyword_count * 4, 16) + (12 if indicators["urls"] else 0)
     score += min(len(indicators.get("suspicious_urls", [])) * 6, 18)

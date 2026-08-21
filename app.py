@@ -10,6 +10,7 @@ from pathlib import Path
 import docx
 import pandas as pd
 import plotly.express as px
+import re
 import streamlit as st
 from email import policy
 from email.message import EmailMessage
@@ -274,6 +275,26 @@ def unsupported_format_dialog(filename: str) -> None:
         st.rerun()
 
 
+HTML_TAG_PATTERN = re.compile(r"<[a-zA-Z][^>]{0,200}>")
+
+
+def strip_markup_noise(text: str) -> str:
+    """If the text looks like it's mostly raw HTML/CSS markup rather than a
+    natural-language message (e.g. someone uploaded a saved webpage or an
+    email's raw HTML source instead of its actual message content), strip
+    the tags and any <style>/<script> blocks so the detector sees the real
+    readable text. The model was trained on natural-language messages, not
+    markup - raw tag/CSS syntax is effectively out-of-distribution input
+    and can produce unreliable, misleadingly high-risk predictions that
+    have nothing to do with genuine spam/phishing signals."""
+    if len(HTML_TAG_PATTERN.findall(text)) < 3:
+        return text  # not enough markup density to be worth touching
+    cleaned = re.sub(r"<style[^>]*>.*?</style>", " ", text, flags=re.IGNORECASE | re.DOTALL)
+    cleaned = re.sub(r"<script[^>]*>.*?</script>", " ", cleaned, flags=re.IGNORECASE | re.DOTALL)
+    cleaned = re.sub(r"<[^>]+>", " ", cleaned)
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
 def go_to(page_name: str) -> None:
     """Central helper: change page + rerun (avoids duplicated rerun logic)."""
     st.session_state.nav_page = page_name
@@ -374,12 +395,13 @@ def analyze() -> None:
 
     if st.button("Analyze Message", type="primary", use_container_width=True):
         try:
+            cleaned_message = strip_markup_noise(message)
             with st.spinner("Checking language patterns and risk indicators..."):
-                result = detector(selected_algorithm).analyze(message)
+                result = detector(selected_algorithm).analyze(cleaned_message)
 
             category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
             append_history(
-                message,
+                cleaned_message,
                 result["prediction"],
                 result["confidence"],
                 result["risk_score"],
@@ -387,7 +409,8 @@ def analyze() -> None:
             )
 
             st.session_state.result = result
-            st.session_state.message = message
+            st.session_state.message = cleaned_message
+            st.session_state.markup_was_stripped = cleaned_message != message.strip()
 
         except (FileNotFoundError, ValueError) as error:
             st.error(str(error))
@@ -397,6 +420,9 @@ def analyze() -> None:
 
     if not result:
         return
+
+    if st.session_state.get("markup_was_stripped"):
+        st.caption("ℹ️ This looked like raw HTML/CSS markup rather than a plain message, so tags and style code were stripped before analysis - only the readable text was analyzed.")
 
     risk_color = RISK_COLORS[result["prediction"]]
     icon = RISK_ICONS[result["prediction"]]
