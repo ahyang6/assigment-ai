@@ -51,15 +51,15 @@ if st.query_params.get("start") == "1":
     st.session_state.nav_page = "Analyze Message"
     st.query_params.clear()
 elif st.query_params.get("code"):
-    # Returning from the Google OAuth redirect (Dashboard's Gmail connect
+    # Returning from the Google OAuth redirect (Gmail Scan's connect
     # flow). This is a fresh page load, so without this check the user
     # would land back on the Home hero instead - and clicking "Get Started"
     # from there would wipe the ?code= param (it navigates to a bare
-    # "?start=1") before Dashboard ever gets a chance to exchange it for a
-    # token. Skip straight to Dashboard and leave the param in place; its
+    # "?start=1") before Gmail Scan ever gets a chance to exchange it for a
+    # token. Skip straight to Gmail Scan and leave the param in place; its
     # own OAuth handling reads and clears it after a successful exchange.
     st.session_state.started = True
-    st.session_state.nav_page = "Dashboard"
+    st.session_state.nav_page = "Gmail Scan"
 
 st.set_page_config(
     page_title="Message Guard",
@@ -68,7 +68,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-PAGES = ["Home", "Analyze Message", "Dashboard", "History", "File Translation"]
+PAGES = ["Home", "Analyze Message", "Gmail Scan", "History", "File Translation"]
 
 
 KEYWORD_GROUP_DESCRIPTIONS = {
@@ -703,7 +703,7 @@ apply_theme()
 pages = {
     "Home": home,
     "Analyze Message": analyze,
-    "Dashboard": dashboard,
+    "Gmail Scan": dashboard,
     "History": history_page,
     "File Translation": file_translation,
     "Algorithm Comparison": algorithm_comparison,
@@ -711,12 +711,12 @@ pages = {
 
 NAV_ICONS = {
     "Analyze Message": "🔍",
-    "Dashboard": "📊",
+    "Gmail Scan": "📊",
     "History": "🕘",
     "File Translation": "🔄",
     "Algorithm Comparison": "📈",   # 新增
 }
-NAV_ITEMS = ["Analyze Message", "Dashboard", "History", "File Translation", "Algorithm Comparison"]
+NAV_ITEMS = ["Analyze Message", "Gmail Scan", "History", "File Translation", "Algorithm Comparison"]
 
 if st.session_state.started:
     ensure_trained() 

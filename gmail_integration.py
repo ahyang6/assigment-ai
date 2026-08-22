@@ -1,10 +1,11 @@
-"""Gmail OAuth connection and inbox risk-scanning feature (the Dashboard
+"""Gmail OAuth connection and inbox risk-scanning feature (the Gmail Scan
 page). Kept separate from app.py so the Gmail-specific OAuth/PKCE/token
 persistence logic can be edited on its own. Imports `detector` from
 detection.py (not from app.py) to avoid a circular import - app.py needs
 `dashboard` from this file, so this file can't import anything back from
 app.py."""
 import base64
+import html
 import json
 import re
 
@@ -18,7 +19,7 @@ from googleapiclient.discovery import build as build_google_service
 from googleapiclient.errors import HttpError as GoogleApiError
 
 from design import RISK_COLORS, RISK_ICONS, page_header, stat_card, style_fig
-from detection import BASE_DIR, detector
+from detection import BASE_DIR, detector, metrics
 
 GMAIL_TOKEN_PATH = BASE_DIR / "gmail_token.json"
 GMAIL_PKCE_PATH = BASE_DIR / "gmail_pkce_verifier.txt"
@@ -29,6 +30,50 @@ GMAIL_SETUP_HELP = (
     "Add `google_client_id`, `google_client_secret`, and `google_redirect_uri` "
     "to this app's Streamlit secrets to enable Gmail scanning."
 )
+
+
+def highlight_keywords(text: str, indicators: dict) -> str:
+    """Escape the body for safe HTML rendering, then wrap every matched
+    keyword/suspicious URL in a highlighted <mark> span. URLs are matched
+    first and claim their full span so a keyword that happens to appear
+    inside a URL (e.g. 'verify' inside fake-verify.example) doesn't get
+    nested/double-highlighted; overlapping spans are merged into one."""
+    spans: list[tuple[int, int]] = []
+
+    for url in indicators.get("suspicious_urls", []):
+        for m in re.finditer(re.escape(url), text, re.IGNORECASE):
+            spans.append((m.start(), m.end()))
+
+    keyword_terms = sorted(
+        {w for values in indicators.get("keywords", {}).values() for w in values},
+        key=len, reverse=True,
+    )
+    for term in keyword_terms:
+        for m in re.finditer(re.escape(term), text, re.IGNORECASE):
+            start, end = m.start(), m.end()
+            if any(s <= start < e or s < end <= e for s, e in spans):
+                continue  # already covered by a claimed (e.g. URL) span
+            spans.append((start, end))
+
+    spans.sort()
+    merged: list[tuple[int, int]] = []
+    for start, end in spans:
+        if merged and start <= merged[-1][1]:
+            merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+        else:
+            merged.append((start, end))
+
+    pieces = []
+    cursor = 0
+    for start, end in merged:
+        pieces.append(html.escape(text[cursor:start]))
+        pieces.append(
+            f'<mark style="background:#ff3b5c66; color:#fff; border-radius:3px; padding:0 3px;">'
+            f'{html.escape(text[start:end])}</mark>'
+        )
+        cursor = end
+    pieces.append(html.escape(text[cursor:]))
+    return "".join(pieces).replace("\n", "<br>")
 
 
 def gmail_oauth_configured() -> bool:
@@ -146,7 +191,7 @@ def fetch_gmail_messages(credentials, max_results, progress_callback=None) -> li
 
 def dashboard() -> None:
     page_header(
-        "📊", "Statistics Dashboard", "root@messageguard:~$ connect a gmail inbox to scan its risk",
+        "📊", "Gmail Scan", "root@messageguard:~$ connect a gmail inbox to scan its risk",
         extra_style="<style>.block-container { max-width: 1280px !important; }</style>",
     )
 
@@ -234,13 +279,47 @@ def dashboard() -> None:
         if st.button("Disconnect Gmail", use_container_width=True):
             del st.session_state.gmail_credentials
             st.session_state.pop("gmail_scan_results", None)
+            st.session_state.pop("gmail_scan_emails", None)
+            st.session_state.pop("gmail_last_algorithm", None)
             st.session_state.pop("gmail_just_connected", None)
             clear_gmail_credentials()
             st.rerun()
 
+    info = metrics()
+    algorithm_names = info.get("candidate_names") or list(info.get("models", {}).keys()) or ["Support Vector Machine"]
+    default_algorithm = "Support Vector Machine" if "Support Vector Machine" in algorithm_names else algorithm_names[0]
+    selected_algorithm = st.selectbox(
+        "Detection algorithm",
+        algorithm_names,
+        index=algorithm_names.index(default_algorithm),
+        key="gmail_selected_algorithm",
+        help="Choose which trained algorithm analyzes your inbox.",
+    )
+
     limit_input = st.number_input(
         "Max emails to scan (0 = entire inbox)", min_value=0, value=0, step=50,
     )
+
+    def _run_detection(emails: list[dict], algorithm_name: str) -> list[dict]:
+        results = []
+        for email in emails:
+            try:
+                result = detector(algorithm_name).analyze(email["body"])
+                results.append({
+                    "Subject": email["subject"],
+                    "From": email["from"],
+                    "Date": email["date"],
+                    "Body": email["body"],
+                    "Prediction": result["prediction"],
+                    "Risk Score": result["risk_score"],
+                    "Confidence": result["confidence"],
+                    "Category": result["category"],
+                    "Explanation": result["explanation"],
+                    "Indicators": result["indicators"],
+                })
+            except ValueError:
+                continue  # empty/unanalyzable message body
+        return results
 
     if st.button("🔍 Scan Inbox", type="primary", use_container_width=True):
         try:
@@ -250,30 +329,27 @@ def dashboard() -> None:
                 progress_bar.progress(done / total if total else 0.0, text=f"Analysing email {done}/{total}...")
 
             emails = fetch_gmail_messages(credentials, max_results=limit_input or None, progress_callback=update_progress)
-            results = []
-            for email in emails:
-                try:
-                    result = detector().analyze(email["body"])
-                    results.append({
-                        "Subject": email["subject"],
-                        "From": email["from"],
-                        "Date": email["date"],
-                        "Body": email["body"],
-                        "Prediction": result["prediction"],
-                        "Risk Score": result["risk_score"],
-                        "Confidence": result["confidence"],
-                        "Category": result["category"],
-                        "Explanation": result["explanation"],
-                    })
-                except ValueError:
-                    continue  # empty/unanalyzable message body
+            # Cache the raw fetched emails (not just the analysis results) so
+            # switching the algorithm afterwards can re-analyze them directly
+            # without hitting the Gmail API again.
+            st.session_state.gmail_scan_emails = emails
+            st.session_state.gmail_scan_results = _run_detection(emails, selected_algorithm)
+            st.session_state.gmail_last_algorithm = selected_algorithm
             progress_bar.empty()
-            st.session_state.gmail_scan_results = results
             st.success(f"Scanned {len(emails)} emails.")
         except GoogleApiError as e:
             st.error(f"Gmail API error: {e}")
         except Exception as e:
             st.error(f"Scan failed: {e}")
+
+    # If the user picks a different algorithm after already scanning once,
+    # automatically re-run detection on the same already-fetched emails -
+    # no need to re-fetch from Gmail just to try a different algorithm.
+    cached_emails = st.session_state.get("gmail_scan_emails")
+    if cached_emails and st.session_state.get("gmail_last_algorithm") != selected_algorithm:
+        with st.spinner(f"Re-analysing {len(cached_emails)} emails with {selected_algorithm}..."):
+            st.session_state.gmail_scan_results = _run_detection(cached_emails, selected_algorithm)
+        st.session_state.gmail_last_algorithm = selected_algorithm
 
     results = st.session_state.get("gmail_scan_results")
     if results:
@@ -300,22 +376,47 @@ def dashboard() -> None:
         )
 
         st.html("<div style='margin-top:1rem;'></div>")
-        st.html('<div class="mg-panel-title">Scanned Emails - Details</div>')
-        st.caption("Click any email below to see its full content.")
+        st.html(f'<div class="mg-panel-title">Scanned Emails - Details (Algorithm: {selected_algorithm})</div>')
+
+        col_widths = [3, 2, 1.1, 1, 1.6, 1]
+        header_cols = st.columns(col_widths)
+        for col, label in zip(header_cols, ["Subject", "From", "Risk", "Score", "Category", ""]):
+            col.markdown(f"**{label}**")
+        st.html("<hr style='margin:0.3rem 0 0.6rem 0;'>")
 
         display_df = results_df.sort_values("Risk Score", ascending=False).reset_index(drop=True)
-        for _, row in display_df.iterrows():
+
+        @st.dialog("Email Content", width="large")
+        def show_email_dialog(row: pd.Series) -> None:
+            color = RISK_COLORS.get(row["Prediction"], "")
+            icon = RISK_ICONS.get(row["Prediction"], "")
+            st.markdown(f"### {row['Subject']}")
+            st.caption(f"From: {row['From']}  |  {row['Date'] or '—'}")
+            st.markdown(
+                f"<span style='color:{color}; font-weight:700; font-size:1.05rem;'>"
+                f"{icon} {row['Prediction'].upper()} — {row['Risk Score']}/100</span>"
+                f"<br>**Category:** {row['Category']}",
+                unsafe_allow_html=True,
+            )
+            st.write(f"**Why flagged:** {row['Explanation']}")
+            st.divider()
+            st.caption("Highlighted text was detected as a risk indicator (keyword or suspicious link).")
+            st.html(
+                f"<div style='line-height:1.7; white-space:pre-wrap; word-break:break-word;'>"
+                f"{highlight_keywords(row['Body'], row.get('Indicators', {}))}</div>"
+            )
+
+        for i, row in display_df.iterrows():
+            row_cols = st.columns(col_widths)
+            row_cols[0].write(row["Subject"])
+            row_cols[1].write(row["From"])
             icon = RISK_ICONS.get(row["Prediction"], "")
             color = RISK_COLORS.get(row["Prediction"], "")
-            header = f"{icon} {row['Risk Score']}/100 · {row['Subject']} — {row['From']}"
-            with st.expander(header):
-                st.markdown(
-                    f"<span style='color:{color}; font-weight:700;'>{row['Prediction'].upper()}</span>"
-                    f" &nbsp;|&nbsp; **Category:** {row['Category']}"
-                    f" &nbsp;|&nbsp; **Date:** {row['Date'] or '—'}",
-                    unsafe_allow_html=True,
-                )
-                st.write(f"**Why:** {row['Explanation']}")
-                st.html("<div style='margin-top:0.6rem;'></div>")
-                st.html('<div class="mg-panel-title">Full Email Content</div>')
-                st.text(row["Body"])
+            row_cols[2].markdown(
+                f"<span style='color:{color}; font-weight:700;'>{icon} {row['Prediction'].upper()}</span>",
+                unsafe_allow_html=True,
+            )
+            row_cols[3].write(f"{row['Risk Score']}/100")
+            row_cols[4].write(row["Category"])
+            if row_cols[5].button("查看", key=f"view_email_{i}", use_container_width=True):
+                show_email_dialog(row)
