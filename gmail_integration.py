@@ -17,7 +17,7 @@ from google_auth_oauthlib.flow import Flow as GoogleOAuthFlow
 from googleapiclient.discovery import build as build_google_service
 from googleapiclient.errors import HttpError as GoogleApiError
 
-from design import RISK_COLORS, page_header, stat_card, style_fig
+from design import RISK_COLORS, RISK_ICONS, page_header, stat_card, style_fig
 from detection import BASE_DIR, detector
 
 GMAIL_TOKEN_PATH = BASE_DIR / "gmail_token.json"
@@ -164,10 +164,21 @@ def dashboard() -> None:
         if auth_code:
             try:
                 flow = build_gmail_oauth_flow()
+                # The auth URL was generated in a separate tab/session, so
+                # the PKCE code_verifier that belongs to it has to be
+                # recovered from the shared file rather than regenerated
+                # here - it must match exactly what was sent to Google.
                 if GMAIL_PKCE_PATH.exists():
                     flow.code_verifier = GMAIL_PKCE_PATH.read_text(encoding="utf-8").strip()
-                    GMAIL_PKCE_PATH.unlink()
                 flow.fetch_token(code=auth_code)
+                # Only consume the verifier file once we know the exchange
+                # actually succeeded - deleting it unconditionally on read
+                # meant a Streamlit rerun that reached this code again after
+                # a failed attempt (with the same stale ?code= still in the
+                # URL) would find it already gone and fail with a confusing
+                # "missing code verifier" error instead of the real problem.
+                if GMAIL_PKCE_PATH.exists():
+                    GMAIL_PKCE_PATH.unlink()
                 st.session_state.gmail_credentials = flow.credentials
                 save_gmail_credentials(flow.credentials)
                 st.query_params.clear()
@@ -175,7 +186,15 @@ def dashboard() -> None:
                 st.rerun()
             except Exception as e:
                 st.error(f"Gmail authorization failed: {e}")
+                # Authorization codes are single-use - clearing the code
+                # from the URL here prevents a later rerun from silently
+                # retrying (and failing on) this same already-spent code.
+                st.query_params.clear()
         elif st.session_state.get("gmail_just_connected"):
+            # This tab just finished the OAuth exchange (opened as the
+            # separate authorization tab) - the credentials are already
+            # saved to the shared file, so the original tab will pick them
+            # up on its next auto-refresh. Nothing more to do in this one.
             st.success("✅ Gmail account connected! You can close this tab now and go back to your original tab.")
             st.html("<script>setTimeout(function(){ window.close(); }, 2500);</script>")
         else:
@@ -183,9 +202,22 @@ def dashboard() -> None:
             flow = build_gmail_oauth_flow()
             flow.autogenerate_code_verifier = True
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
+            # Persist the verifier this Flow instance just generated, so
+            # whichever session ends up exchanging the code (this tab or a
+            # separate new one) can retrieve the matching value.
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
+            # Streamlit's own iframe sandboxing doesn't include
+            # allow-top-navigation (a known, still-open Streamlit platform
+            # limitation - see github.com/streamlit/streamlit/issues/6922),
+            # so target="_top" links reliably get blocked rather than
+            # navigating the tab. st.link_button (opens a new tab) is the
+            # only approach that's actually worked end-to-end.
             st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
             st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
+            # Poll for the connection completing in the other tab by
+            # reloading this tab periodically - session_state can't be
+            # shared across tabs directly, so this is what lets the
+            # *original* tab notice the shared credentials file appearing.
             st.html("<script>setTimeout(function(){ window.location.reload(); }, 3000);</script>")
         return
 
@@ -205,8 +237,6 @@ def dashboard() -> None:
             st.session_state.pop("gmail_just_connected", None)
             clear_gmail_credentials()
             st.rerun()
-
-    # ...(下面 Scan Inbox 及结果展示部分和你现在的 gmail_integration.py 完全一样，不用改)
 
     limit_input = st.number_input(
         "Max emails to scan (0 = entire inbox)", min_value=0, value=0, step=50,
@@ -228,6 +258,7 @@ def dashboard() -> None:
                         "Subject": email["subject"],
                         "From": email["from"],
                         "Date": email["date"],
+                        "Body": email["body"],
                         "Prediction": result["prediction"],
                         "Risk Score": result["risk_score"],
                         "Confidence": result["confidence"],
@@ -270,24 +301,21 @@ def dashboard() -> None:
 
         st.html("<div style='margin-top:1rem;'></div>")
         st.html('<div class="mg-panel-title">Scanned Emails - Details</div>')
-
-        def _highlight_risk_row(row):
-            color = RISK_COLORS.get(row["Prediction"], "")
-            return [
-                f"color:{color}; font-weight:700;" if col in ("Prediction", "Risk Score") else ""
-                for col in row.index
-            ]
+        st.caption("Click any email below to see its full content.")
 
         display_df = results_df.sort_values("Risk Score", ascending=False).reset_index(drop=True)
-        st.dataframe(
-            display_df[["Subject", "From", "Prediction", "Risk Score", "Category", "Explanation"]]
-            .style.apply(_highlight_risk_row, axis=1),
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Subject": st.column_config.TextColumn(width="medium"),
-                "From": st.column_config.TextColumn(width="small"),
-                "Risk Score": st.column_config.NumberColumn(format="%d/100"),
-                "Explanation": st.column_config.TextColumn(width="large"),
-            },
-        )
+        for _, row in display_df.iterrows():
+            icon = RISK_ICONS.get(row["Prediction"], "")
+            color = RISK_COLORS.get(row["Prediction"], "")
+            header = f"{icon} {row['Risk Score']}/100 · {row['Subject']} — {row['From']}"
+            with st.expander(header):
+                st.markdown(
+                    f"<span style='color:{color}; font-weight:700;'>{row['Prediction'].upper()}</span>"
+                    f" &nbsp;|&nbsp; **Category:** {row['Category']}"
+                    f" &nbsp;|&nbsp; **Date:** {row['Date'] or '—'}",
+                    unsafe_allow_html=True,
+                )
+                st.write(f"**Why:** {row['Explanation']}")
+                st.html("<div style='margin-top:0.6rem;'></div>")
+                st.html('<div class="mg-panel-title">Full Email Content</div>')
+                st.text(row["Body"])
