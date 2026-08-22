@@ -1,4 +1,4 @@
-"""Core detection logic for Message Guard: text preprocessing, the risu
+"""Core detection logic for Message Guard: text preprocessing, the risk-
 scoring heuristics, the ML training pipeline (all 4 candidate algorithms),
 and the SpamDetector class used to classify a message with a chosen
 algorithm. Kept separate from app.py (UI/routing) and gmail_integration.py
@@ -148,7 +148,12 @@ def categorize_message(prediction: str, indicators: dict[str, Any]) -> str:
         return "Phishing Attempt"
     if "promotional" in groups:
         return "Spam / Promotional"
-    if "urgency" in groups and "action" in groups:
+    # Require at least 2 total urgency+action keyword hits, not just one of
+    # each - a single common word like "now" or "call" shows up constantly
+    # in ordinary everyday requests ("can we call now?") and isn't on its
+    # own meaningful evidence of a scam pattern.
+    urgency_action_hits = len(indicators["keywords"].get("urgency", [])) + len(indicators["keywords"].get("action", []))
+    if "urgency" in groups and "action" in groups and urgency_action_hits >= 3:
         return "Urgent Action Scam"
     return "Suspicious Message"
 
