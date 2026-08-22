@@ -1,4 +1,4 @@
-"""Core detection logic for Message Guard: text preprocessing, the risk-
+"""Core detection logic for Message Guard: text preprocessing, the risu
 scoring heuristics, the ML training pipeline (all 4 candidate algorithms),
 and the SpamDetector class used to classify a message with a chosen
 algorithm. Kept separate from app.py (UI/routing) and gmail_integration.py
