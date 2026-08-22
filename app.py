@@ -10,6 +10,7 @@ from pathlib import Path
 import docx
 import pandas as pd
 import plotly.express as px
+import re
 import streamlit as st
 from email import policy
 from email.message import EmailMessage
@@ -274,6 +275,26 @@ def unsupported_format_dialog(filename: str) -> None:
         st.rerun()
 
 
+HTML_TAG_PATTERN = re.compile(r"<[a-zA-Z][^>]{0,200}>")
+
+
+def strip_markup_noise(text: str) -> str:
+    """If the text looks like it's mostly raw HTML/CSS markup rather than a
+    natural-language message (e.g. someone uploaded a saved webpage or an
+    email's raw HTML source instead of its actual message content), strip
+    the tags and any <style>/<script> blocks so the detector sees the real
+    readable text. The model was trained on natural-language messages, not
+    markup - raw tag/CSS syntax is effectively out-of-distribution input
+    and can produce unreliable, misleadingly high-risk predictions that
+    have nothing to do with genuine spam/phishing signals."""
+    if len(HTML_TAG_PATTERN.findall(text)) < 3:
+        return text  # not enough markup density to be worth touching
+    cleaned = re.sub(r"<style[^>]*>.*?</style>", " ", text, flags=re.IGNORECASE | re.DOTALL)
+    cleaned = re.sub(r"<script[^>]*>.*?</script>", " ", cleaned, flags=re.IGNORECASE | re.DOTALL)
+    cleaned = re.sub(r"<[^>]+>", " ", cleaned)
+    return re.sub(r"\s+", " ", cleaned).strip()
+
+
 def go_to(page_name: str) -> None:
     """Central helper: change page + rerun (avoids duplicated rerun logic)."""
     st.session_state.nav_page = page_name
@@ -340,14 +361,20 @@ def analyze() -> None:
                     unsupported_format_dialog(uploaded_file.name)
             else:
                 try:
-                    uploaded_message = extract_text_from_upload(uploaded_file.name, uploaded_file.read())
+                    # .getvalue() always returns the full raw buffer regardless
+                    # of any internal read-cursor position - .read() could
+                    # return empty bytes here if something else (e.g.
+                    # Streamlit's own internal handling of the uploaded file)
+                    # already advanced the cursor earlier in this same run.
+                    uploaded_message = extract_text_from_upload(uploaded_file.name, uploaded_file.getvalue())
                 except Exception as e:
                     st.error(f"Unable to read file: {e}")
                     return
 
     if "message_input" not in st.session_state:
         st.session_state.message_input = ""
-    if uploaded_message and st.session_state.get("_last_upload_id") != (uploaded_file.name, uploaded_file.size):
+    is_new_upload = uploaded_message and st.session_state.get("_last_upload_id") != (uploaded_file.name, uploaded_file.size)
+    if is_new_upload:
         st.session_state.message_input = uploaded_message
         st.session_state._last_upload_id = (uploaded_file.name, uploaded_file.size)
 
@@ -358,15 +385,23 @@ def analyze() -> None:
         height=120,
         placeholder=sample
     )
+    # Safety net: if this is the same run that just extracted a fresh
+    # upload, use that extracted text directly for analysis even if the
+    # text_area's returned value hasn't visibly caught up yet - avoids a
+    # confusing "please enter a message" error right after a successful
+    # file upload.
+    if is_new_upload and not message.strip():
+        message = uploaded_message
 
     if st.button("Analyze Message", type="primary", use_container_width=True):
         try:
+            cleaned_message = strip_markup_noise(message)
             with st.spinner("Checking language patterns and risk indicators..."):
-                result = detector(selected_algorithm).analyze(message)
+                result = detector(selected_algorithm).analyze(cleaned_message)
 
             category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
             append_history(
-                message,
+                cleaned_message,
                 result["prediction"],
                 result["confidence"],
                 result["risk_score"],
@@ -374,7 +409,8 @@ def analyze() -> None:
             )
 
             st.session_state.result = result
-            st.session_state.message = message
+            st.session_state.message = cleaned_message
+            st.session_state.markup_was_stripped = cleaned_message != message.strip()
 
         except (FileNotFoundError, ValueError) as error:
             st.error(str(error))
@@ -384,6 +420,9 @@ def analyze() -> None:
 
     if not result:
         return
+
+    if st.session_state.get("markup_was_stripped"):
+        st.caption("ℹ️ This looked like raw HTML/CSS markup rather than a plain message, so tags and style code were stripped before analysis - only the readable text was analyzed.")
 
     risk_color = RISK_COLORS[result["prediction"]]
     icon = RISK_ICONS[result["prediction"]]
@@ -413,7 +452,7 @@ def analyze() -> None:
                             {icon}&nbsp;{result['prediction'].upper()}
                         </div>
                         <div style="color:var(--mg-text-dim); font-size:0.78rem; margin-top:0.3rem;">
-                            RISK: {result['risk_level']}<br>CONF: {result['confidence']:.1%}<br>ALGO: {result.get('algorithm', '—')}
+                            RISK: {result['risk_level']}<br>ALGO: {result.get('algorithm', '—')}
                         </div>
                         <div style="margin-top:0.5rem;">
                             <span class="mg-badge">{category_icon}&nbsp;{category}</span>
@@ -586,7 +625,7 @@ def file_translation() -> None:
     if st.button("Convert", type="primary", use_container_width=True, disabled=uploaded_file is None):
         try:
             with st.spinner("Extracting text and converting..."):
-                text = extract_text_from_upload(uploaded_file.name, uploaded_file.read())
+                text = extract_text_from_upload(uploaded_file.name, uploaded_file.getvalue())
             base_name = Path(uploaded_file.name).stem
             if target_format == ".txt":
                 converted_bytes = text.encode("utf-8")
