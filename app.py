@@ -728,7 +728,15 @@ def file_translation() -> None:
     uploaded_file = st.file_uploader("Upload a file to convert", type=None)
     target_format = st.radio("Convert to", [".txt", ".eml"], horizontal=True)
 
-    if st.button("Convert", type="primary", use_container_width=True, disabled=uploaded_file is None):
+    source_suffix = Path(uploaded_file.name).suffix.lower() if uploaded_file is not None else None
+    is_noop_conversion = source_suffix == target_format
+    if is_noop_conversion:
+        st.info(
+            f"**{uploaded_file.name}** is already a {target_format} file — no conversion needed. "
+            "You can upload it directly to Analyze Message."
+        )
+
+    if st.button("Convert", type="primary", use_container_width=True, disabled=uploaded_file is None or is_noop_conversion):
         try:
             with st.spinner("Extracting text and converting..."):
                 text = extract_text_from_upload(uploaded_file.name, uploaded_file.getvalue())
