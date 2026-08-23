@@ -577,8 +577,8 @@ def history_page() -> None:
         key="history_editor",
         hide_index=True,
         use_container_width=True,
-        disabled=["Date", "Message", "Prediction", "Category", "Confidence", "Risk Score"],
-        column_order=["Select", "Date", "Message", "Prediction", "Category", "Confidence", "Risk Score"],
+        disabled=["Date", "Message", "Prediction", "Category", "Risk Score"],
+        column_order=["Select", "Date", "Message", "Prediction", "Category", "Risk Score"],
         column_config={"Select": st.column_config.CheckboxColumn("", width="small")},
     )
     selected_rows = edited[edited["Select"]]
