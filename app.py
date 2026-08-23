@@ -1,9 +1,3 @@
-"""Streamlit interface for the AI-powered spam and phishing detector.
-
-This is the UI/routing layer: page functions, navigation, file
-translation, and PDF export. The machine-learning logic lives in
-detection.py and the Gmail scanning feature lives in gmail_integration.py
-- both are imported here, not duplicated."""
 from io import BytesIO
 from pathlib import Path
 
@@ -762,20 +756,6 @@ if st.session_state.started:
             ) and not is_active:
                 st.session_state.nav_page = item
                 st.rerun()
-
-        best_model = metrics().get("best_model", "Not trained yet")
-        st.sidebar.html('<div class="mg-sidebar-spacer"></div>')
-        st.sidebar.html(
-            f"""
-            <div class="mg-sidebar-footer">
-                <span class="pulse"></span>
-                <div class="meta">
-                    <div class="model">{best_model}</div>
-                    <div class="status">MODEL ONLINE</div>
-                </div>
-            </div>
-            """
-        )
 # else: nothing rendered in the sidebar on Home — it stays hidden
 
 pages[st.session_state.nav_page]()
