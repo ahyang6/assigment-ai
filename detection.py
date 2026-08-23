@@ -41,6 +41,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DATASET_PATH = BASE_DIR / "spam.csv"
 MODEL_DIR = BASE_DIR / "model"
 MODELS_PATH = MODEL_DIR / "spam_models.pkl"
+CATEGORY_MODELS_PATH = MODEL_DIR / "category_models.pkl"
 VECTORIZER_PATH = MODEL_DIR / "tfidf.pkl"
 METRICS_PATH = MODEL_DIR / "metrics.json"
 HISTORY_PATH = BASE_DIR / "prediction_history.csv"
@@ -368,6 +369,16 @@ class SpamDetector:
         self.model = all_models[model_name]
         self.vectorizer = joblib.load(VECTORIZER_PATH)
 
+        # Category prediction is AI-trained (same algorithm, same TF-IDF
+        # features, target=category) rather than the old purely rule-based
+        # keyword lookup - falls back to that rule-based categorize_message()
+        # if no category model was trained (e.g. an older dataset without
+        # a "category" column).
+        self.category_model = None
+        if CATEGORY_MODELS_PATH.exists():
+            category_models: dict[str, Any] = joblib.load(CATEGORY_MODELS_PATH)
+            self.category_model = category_models.get(model_name)
+
     def analyze(self, message: str) -> dict[str, Any]:
         """Classify a non-empty message and calculate its risk explanation."""
         if not message or not message.strip():
@@ -400,16 +411,26 @@ class SpamDetector:
                 "algorithm": self.model_name,
                 "explanation": "This message is too short or doesn't contain enough recognizable text for a reliable analysis.",
                 "category": "Legitimate Message",
+                "category_confidence": None,
             }
 
         probabilities = dict(zip(self.model.classes_, self.model.predict_proba(features)[0]))
         raw_prediction = max(probabilities, key=probabilities.get)
         risk, risk_level = calculate_risk(probabilities, indicators)
         prediction = reconcile_severity(raw_prediction, risk_level)
-        category = categorize_message(prediction, indicators)
+
+        if self.category_model is not None:
+            category_probs = dict(zip(self.category_model.classes_, self.category_model.predict_proba(features)[0]))
+            category = max(category_probs, key=category_probs.get)
+            category_confidence = float(category_probs[category])
+        else:
+            category = categorize_message(prediction, indicators)
+            category_confidence = None
+
         return {"prediction": prediction, "confidence": float(probabilities[prediction]), "probabilities": probabilities,
                 "risk_score": risk, "risk_level": risk_level, "indicators": indicators, "algorithm": self.model_name,
-                "explanation": explanation(prediction, indicators), "category": category}
+                "explanation": explanation(prediction, indicators), "category": category,
+                "category_confidence": category_confidence}
 
 # =========================================================================
 # train_model.py
@@ -430,14 +451,23 @@ from sklearn.svm import LinearSVC
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
+CATEGORY_LABELS = [
+    "Legitimate Message", "Phishing Attempt", "Spam / Promotional",
+    "Urgent Action Scam", "Suspicious Message",
+]
+
+
 def load_dataset() -> pd.DataFrame:
     """Load, validate, de-duplicate, and clean the configured dataset."""
     data = pd.read_csv(DATASET_PATH)
     if not {"message", "label"}.issubset(data.columns):
         raise ValueError("Dataset must contain 'message' and 'label' columns.")
-    data = data[["message", "label"]].dropna().drop_duplicates()
+    keep_cols = ["message", "label"] + (["category"] if "category" in data.columns else [])
+    data = data[keep_cols].dropna(subset=["message", "label"]).drop_duplicates(subset=["message"])
     data["label"] = data["label"].str.lower().str.strip()
     data = data[data["label"].isin(LABELS)]
+    if "category" in data.columns:
+        data = data[data["category"].isin(CATEGORY_LABELS)]
     if data.empty or data["label"].nunique() < 2:
         raise ValueError("Dataset needs at least two valid label classes.")
     return data
@@ -517,7 +547,30 @@ def train() -> dict:
         model.fit(x_all_vec, data["label"])
         fitted_models[name] = model
 
+    # Also train a category classifier (same algorithm types, same TF-IDF
+    # features) predicting the message's category - a genuinely AI-learned
+    # prediction rather than the old purely rule-based keyword lookup.
+    # Category labels come from the dataset's own "category" column when
+    # present; datasets that predate this column simply skip it, so
+    # SpamDetector falls back to the rule-based categorize_message().
     MODEL_DIR.mkdir(exist_ok=True)
+    category_models: dict[str, Any] = {}
+    if "category" in data.columns:
+        category_candidates = {
+            "Support Vector Machine": CalibratedClassifierCV(
+                LinearSVC(class_weight="balanced", random_state=RANDOM_STATE),
+                ensemble=False,
+            ),
+            "Logistic Regression": LogisticRegression(
+                max_iter=2000, class_weight="balanced", random_state=RANDOM_STATE
+            ),
+            "Multinomial Naive Bayes": MultinomialNB(),
+        }
+        for name, model in category_candidates.items():
+            model.fit(x_all_vec, data["category"])
+            category_models[name] = model
+        joblib.dump(category_models, CATEGORY_MODELS_PATH)
+
     joblib.dump(fitted_models, MODELS_PATH)
     joblib.dump(vectorizer, VECTORIZER_PATH)
     payload = {
@@ -560,7 +613,10 @@ def detector(model_name: str | None = None) -> SpamDetector:
     or retrain if the saved model's algorithm set or the underlying
     dataset is stale - e.g. a new candidate algorithm was added, or
     spam.csv was edited)."""
-    needs_training = not METRICS_PATH.exists() or not MODELS_PATH.exists() or not VECTORIZER_PATH.exists()
+    needs_training = (
+        not METRICS_PATH.exists() or not MODELS_PATH.exists() or not VECTORIZER_PATH.exists()
+        or ("category" in load_dataset().columns and not CATEGORY_MODELS_PATH.exists())
+    )
     if not needs_training:
         try:
             saved_info = json.loads(METRICS_PATH.read_text(encoding="utf-8"))
