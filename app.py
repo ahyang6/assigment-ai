@@ -1,3 +1,9 @@
+"""Streamlit interface for the AI-powered spam and phishing detector.
+
+This is the UI/routing layer: page functions, navigation, file
+translation, and PDF export. The machine-learning logic lives in
+detection.py and the Gmail scanning feature lives in gmail_integration.py
+- both are imported here, not duplicated."""
 from io import BytesIO
 from pathlib import Path
 
@@ -349,10 +355,18 @@ def analyze() -> None:
         uploaded_file = st.file_uploader("Upload file", type=None, label_visibility="collapsed")
 
         if uploaded_file is not None:
+            # file_id is unique per upload *event*, even for the exact same
+            # file re-selected again - unlike (name, size), which stays
+            # identical on a re-upload and would silently suppress the
+            # dialog/refresh on the second, third, etc. attempt. The exact
+            # attribute name has varied across Streamlit versions, so fall
+            # back gracefully rather than assuming one specific name.
+            upload_identity = getattr(uploaded_file, "file_id", None) or getattr(uploaded_file, "id", None) \
+                or (uploaded_file.name, uploaded_file.size)
             suffix = Path(uploaded_file.name).suffix.lower()
             if suffix not in (".txt", ".eml"):
-                if st.session_state.get("_last_invalid_upload") != (uploaded_file.name, uploaded_file.size):
-                    st.session_state._last_invalid_upload = (uploaded_file.name, uploaded_file.size)
+                if st.session_state.get("_last_invalid_upload") != upload_identity:
+                    st.session_state._last_invalid_upload = upload_identity
                     unsupported_format_dialog(uploaded_file.name)
             else:
                 try:
@@ -368,10 +382,14 @@ def analyze() -> None:
 
     if "message_input" not in st.session_state:
         st.session_state.message_input = ""
-    is_new_upload = uploaded_message and st.session_state.get("_last_upload_id") != (uploaded_file.name, uploaded_file.size)
+    current_upload_identity = None
+    if uploaded_file is not None:
+        current_upload_identity = getattr(uploaded_file, "file_id", None) or getattr(uploaded_file, "id", None) \
+            or (uploaded_file.name, uploaded_file.size)
+    is_new_upload = uploaded_message and st.session_state.get("_last_upload_id") != current_upload_identity
     if is_new_upload:
         st.session_state.message_input = uploaded_message
-        st.session_state._last_upload_id = (uploaded_file.name, uploaded_file.size)
+        st.session_state._last_upload_id = current_upload_identity
 
     # Text area
     message = st.text_area(
