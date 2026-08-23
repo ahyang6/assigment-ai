@@ -148,12 +148,7 @@ def categorize_message(prediction: str, indicators: dict[str, Any]) -> str:
         return "Phishing Attempt"
     if "promotional" in groups:
         return "Spam / Promotional"
-    # Require at least 2 total urgency+action keyword hits, not just one of
-    # each - a single common word like "now" or "call" shows up constantly
-    # in ordinary everyday requests ("can we call now?") and isn't on its
-    # own meaningful evidence of a scam pattern.
-    urgency_action_hits = len(indicators["keywords"].get("urgency", [])) + len(indicators["keywords"].get("action", []))
-    if "urgency" in groups and "action" in groups and urgency_action_hits >= 3:
+    if "urgency" in groups and "action" in groups:
         return "Urgent Action Scam"
     return "Suspicious Message"
 
