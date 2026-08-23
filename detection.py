@@ -148,7 +148,12 @@ def categorize_message(prediction: str, indicators: dict[str, Any]) -> str:
         return "Phishing Attempt"
     if "promotional" in groups:
         return "Spam / Promotional"
-    if "urgency" in groups and "action" in groups:
+    # Require at least 2 total urgency+action keyword hits, not just one of
+    # each - a single common word like "now" or "call" shows up constantly
+    # in ordinary everyday requests ("can we call now?") and isn't on its
+    # own meaningful evidence of a scam pattern.
+    urgency_action_hits = len(indicators["keywords"].get("urgency", [])) + len(indicators["keywords"].get("action", []))
+    if "urgency" in groups and "action" in groups and urgency_action_hits >= 3:
         return "Urgent Action Scam"
     return "Suspicious Message"
 
@@ -367,10 +372,38 @@ class SpamDetector:
         """Classify a non-empty message and calculate its risk explanation."""
         if not message or not message.strip():
             raise ValueError("Please enter a message to analyse.")
-        features = self.vectorizer.transform([preprocess_text(message)])
+        processed = preprocess_text(message)
+        features = self.vectorizer.transform([processed])
+        indicators = find_indicators(message)
+
+        # If almost none of the message's words are in the vectorizer's
+        # learned vocabulary (e.g. it's just a couple of rare proper nouns
+        # never seen in training), the model has essentially no real
+        # signal to work with. Different algorithms handle a near-empty
+        # feature vector inconsistently - SVM/Logistic Regression fall back
+        # toward "low" via their decision boundary, while Naive Bayes'
+        # multiplicative likelihood math can swing toward other classes
+        # purely from smoothing artifacts, not genuine evidence. Rather
+        # than presenting that as a confident, algorithm-dependent verdict,
+        # treat "too little recognizable content" the same way regardless
+        # of which algorithm is selected - unless there are still concrete
+        # rule-based warning signs (a URL, phone number, etc.) worth flagging.
+        has_matching_vocabulary = features.nnz > 0
+        has_other_signals = bool(
+            indicators["keywords"] or indicators["urls"] or indicators["emails"] or indicators["phones"]
+        )
+        if not has_matching_vocabulary and not has_other_signals:
+            return {
+                "prediction": "low", "confidence": 1.0,
+                "probabilities": {"low": 1.0, "medium": 0.0, "high": 0.0},
+                "risk_score": 0, "risk_level": "Low Risk", "indicators": indicators,
+                "algorithm": self.model_name,
+                "explanation": "This message is too short or doesn't contain enough recognizable text for a reliable analysis.",
+                "category": "Legitimate Message",
+            }
+
         probabilities = dict(zip(self.model.classes_, self.model.predict_proba(features)[0]))
         raw_prediction = max(probabilities, key=probabilities.get)
-        indicators = find_indicators(message)
         risk, risk_level = calculate_risk(probabilities, indicators)
         prediction = reconcile_severity(raw_prediction, risk_level)
         category = categorize_message(prediction, indicators)
