@@ -780,22 +780,22 @@ def algorithm_comparison() -> None:
 
     best_algorithm = info.get("best_model")
 
-    comparison_df = pd.DataFrame([
+    def _highlight_best(row):
+        return [
+            "background-color: rgba(246,130,31,0.18); color:#ffb066; font-weight:700;"
+            if row["Algorithm"] == best_algorithm else ""
+            for _ in row
+        ]
+
+    # --- Accuracy -----------------------------------------------------------------
+    accuracy_df = pd.DataFrame([
         {"Algorithm": name, "Accuracy": m["accuracy"]}
         for name, m in models.items()
     ]).sort_values("Accuracy", ascending=False).reset_index(drop=True)
 
     st.html('<div class="mg-panel-title">Accuracy Comparison — All Algorithms</div>')
-
     st.dataframe(
-        comparison_df.style.format({"Accuracy": "{:.1%}"}).apply(
-            lambda row: [
-                "background-color: rgba(246,130,31,0.18); color:#ffb066; font-weight:700;"
-                if row["Algorithm"] == best_algorithm else ""
-                for _ in row
-            ],
-            axis=1,
-        ),
+        accuracy_df.style.format({"Accuracy": "{:.1%}"}).apply(_highlight_best, axis=1),
         use_container_width=True,
         hide_index=True,
     )
@@ -803,13 +803,72 @@ def algorithm_comparison() -> None:
 
     st.html("<div style='margin-top:1.2rem;'></div>")
     fig = px.bar(
-        comparison_df, x="Algorithm", y="Accuracy", color="Algorithm",
-        text=comparison_df["Accuracy"].apply(lambda v: f"{v:.1%}"),
+        accuracy_df, x="Algorithm", y="Accuracy", color="Algorithm",
+        text=accuracy_df["Accuracy"].apply(lambda v: f"{v:.1%}"),
     )
     fig = style_fig(fig)
     fig.update_layout(showlegend=False, yaxis=dict(tickformat=".0%", range=[0, 1]))
     st.html('<div class="mg-panel-title">Accuracy Chart</div>')
     st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+
+    # --- Effectiveness (Precision / Recall / F1) -----------------------------------
+    st.html("<div style='margin-top:1.6rem;'></div>")
+    st.html('<div class="mg-panel-title">Effectiveness Comparison — Precision, Recall &amp; F1 Score</div>')
+    st.caption("How well each algorithm identifies the correct risk class, beyond raw accuracy - important when classes are imbalanced.")
+
+    effectiveness_df = pd.DataFrame([
+        {"Algorithm": name, "Precision": m["precision"], "Recall": m["recall"], "F1 Score": m["f1"]}
+        for name, m in models.items()
+    ]).sort_values("F1 Score", ascending=False).reset_index(drop=True)
+
+    st.dataframe(
+        effectiveness_df.style.format({"Precision": "{:.1%}", "Recall": "{:.1%}", "F1 Score": "{:.1%}"}).apply(_highlight_best, axis=1),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.html("<div style='margin-top:1rem;'></div>")
+    effectiveness_long = effectiveness_df.melt(id_vars="Algorithm", var_name="Metric", value_name="Score")
+    fig_eff = px.bar(
+        effectiveness_long, x="Algorithm", y="Score", color="Metric", barmode="group",
+        text=effectiveness_long["Score"].apply(lambda v: f"{v:.1%}"),
+    )
+    fig_eff = style_fig(fig_eff)
+    fig_eff.update_layout(yaxis=dict(tickformat=".0%", range=[0, 1]))
+    st.plotly_chart(fig_eff, use_container_width=True, config={"displayModeBar": False})
+
+    # --- Performance (training / prediction speed) ---------------------------------
+    st.html("<div style='margin-top:1.6rem;'></div>")
+    st.html('<div class="mg-panel-title">Performance Comparison — Training &amp; Prediction Speed</div>')
+    st.caption("Computational efficiency - how long each algorithm takes to train, and to classify one message afterward.")
+
+    has_timing = all("training_time_ms" in m for m in models.values())
+    if not has_timing:
+        st.info("Timing data isn't available yet for the currently saved models - retrain (e.g. edit spam.csv slightly) to populate it.")
+    else:
+        performance_df = pd.DataFrame([
+            {
+                "Algorithm": name,
+                "Training Time (ms)": m["training_time_ms"],
+                "Prediction Time (ms/message)": m["prediction_time_per_message_ms"],
+            }
+            for name, m in models.items()
+        ]).sort_values("Training Time (ms)").reset_index(drop=True)
+
+        st.dataframe(
+            performance_df.style.format({"Training Time (ms)": "{:.1f}", "Prediction Time (ms/message)": "{:.4f}"}).apply(_highlight_best, axis=1),
+            use_container_width=True,
+            hide_index=True,
+        )
+
+        st.html("<div style='margin-top:1rem;'></div>")
+        fig_perf = px.bar(
+            performance_df, x="Algorithm", y="Training Time (ms)", color="Algorithm",
+            text=performance_df["Training Time (ms)"].apply(lambda v: f"{v:.1f} ms"),
+        )
+        fig_perf = style_fig(fig_perf)
+        fig_perf.update_layout(showlegend=False)
+        st.plotly_chart(fig_perf, use_container_width=True, config={"displayModeBar": False})
 
 
 apply_theme()
