@@ -18,7 +18,7 @@ from reportlab.platypus import HRFlowable, Paragraph, SimpleDocTemplate, Spacer,
 
 from detection import (
     append_history, categorize_message, clear_history, delete_history_rows,
-    detector, ensure_trained, load_history, metrics,
+    detector, ensure_trained, explanation, find_indicators, load_history, metrics,
 )
 from design import (
     CATEGORY_ICONS, RISK_COLORS, RISK_ICONS,
@@ -183,8 +183,9 @@ def result_pdf(message: str, result: dict) -> bytes:
     story.append(detail_table)
 
     story.append(Spacer(1, 6))
-    prob_line = " &nbsp;|&nbsp; ".join(f"{cls.title()}: {prob:.1%}" for cls, prob in result["probabilities"].items())
-    story.append(Paragraph(f"<b>Probability breakdown:</b> {prob_line}", small_style))
+    if result.get("probabilities"):
+        prob_line = " &nbsp;|&nbsp; ".join(f"{cls.title()}: {prob:.1%}" for cls, prob in result["probabilities"].items())
+        story.append(Paragraph(f"<b>Probability breakdown:</b> {prob_line}", small_style))
 
     words = [w.upper() for values in result["indicators"]["keywords"].values() for w in values]
     if words:
@@ -579,6 +580,67 @@ def history_page() -> None:
     with delete_all_col:
         if st.button("Delete All History", use_container_width=True, disabled=load_history().empty):
             confirm_delete_dialog(None, f"all {len(load_history())} record(s)")
+
+    st.html("<div style='margin-top:1.4rem;'></div>")
+    st.html('<div class="mg-panel-title">View Details</div>')
+    st.caption("Click any entry to see full analysis details and download a report.")
+
+    if history.empty:
+        st.caption("No history entries to show.")
+    else:
+        col_widths = [1.6, 3, 1.1, 1, 1.6, 1]
+        header_cols = st.columns(col_widths)
+        for col, label in zip(header_cols, ["Date", "Message", "Risk", "Score", "Category", ""]):
+            col.markdown(f"**{label}**")
+        st.html("<hr style='margin:0.3rem 0 0.6rem 0;'>")
+
+        @st.dialog("Analysis Details", width="large")
+        def show_history_dialog(row: pd.Series) -> None:
+            message = str(row["Message"])
+            prediction = str(row["Prediction"]).lower()
+            risk_score = int(row["Risk Score"])
+            risk_level = "Low Risk" if risk_score <= 30 else "Medium Risk" if risk_score <= 70 else "High Risk"
+            indicators = find_indicators(message)
+            explanation_text = explanation(prediction, indicators)
+            color = RISK_COLORS.get(prediction, "")
+            icon = RISK_ICONS.get(prediction, "")
+
+            st.markdown(f"### {row['Date']}")
+            st.markdown(
+                f"<span style='color:{color}; font-weight:700; font-size:1.1rem;'>"
+                f"{icon} {prediction.upper()} — {risk_score}/100</span>"
+                f"<br>**Category:** {row['Category']}  |  **Confidence:** {float(row['Confidence']):.1%}",
+                unsafe_allow_html=True,
+            )
+            st.write(f"**Why flagged:** {explanation_text}")
+            st.divider()
+            st.html('<div class="mg-panel-title">Message</div>')
+            st.text(message)
+
+            result_for_pdf = {
+                "prediction": prediction, "confidence": float(row["Confidence"]),
+                "probabilities": {}, "risk_score": risk_score, "risk_level": risk_level,
+                "indicators": indicators, "algorithm": "N/A (historic entry)",
+                "explanation": explanation_text, "category": row["Category"],
+            }
+            st.download_button(
+                "Download as PDF", result_pdf(message, result_for_pdf),
+                "history-analysis.pdf", "application/pdf", use_container_width=True,
+            )
+
+        for i, row in history.iterrows():
+            row_cols = st.columns(col_widths)
+            row_cols[0].write(str(row["Date"])[:16])
+            message_preview = str(row["Message"])
+            row_cols[1].write(message_preview[:60] + ("..." if len(message_preview) > 60 else ""))
+            pred = str(row["Prediction"]).lower()
+            color = RISK_COLORS.get(pred, "")
+            icon = RISK_ICONS.get(pred, "")
+            row_cols[2].markdown(f"<span style='color:{color}; font-weight:700;'>{icon} {pred.upper()}</span>", unsafe_allow_html=True)
+            row_cols[3].write(f"{row['Risk Score']}/100")
+            row_cols[4].write(row["Category"])
+            if row_cols[5].button("查看", key=f"view_history_{row['_orig_idx']}", use_container_width=True):
+                show_history_dialog(row)
 
 
 @st.dialog("Confirm Deletion")
