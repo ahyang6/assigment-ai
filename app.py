@@ -556,7 +556,22 @@ def history_page() -> None:
     if search:
         history = history[history.astype(str).apply(lambda row: row.str.contains(search, case=False).any(), axis=1)]
 
-    display_history = history.copy()
+    # Reset to page 1 whenever the search text changes, so a new search
+    # doesn't leave the user stranded on a page number that no longer
+    # has any matching rows.
+    if st.session_state.get("_history_last_search") != search:
+        st.session_state._history_last_search = search
+        st.session_state._history_page = 1
+
+    PAGE_SIZE = 10
+    total_rows = len(history)
+    total_pages = max(1, -(-total_rows // PAGE_SIZE))  # ceil division
+    current_page = min(st.session_state.get("_history_page", 1), total_pages)
+
+    page_start = (current_page - 1) * PAGE_SIZE
+    page_history = history.iloc[page_start:page_start + PAGE_SIZE]
+
+    display_history = page_history.copy()
     display_history.insert(0, "Select", False)
 
     if st.session_state.get("_select_all_history"):
@@ -583,6 +598,23 @@ def history_page() -> None:
     )
     selected_rows = edited[edited["Select"]]
 
+    if total_pages > 1:
+        prev_col, indicator_col, next_col = st.columns([1, 2, 1])
+        with prev_col:
+            if st.button("← Previous", use_container_width=True, disabled=current_page <= 1):
+                st.session_state._history_page = current_page - 1
+                st.rerun()
+        with indicator_col:
+            st.markdown(
+                f"<div style='text-align:center; padding-top:0.4rem; color:var(--mg-text-dim);'>"
+                f"Page {current_page} of {total_pages} &nbsp;({total_rows} total)</div>",
+                unsafe_allow_html=True,
+            )
+        with next_col:
+            if st.button("Next →", use_container_width=True, disabled=current_page >= total_pages):
+                st.session_state._history_page = current_page + 1
+                st.rerun()
+
     export_col, delete_selected_col, delete_all_col = st.columns(3)
     with export_col:
         st.download_button(
@@ -603,7 +635,7 @@ def history_page() -> None:
     st.html('<div class="mg-panel-title">View Details</div>')
     st.caption("Click any entry to see full analysis details and download a report.")
 
-    if history.empty:
+    if page_history.empty:
         st.caption("No history entries to show.")
     else:
         col_widths = [1.6, 3, 1.1, 1, 1.6, 1]
@@ -646,7 +678,7 @@ def history_page() -> None:
                 "history-analysis.pdf", "application/pdf", use_container_width=True,
             )
 
-        for i, row in history.iterrows():
+        for i, row in page_history.iterrows():
             row_cols = st.columns(col_widths)
             row_cols[0].write(str(row["Date"])[:16])
             message_preview = str(row["Message"])
