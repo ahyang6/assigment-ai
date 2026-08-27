@@ -1,11 +1,3 @@
-"""Core detection logic for Message Guard: text preprocessing, the risk-
-scoring heuristics, the ML training pipeline (all 4 candidate algorithms),
-and the SpamDetector class used to classify a message with a chosen
-algorithm. Kept separate from app.py (UI/routing) and gmail_integration.py
-(Gmail OAuth + scanning) so it can be imported by both without either of
-them needing to import the other - gmail_integration.py needs `detector()`
-from here, and app.py needs the `dashboard` page from gmail_integration.py;
-putting the shared ML logic in its own module avoids that import cycle."""
 import csv
 import json
 import logging
@@ -65,7 +57,6 @@ SUSPICIOUS_URL_PATTERN = re.compile(
 
 
 def find_indicators(message: str) -> dict[str, Any]:
-    """Locate linguistic and structural warning signals in a message."""
     lowered = message.lower()
     found = {category: [term for term in terms if term in lowered] for category, terms in KEYWORDS.items()}
     found = {key: value for key, value in found.items() if value}
@@ -82,15 +73,6 @@ def find_indicators(message: str) -> dict[str, Any]:
 
 
 def calculate_risk(probabilities: dict[str, float], indicators: dict[str, Any]) -> tuple[int, str]:
-    """Calculate transparent 0–100 risk score from model and observed indicators."""
-    # "medium" contributes at half the weight of "high" - treating them
-    # equally meant a message the model confidently called "medium" alone
-    # produced a base score near 100 (since medium+high probabilities
-    # summed to ~1), which always landed in the "High Risk" bucket and then
-    # got escalated over the model's own "medium" prediction. Extra points
-    # from genuinely risky signals below can still legitimately push a
-    # medium-leaning message into High Risk - the probability alone just
-    # no longer forces that outcome by itself.
     base = 100 * (0.5 * probabilities.get("medium", 0) + probabilities.get("high", 0))
     keyword_count = sum(len(items) for items in indicators["keywords"].values())
     score = base + min(keyword_count * 4, 16) + (12 if indicators["urls"] else 0)
@@ -107,18 +89,11 @@ SEVERITY_RANK = {"low": 0, "medium": 1, "high": 2}
 
 
 def reconcile_severity(prediction: str, risk_level: str) -> str:
-    """The model's raw class prediction and the separately-computed 0-100
-    risk score can genuinely disagree - the score also factors in keyword,
-    URL, and formatting signals that the classifier's probabilities alone
-    don't fully capture. Rather than show a headline that undersells what
-    the risk score underneath it says (e.g. "MEDIUM" next to "High Risk"),
-    always surface the more severe of the two."""
-    risk_key = risk_level.split()[0].lower()  # "High Risk" -> "high"
+    risk_key = risk_level.split()[0].lower()
     return prediction if SEVERITY_RANK[prediction] >= SEVERITY_RANK.get(risk_key, 0) else risk_key
 
 
 def explanation(prediction: str, indicators: dict[str, Any]) -> str:
-    """Turn detected signals into a concise human-readable reason."""
     parts = []
     words = [word.upper() for group in indicators["keywords"].values() for word in group]
     if words:
@@ -135,9 +110,6 @@ def explanation(prediction: str, indicators: dict[str, Any]) -> str:
 
 
 def categorize_message(prediction: str, indicators: dict[str, Any]) -> str:
-    """Derive a human-readable message category (Phishing / Spam / Scam / etc.)
-    from the risk level and the same rule-based indicators used elsewhere,
-    without requiring a separately trained category model."""
     if prediction == "low":
         return "Legitimate Message"
 
@@ -149,10 +121,6 @@ def categorize_message(prediction: str, indicators: dict[str, Any]) -> str:
         return "Phishing Attempt"
     if "promotional" in groups:
         return "Spam / Promotional"
-    # Require at least 2 total urgency+action keyword hits, not just one of
-    # each - a single common word like "now" or "call" shows up constantly
-    # in ordinary everyday requests ("can we call now?") and isn't on its
-    # own meaningful evidence of a scam pattern.
     urgency_action_hits = len(indicators["keywords"].get("urgency", [])) + len(indicators["keywords"].get("action", []))
     if "urgency" in groups and "action" in groups and urgency_action_hits >= 3:
         return "Urgent Action Scam"
@@ -163,12 +131,6 @@ HISTORY_COLUMNS = ["Date", "Message", "Prediction", "Confidence", "Risk Score", 
 
 
 def _ensure_history_schema() -> None:
-    """Self-heal the history file if it was created under an older column
-    layout (e.g. before Category existed). Appending new-format rows to an
-    old-format file produces a ragged CSV with a different field count per
-    row, which pandas' parser can't read at all - so this rewrites the whole
-    file to the current schema, padding any missing trailing fields, before
-    any other read or write touches it."""
     if not HISTORY_PATH.exists():
         return
     with HISTORY_PATH.open("r", newline="", encoding="utf-8") as handle:
@@ -177,11 +139,11 @@ def _ensure_history_schema() -> None:
         return
     header, data_rows = rows[0], rows[1:]
     if header == HISTORY_COLUMNS and all(len(row) == len(HISTORY_COLUMNS) for row in data_rows):
-        return  # already consistent, nothing to migrate
+        return
 
     fixed_rows = []
     for row in data_rows:
-        row = list(row[:len(HISTORY_COLUMNS)])  # trim any unexpected extra fields
+        row = list(row[:len(HISTORY_COLUMNS)])
         while len(row) < len(HISTORY_COLUMNS):
             row.append("—" if HISTORY_COLUMNS[len(row)] == "Category" else "")
         fixed_rows.append(row)
@@ -193,7 +155,6 @@ def _ensure_history_schema() -> None:
 
 
 def append_history(message: str, prediction: str, confidence: float, risk: int, category: str) -> None:
-    """Persist one analysis result to the local CSV history."""
     _ensure_history_schema()
     new_file = not HISTORY_PATH.exists()
     with HISTORY_PATH.open("a", newline="", encoding="utf-8") as handle:
@@ -204,7 +165,6 @@ def append_history(message: str, prediction: str, confidence: float, risk: int, 
 
 
 def load_history() -> pd.DataFrame:
-    """Return saved predictions, or an empty table with the expected columns."""
     if not HISTORY_PATH.exists():
         return pd.DataFrame(columns=HISTORY_COLUMNS)
     _ensure_history_schema()
@@ -212,13 +172,11 @@ def load_history() -> pd.DataFrame:
 
 
 def clear_history() -> None:
-    """Remove all saved prediction history."""
     if HISTORY_PATH.exists():
         HISTORY_PATH.unlink()
 
 
 def delete_history_rows(row_positions: list[int]) -> None:
-    """Remove specific rows (by their position in the saved file) from history."""
     if not HISTORY_PATH.exists():
         return
     _ensure_history_schema()
@@ -226,9 +184,6 @@ def delete_history_rows(row_positions: list[int]) -> None:
     history = history.drop(index=row_positions, errors="ignore").reset_index(drop=True)
     history.to_csv(HISTORY_PATH, index=False)
 
-# =========================================================================
-# preprocess.py
-# =========================================================================
 import re
 import string
 from functools import lru_cache
@@ -245,7 +200,6 @@ PHONE_PATTERN = re.compile(r"(?<!\w)(?:\+?\d[\d\s()\-]{6,}\d)(?!\w)")
 
 @lru_cache(maxsize=1)
 def _resources() -> tuple[set[str], WordNetLemmatizer]:
-    """Ensure NLTK data exists and return preprocessing resources."""
     for package, location in [
         ("punkt", "tokenizers/punkt"),
         ("punkt_tab", "tokenizers/punkt_tab"),
@@ -260,7 +214,6 @@ def _resources() -> tuple[set[str], WordNetLemmatizer]:
 
 
 def _replace_signals(text: str) -> str:
-    """Replace URLs, emails, and phone numbers with stable tokens for TF-IDF."""
     text = URL_PATTERN.sub(" urltoken ", text)
     text = EMAIL_PATTERN.sub(" emailtoken ", text)
     text = PHONE_PATTERN.sub(" phonetoken ", text)
@@ -268,7 +221,6 @@ def _replace_signals(text: str) -> str:
 
 
 def preprocess_text(text: object) -> str:
-    """Normalize text, preserve structural tokens, remove noise, then lemmatize."""
     if not isinstance(text, str):
         return ""
     stops, lemmatizer = _resources()
@@ -284,9 +236,6 @@ def preprocess_text(text: object) -> str:
         if token in preserved or (token not in stops and len(token) > 1)
     )
 
-# =========================================================================
-# evaluation.py
-# =========================================================================
 from typing import Any
 
 import numpy as np
@@ -299,7 +248,6 @@ from sklearn.metrics import (
 
 
 def evaluate_model(model: Any, x_test: Any, y_test: Any, labels: list[str]) -> dict[str, Any]:
-    """Return standard and per-class classification metrics for a fitted model."""
     predicted = model.predict(x_test)
     precision, recall, f1, _ = precision_recall_fscore_support(
         y_test, predicted, labels=labels, average="weighted", zero_division=0
@@ -329,7 +277,6 @@ def evaluate_model(model: Any, x_test: Any, y_test: Any, labels: list[str]) -> d
 
 
 def cross_validate_scores(model: Any, x_data: Any, y_data: Any, cv: Any) -> dict[str, float]:
-    """Return mean accuracy and weighted F1 from stratified cross-validation."""
     from sklearn.model_selection import cross_validate
 
     scores = cross_validate(
@@ -346,16 +293,11 @@ def cross_validate_scores(model: Any, x_data: Any, y_data: Any, cv: Any) -> dict
         "cv_f1_std": round(float(np.std(scores["test_f1"])), 4),
     }
 
-# =========================================================================
-# predict.py
-# =========================================================================
 from typing import Any
 import joblib
 
 
 class SpamDetector:
-    """Load saved artifacts and produce explainable message classifications
-    using a specific trained algorithm (or the best one, by default)."""
     def __init__(self, model_name: str | None = None) -> None:
         if not MODELS_PATH.exists() or not VECTORIZER_PATH.exists():
             raise FileNotFoundError("No model artifacts found. Run: python train_model.py")
@@ -369,36 +311,18 @@ class SpamDetector:
         self.model = all_models[model_name]
         self.vectorizer = joblib.load(VECTORIZER_PATH)
 
-        # Category prediction is AI-trained (same algorithm, same TF-IDF
-        # features, target=category) rather than the old purely rule-based
-        # keyword lookup - falls back to that rule-based categorize_message()
-        # if no category model was trained (e.g. an older dataset without
-        # a "category" column).
         self.category_model = None
         if CATEGORY_MODELS_PATH.exists():
             category_models: dict[str, Any] = joblib.load(CATEGORY_MODELS_PATH)
             self.category_model = category_models.get(model_name)
 
     def analyze(self, message: str) -> dict[str, Any]:
-        """Classify a non-empty message and calculate its risk explanation."""
         if not message or not message.strip():
             raise ValueError("Please enter a message to analyse.")
         processed = preprocess_text(message)
         features = self.vectorizer.transform([processed])
         indicators = find_indicators(message)
 
-        # If almost none of the message's words are in the vectorizer's
-        # learned vocabulary (e.g. it's just a couple of rare proper nouns
-        # never seen in training), the model has essentially no real
-        # signal to work with. Different algorithms handle a near-empty
-        # feature vector inconsistently - SVM/Logistic Regression fall back
-        # toward "low" via their decision boundary, while Naive Bayes'
-        # multiplicative likelihood math can swing toward other classes
-        # purely from smoothing artifacts, not genuine evidence. Rather
-        # than presenting that as a confident, algorithm-dependent verdict,
-        # treat "too little recognizable content" the same way regardless
-        # of which algorithm is selected - unless there are still concrete
-        # rule-based warning signs (a URL, phone number, etc.) worth flagging.
         has_matching_vocabulary = features.nnz > 0
         has_other_signals = bool(
             indicators["keywords"] or indicators["urls"] or indicators["emails"] or indicators["phones"]
@@ -432,9 +356,6 @@ class SpamDetector:
                 "explanation": explanation(prediction, indicators), "category": category,
                 "category_confidence": category_confidence}
 
-# =========================================================================
-# train_model.py
-# =========================================================================
 import json
 import logging
 import time
@@ -459,7 +380,6 @@ CATEGORY_LABELS = [
 
 
 def load_dataset() -> pd.DataFrame:
-    """Load, validate, de-duplicate, and clean the configured dataset."""
     data = pd.read_csv(DATASET_PATH)
     if not {"message", "label"}.issubset(data.columns):
         raise ValueError("Dataset must contain 'message' and 'label' columns.")
@@ -474,17 +394,12 @@ def load_dataset() -> pd.DataFrame:
     return data
 
 
-# Kept in sync with the keys of the `candidates` dict inside train() below.
-# detector() compares this against what's saved in metrics.json to detect
-# when a newly added/removed algorithm means the saved model is stale and
-# needs retraining - not just when metrics.json is completely missing.
 EXPECTED_CANDIDATE_NAMES = sorted([
     "Support Vector Machine", "Logistic Regression", "Multinomial Naive Bayes",
 ])
 
 
 def train() -> dict:
-    """Train candidates with cross-validation, select highest CV F1, and save artifacts."""
     data = load_dataset()
     data["processed"] = data["message"].map(preprocess_text)
     labels = sorted(data["label"].unique())
@@ -530,9 +445,6 @@ def train() -> dict:
         model.fit(x_train_vec, y_train)
         training_time_ms = (time.perf_counter() - train_start) * 1000
 
-        # Time just the predict() call itself, separate from downstream
-        # metric computation (precision/recall/confusion matrix etc.), for
-        # a clean measure of per-message inference speed.
         predict_start = time.perf_counter()
         model.predict(x_test_vec)
         prediction_time_ms = (time.perf_counter() - predict_start) * 1000
@@ -554,20 +466,11 @@ def train() -> dict:
         if cv_metrics["cv_f1"] > best_score:
             best_name, best_score = name, cv_metrics["cv_f1"]
 
-    # Refit every candidate (not just the winner) on the full dataset and
-    # save all of them, so the user can pick any algorithm for live
-    # detection on the Analyze Message page - not only the best-scoring one.
     fitted_models: dict[str, Any] = {}
     for name, model in candidates.items():
         model.fit(x_all_vec, data["label"])
         fitted_models[name] = model
 
-    # Also train a category classifier (same algorithm types, same TF-IDF
-    # features) predicting the message's category - a genuinely AI-learned
-    # prediction rather than the old purely rule-based keyword lookup.
-    # Category labels come from the dataset's own "category" column when
-    # present; datasets that predate this column simply skip it, so
-    # SpamDetector falls back to the rule-based categorize_message().
     MODEL_DIR.mkdir(exist_ok=True)
     category_models: dict[str, Any] = {}
     if "category" in data.columns:
@@ -610,12 +513,6 @@ def train() -> dict:
 
 
 def _dataset_fingerprint() -> str:
-    """Content hash of the dataset file, used to detect when spam.csv has
-    changed (rows added/edited/removed) so the cached model can be
-    automatically retrained - comparing only the algorithm name list
-    wasn't enough, since editing the dataset without changing which
-    algorithms are used would otherwise keep silently serving the old
-    model trained on the old data."""
     import hashlib
     if not DATASET_PATH.exists():
         return ""
@@ -624,10 +521,6 @@ def _dataset_fingerprint() -> str:
 
 @st.cache_resource
 def detector(model_name: str | None = None) -> SpamDetector:
-    """Load an existing model (or train from scratch on first deployment,
-    or retrain if the saved model's algorithm set or the underlying
-    dataset is stale - e.g. a new candidate algorithm was added, or
-    spam.csv was edited)."""
     needs_training = (
         not METRICS_PATH.exists() or not MODELS_PATH.exists() or not VECTORIZER_PATH.exists()
         or ("category" in load_dataset().columns and not CATEGORY_MODELS_PATH.exists())
@@ -644,15 +537,11 @@ def detector(model_name: str | None = None) -> SpamDetector:
     if needs_training:
         with st.spinner("Preparing the AI model for first use…"):
             train()
-        metrics.clear()  # invalidate cached metrics() so the new candidate_names show up immediately
+        metrics.clear()
     return SpamDetector(model_name)
 
 def ensure_trained() -> None:
-    """Make sure a trained model (all candidate algorithms) exists before
-    any page needs metrics() or a SpamDetector - so a first-time visitor
-    doesn't have to run an analysis first just to see the algorithm
-    dropdown or the comparison table populated."""
-    detector()  # st.cache_resource-cached: only actually trains once
+    detector()
 
 
 @st.cache_data

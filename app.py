@@ -1,9 +1,3 @@
-"""Streamlit interface for the AI-powered spam and phishing detector.
-
-This is the UI/routing layer: page functions, navigation, file
-translation, and PDF export. The machine-learning logic lives in
-detection.py and the Gmail scanning feature lives in gmail_integration.py
-- both are imported here, not duplicated."""
 from io import BytesIO
 from pathlib import Path
 
@@ -41,23 +35,11 @@ if "nav_page" not in st.session_state:
 if "sidebar_visible" not in st.session_state:
     st.session_state.sidebar_visible = True
 
-# The "Get Started" button lives inside the hero's HTML component (so it's
-# visually one piece with the background) rather than as a normal Streamlit
-# button. A component iframe can't call Streamlit callbacks directly, so the
-# button is a plain link that navigates the *parent* page to `?start=1`;
-# we catch that here and translate it into normal session-state navigation.
 if st.query_params.get("start") == "1":
     st.session_state.started = True
     st.session_state.nav_page = "Analyze Message"
     st.query_params.clear()
 elif st.query_params.get("code"):
-    # Returning from the Google OAuth redirect (Gmail Scan's connect
-    # flow). This is a fresh page load, so without this check the user
-    # would land back on the Home hero instead - and clicking "Get Started"
-    # from there would wipe the ?code= param (it navigates to a bare
-    # "?start=1") before Gmail Scan ever gets a chance to exchange it for a
-    # token. Skip straight to Gmail Scan and leave the param in place; its
-    # own OAuth handling reads and clears it after a successful exchange.
     st.session_state.started = True
     st.session_state.nav_page = "Gmail Scan"
 
@@ -96,9 +78,6 @@ SAFETY_TIPS = {
 
 
 def build_friendly_explanation(result: dict, category: str) -> list[str]:
-    """Turn the raw indicators into a few plain-language paragraphs
-    explaining *why* the message was flagged this way, for the PDF report
-    - not just a dump of matched keywords."""
     paragraphs = [CATEGORY_SUMMARIES.get(category, "")]
     paragraphs.append(
         f"Message Guard rated this a <b>{result['prediction']} risk</b> message "
@@ -134,9 +113,6 @@ def build_friendly_explanation(result: dict, category: str) -> list[str]:
 
 
 def result_pdf(message: str, result: dict) -> bytes:
-    """Build a user-friendly PDF report: a plain-language explanation of
-    why the message is spam/phishing/legitimate and what to do about it,
-    followed by supporting technical detail and the original message."""
     category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
     risk_color = {"low": "#1a7f37", "medium": "#b35900", "high": "#c62828"}.get(result["prediction"], "#333333")
 
@@ -218,11 +194,6 @@ SUPPORTED_UPLOAD_FORMATS_MESSAGE = "Supported formats: .txt, .csv, .json, .html,
 
 
 def extract_text_from_upload(filename: str, raw_bytes: bytes) -> str:
-    """Extract plain text from an uploaded file of (almost) any common
-    format, for use either as an analyzable message or as input to the
-    File Translation converter. Raises ValueError with a clear message for
-    formats that don't contain extractable text (images, old .doc, other
-    unrecognised binaries, scanned/image-only PDFs, etc.)."""
     suffix = Path(filename).suffix.lower()
 
     if suffix in TEXT_DECODABLE_EXTENSIONS:
@@ -256,7 +227,6 @@ def extract_text_from_upload(filename: str, raw_bytes: bytes) -> str:
 
 
 def build_eml_bytes(subject: str, body_text: str) -> bytes:
-    """Wrap plain text into a minimal, valid .eml file (RFC822 email)."""
     message = EmailMessage()
     message["Subject"] = subject
     message["From"] = "converted@message-guard.local"
@@ -267,7 +237,6 @@ def build_eml_bytes(subject: str, body_text: str) -> bytes:
 
 @st.dialog("Unsupported File Format")
 def unsupported_format_dialog(filename: str) -> None:
-    """Shown when Analyze Message receives a file that isn't .txt/.eml."""
     suffix = Path(filename).suffix or "(no extension)"
     st.error(f"**{filename}** — the file type `{suffix}` isn't supported here.")
     st.write("Analyze Message only accepts **.txt** and **.eml** files directly.")
@@ -280,16 +249,8 @@ HTML_TAG_PATTERN = re.compile(r"<[a-zA-Z][^>]{0,200}>")
 
 
 def strip_markup_noise(text: str) -> str:
-    """If the text looks like it's mostly raw HTML/CSS markup rather than a
-    natural-language message (e.g. someone uploaded a saved webpage or an
-    email's raw HTML source instead of its actual message content), strip
-    the tags and any <style>/<script> blocks so the detector sees the real
-    readable text. The model was trained on natural-language messages, not
-    markup - raw tag/CSS syntax is effectively out-of-distribution input
-    and can produce unreliable, misleadingly high-risk predictions that
-    have nothing to do with genuine spam/phishing signals."""
     if len(HTML_TAG_PATTERN.findall(text)) < 3:
-        return text  # not enough markup density to be worth touching
+        return text
     cleaned = re.sub(r"<style[^>]*>.*?</style>", " ", text, flags=re.IGNORECASE | re.DOTALL)
     cleaned = re.sub(r"<script[^>]*>.*?</script>", " ", cleaned, flags=re.IGNORECASE | re.DOTALL)
     cleaned = re.sub(r"<[^>]+>", " ", cleaned)
@@ -297,19 +258,11 @@ def strip_markup_noise(text: str) -> str:
 
 
 def go_to(page_name: str) -> None:
-    """Central helper: change page + rerun (avoids duplicated rerun logic)."""
     st.session_state.nav_page = page_name
     st.rerun()
 
 
 def home() -> None:
-    # Full-bleed home page: strip the block-container's padding/max-width
-    # just for this render so the hero can fill the entire browser viewport
-    # edge-to-edge instead of sitting inside a small centered card. The
-    # sidebar itself is always "expanded" per set_page_config (Streamlit's
-    # initial_sidebar_state only applies once at true first load and can't
-    # be reliably re-toggled dynamically across reruns), so it's hidden here
-    # via plain CSS instead — fully within our own control.
     st.html(
         """
         <style>
@@ -355,12 +308,6 @@ def analyze() -> None:
         uploaded_file = st.file_uploader("Upload file", type=None, label_visibility="collapsed")
 
         if uploaded_file is not None:
-            # file_id is unique per upload *event*, even for the exact same
-            # file re-selected again - unlike (name, size), which stays
-            # identical on a re-upload and would silently suppress the
-            # dialog/refresh on the second, third, etc. attempt. The exact
-            # attribute name has varied across Streamlit versions, so fall
-            # back gracefully rather than assuming one specific name.
             upload_identity = getattr(uploaded_file, "file_id", None) or getattr(uploaded_file, "id", None) \
                 or (uploaded_file.name, uploaded_file.size)
             suffix = Path(uploaded_file.name).suffix.lower()
@@ -370,11 +317,6 @@ def analyze() -> None:
                     unsupported_format_dialog(uploaded_file.name)
             else:
                 try:
-                    # .getvalue() always returns the full raw buffer regardless
-                    # of any internal read-cursor position - .read() could
-                    # return empty bytes here if something else (e.g.
-                    # Streamlit's own internal handling of the uploaded file)
-                    # already advanced the cursor earlier in this same run.
                     uploaded_message = extract_text_from_upload(uploaded_file.name, uploaded_file.getvalue())
                 except Exception as e:
                     st.error(f"Unable to read file: {e}")
@@ -391,18 +333,12 @@ def analyze() -> None:
         st.session_state.message_input = uploaded_message
         st.session_state._last_upload_id = current_upload_identity
 
-    # Text area
     message = st.text_area(
         "Paste a text message or email",
         key="message_input",
         height=120,
         placeholder=sample
     )
-    # Safety net: if this is the same run that just extracted a fresh
-    # upload, use that extracted text directly for analysis even if the
-    # text_area's returned value hasn't visibly caught up yet - avoids a
-    # confusing "please enter a message" error right after a successful
-    # file upload.
     if is_new_upload and not message.strip():
         message = uploaded_message
 
@@ -442,7 +378,6 @@ def analyze() -> None:
 
     row1 = st.columns([1.4, 1])
 
-    # --- panel 1: verdict + gauge -------------------------------------------------
     category = result.get("category") or categorize_message(result["prediction"], result["indicators"])
     category_icon = CATEGORY_ICONS.get(category, "⚠️")
     with row1[0]:
@@ -476,7 +411,6 @@ def analyze() -> None:
             """
         )
 
-    # --- panel 2: detected keywords / suspicious URLs -----------------------------
     with row1[1]:
         words = [
             word.upper()
@@ -501,7 +435,6 @@ def analyze() -> None:
             """
         )
 
-    # --- panel 4: explanation ------------------------------------------------------
     st.html(
         f"""
         <div class="mg-terminal-card cf-fade">
@@ -516,7 +449,6 @@ def analyze() -> None:
         """
     )
 
-    # --- panel 5: export -------------------------------------------------------------
     st.download_button(
         "Download Result as PDF",
         result_pdf(st.session_state.message, result),
@@ -546,9 +478,6 @@ def history_page() -> None:
 
     st.html("<div style='margin-top:1rem;'></div>")
 
-    # Track each row's position in the underlying saved file (via a hidden
-    # column) so deletion still targets the right rows even when a search
-    # filter has changed which rows are currently displayed.
     history = history.reset_index(drop=True)
     history["_orig_idx"] = history.index
 
@@ -556,16 +485,13 @@ def history_page() -> None:
     if search:
         history = history[history.astype(str).apply(lambda row: row.str.contains(search, case=False).any(), axis=1)]
 
-    # Reset to page 1 whenever the search text changes, so a new search
-    # doesn't leave the user stranded on a page number that no longer
-    # has any matching rows.
     if st.session_state.get("_history_last_search") != search:
         st.session_state._history_last_search = search
         st.session_state._history_page = 1
 
     PAGE_SIZE = 10
     total_rows = len(history)
-    total_pages = max(1, -(-total_rows // PAGE_SIZE))  # ceil division
+    total_pages = max(1, -(-total_rows // PAGE_SIZE))
     current_page = min(st.session_state.get("_history_page", 1), total_pages)
 
     page_start = (current_page - 1) * PAGE_SIZE
@@ -577,7 +503,7 @@ def history_page() -> None:
     if st.session_state.get("_select_all_history"):
         display_history["Select"] = True
         st.session_state.pop("_select_all_history", None)
-        st.session_state.pop("history_editor", None)  # force the editor to reinit with all rows checked
+        st.session_state.pop("history_editor", None)
 
     log_label_col, select_all_col = st.columns([4, 1])
     with log_label_col:
@@ -695,7 +621,6 @@ def history_page() -> None:
 
 @st.dialog("Confirm Deletion")
 def confirm_delete_dialog(row_positions: list[int] | None, description: str) -> None:
-    """Modal confirmation shown before any history deletion — row_positions=None means delete everything."""
     st.warning(f"This will permanently delete {description}. This action cannot be undone.")
     cancel_col, confirm_col = st.columns(2)
     with cancel_col:
@@ -787,7 +712,6 @@ def algorithm_comparison() -> None:
             for _ in row
         ]
 
-    # --- Accuracy -----------------------------------------------------------------
     accuracy_df = pd.DataFrame([
         {"Algorithm": name, "Accuracy": m["accuracy"]}
         for name, m in models.items()
@@ -811,7 +735,6 @@ def algorithm_comparison() -> None:
     st.html('<div class="mg-panel-title">Accuracy Chart</div>')
     st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
-    # --- Effectiveness (Precision / Recall / F1) -----------------------------------
     st.html("<div style='margin-top:1.6rem;'></div>")
     st.html('<div class="mg-panel-title">Effectiveness Comparison — Precision, Recall &amp; F1 Score</div>')
     st.caption("How well each algorithm identifies the correct risk class, beyond raw accuracy - important when classes are imbalanced.")
@@ -837,7 +760,6 @@ def algorithm_comparison() -> None:
     fig_eff.update_layout(yaxis=dict(tickformat=".0%", range=[0, 1]))
     st.plotly_chart(fig_eff, use_container_width=True, config={"displayModeBar": False})
 
-    # --- Performance (training / prediction speed) ---------------------------------
     st.html("<div style='margin-top:1.6rem;'></div>")
     st.html('<div class="mg-panel-title">Performance Comparison — Training &amp; Prediction Speed</div>')
     st.caption("Computational efficiency - how long each algorithm takes to train, and to classify one message afterward.")
@@ -887,7 +809,7 @@ NAV_ICONS = {
     "Gmail Scan": "📊",
     "History": "🕘",
     "File Translation": "🔄",
-    "Algorithm Comparison": "📈",   # 新增
+    "Algorithm Comparison": "📈",
 }
 NAV_ITEMS = ["Analyze Message", "Gmail Scan", "History", "File Translation", "Algorithm Comparison"]
 
@@ -895,10 +817,6 @@ if st.session_state.started:
     ensure_trained() 
 
     if not st.session_state.sidebar_visible:
-        # Force-hide Streamlit's native sidebar via our own CSS (not relying
-        # on Streamlit's collapse mechanism, which only reliably applies once
-        # at first load) and give a normal, always-reachable button in the
-        # main content area to bring it back.
         st.html("<style>section[data-testid='stSidebar']{display:none !important;}</style>")
         if st.button("☰  Show Sidebar", type="primary"):
             st.session_state.sidebar_visible = True
@@ -935,6 +853,5 @@ if st.session_state.started:
             ) and not is_active:
                 st.session_state.nav_page = item
                 st.rerun()
-# else: nothing rendered in the sidebar on Home — it stays hidden
 
 pages[st.session_state.nav_page]()

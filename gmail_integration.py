@@ -1,9 +1,3 @@
-"""Gmail OAuth connection and inbox risk-scanning feature (the Gmail Scan
-page). Kept separate from app.py so the Gmail-specific OAuth/PKCE/token
-persistence logic can be edited on its own. Imports `detector` from
-detection.py (not from app.py) to avoid a circular import - app.py needs
-`dashboard` from this file, so this file can't import anything back from
-app.py."""
 import base64
 import html
 import json
@@ -33,11 +27,6 @@ GMAIL_SETUP_HELP = (
 
 
 def highlight_keywords(text: str, indicators: dict) -> str:
-    """Escape the body for safe HTML rendering, then wrap every matched
-    keyword/suspicious URL in a highlighted <mark> span. URLs are matched
-    first and claim their full span so a keyword that happens to appear
-    inside a URL (e.g. 'verify' inside fake-verify.example) doesn't get
-    nested/double-highlighted; overlapping spans are merged into one."""
     spans: list[tuple[int, int]] = []
 
     for url in indicators.get("suspicious_urls", []):
@@ -52,7 +41,7 @@ def highlight_keywords(text: str, indicators: dict) -> str:
         for m in re.finditer(re.escape(term), text, re.IGNORECASE):
             start, end = m.start(), m.end()
             if any(s <= start < e or s < end <= e for s, e in spans):
-                continue  # already covered by a claimed (e.g. URL) span
+                continue
             spans.append((start, end))
 
     spans.sort()
@@ -77,12 +66,10 @@ def highlight_keywords(text: str, indicators: dict) -> str:
 
 
 def gmail_oauth_configured() -> bool:
-    """Whether the required Google OAuth secrets have been set up."""
     return all(key in st.secrets for key in ("google_client_id", "google_client_secret", "google_redirect_uri"))
 
 
 def build_gmail_oauth_flow() -> GoogleOAuthFlow:
-    """Build the OAuth flow using credentials from Streamlit secrets."""
     client_config = {
         "web": {
             "client_id": st.secrets["google_client_id"],
@@ -98,15 +85,10 @@ def build_gmail_oauth_flow() -> GoogleOAuthFlow:
 
 
 def save_gmail_credentials(credentials: GoogleCredentials) -> None:
-    """Persist credentials to a shared file (not just session_state), so a
-    connection completed in one browser tab is picked up by other tabs too
-    - each tab is its own independent Streamlit session and can't see
-    another tab's session_state directly."""
     GMAIL_TOKEN_PATH.write_text(credentials.to_json(), encoding="utf-8")
 
 
 def load_gmail_credentials() -> GoogleCredentials | None:
-    """Load previously-saved credentials from the shared file, if any."""
     if not GMAIL_TOKEN_PATH.exists():
         return None
     try:
@@ -118,14 +100,11 @@ def load_gmail_credentials() -> GoogleCredentials | None:
 
 
 def clear_gmail_credentials() -> None:
-    """Remove the saved credentials file (used on disconnect)."""
     if GMAIL_TOKEN_PATH.exists():
         GMAIL_TOKEN_PATH.unlink()
 
 
 def _extract_gmail_body(payload: dict) -> str:
-    """Recursively find and decode the plain-text (or HTML, as fallback)
-    body from a Gmail API message payload."""
     if payload.get("mimeType") == "text/plain" and payload.get("body", {}).get("data"):
         return base64.urlsafe_b64decode(payload["body"]["data"]).decode("utf-8", errors="ignore")
 
@@ -141,13 +120,11 @@ def _extract_gmail_body(payload: dict) -> str:
                 return nested
 
     if html_fallback:
-        return re.sub(r"<[^>]+>", " ", html_fallback)  # strip HTML tags as a simple fallback
+        return re.sub(r"<[^>]+>", " ", html_fallback)
     return ""
 
 
 def _extract_gmail_headers(payload: dict) -> dict:
-    """Pull the Subject/From/Date headers out of a Gmail message payload,
-    so scan results can show which real email each verdict belongs to."""
     headers = {h.get("name", ""): h.get("value", "") for h in payload.get("headers", [])}
     return {
         "subject": headers.get("Subject") or "(no subject)",
@@ -157,11 +134,6 @@ def _extract_gmail_headers(payload: dict) -> dict:
 
 
 def fetch_gmail_messages(credentials, max_results, progress_callback=None) -> list[dict]:
-    """Fetch messages in the user's inbox (paginated through the full
-    inbox), up to max_results if given (None/0 = no limit, scan
-    everything). Returns a list of dicts with subject/from/date/body for
-    each message, so callers can show which real email a result belongs
-    to - not just an anonymous risk count."""
     service = build_google_service("gmail", "v1", credentials=credentials)
     message_refs = []
     page_token = None
@@ -209,19 +181,9 @@ def dashboard() -> None:
         if auth_code:
             try:
                 flow = build_gmail_oauth_flow()
-                # The auth URL was generated in a separate tab/session, so
-                # the PKCE code_verifier that belongs to it has to be
-                # recovered from the shared file rather than regenerated
-                # here - it must match exactly what was sent to Google.
                 if GMAIL_PKCE_PATH.exists():
                     flow.code_verifier = GMAIL_PKCE_PATH.read_text(encoding="utf-8").strip()
                 flow.fetch_token(code=auth_code)
-                # Only consume the verifier file once we know the exchange
-                # actually succeeded - deleting it unconditionally on read
-                # meant a Streamlit rerun that reached this code again after
-                # a failed attempt (with the same stale ?code= still in the
-                # URL) would find it already gone and fail with a confusing
-                # "missing code verifier" error instead of the real problem.
                 if GMAIL_PKCE_PATH.exists():
                     GMAIL_PKCE_PATH.unlink()
                 st.session_state.gmail_credentials = flow.credentials
@@ -231,15 +193,8 @@ def dashboard() -> None:
                 st.rerun()
             except Exception as e:
                 st.error(f"Gmail authorization failed: {e}")
-                # Authorization codes are single-use - clearing the code
-                # from the URL here prevents a later rerun from silently
-                # retrying (and failing on) this same already-spent code.
                 st.query_params.clear()
         elif st.session_state.get("gmail_just_connected"):
-            # This tab just finished the OAuth exchange (opened as the
-            # separate authorization tab) - the credentials are already
-            # saved to the shared file, so the original tab will pick them
-            # up on its next auto-refresh. Nothing more to do in this one.
             st.success("✅ Gmail account connected! You can close this tab now and go back to your original tab.")
             st.html("<script>setTimeout(function(){ window.close(); }, 2500);</script>")
         else:
@@ -247,22 +202,9 @@ def dashboard() -> None:
             flow = build_gmail_oauth_flow()
             flow.autogenerate_code_verifier = True
             auth_url, _ = flow.authorization_url(access_type="offline", include_granted_scopes="true", prompt="consent")
-            # Persist the verifier this Flow instance just generated, so
-            # whichever session ends up exchanging the code (this tab or a
-            # separate new one) can retrieve the matching value.
             GMAIL_PKCE_PATH.write_text(flow.code_verifier, encoding="utf-8")
-            # Streamlit's own iframe sandboxing doesn't include
-            # allow-top-navigation (a known, still-open Streamlit platform
-            # limitation - see github.com/streamlit/streamlit/issues/6922),
-            # so target="_top" links reliably get blocked rather than
-            # navigating the tab. st.link_button (opens a new tab) is the
-            # only approach that's actually worked end-to-end.
             st.link_button("🔗 Connect Gmail Account (opens a new tab)", auth_url, type="primary", use_container_width=True)
             st.caption("After authorizing in the new tab, this page will pick up the connection automatically within a few seconds.")
-            # Poll for the connection completing in the other tab by
-            # reloading this tab periodically - session_state can't be
-            # shared across tabs directly, so this is what lets the
-            # *original* tab notice the shared credentials file appearing.
             st.html("<script>setTimeout(function(){ window.location.reload(); }, 3000);</script>")
         return
 
@@ -318,7 +260,7 @@ def dashboard() -> None:
                     "Indicators": result["indicators"],
                 })
             except ValueError:
-                continue  # empty/unanalyzable message body
+                continue
         return results
 
     if st.button("🔍 Scan Inbox", type="primary", use_container_width=True):
@@ -329,9 +271,6 @@ def dashboard() -> None:
                 progress_bar.progress(done / total if total else 0.0, text=f"Analysing email {done}/{total}...")
 
             emails = fetch_gmail_messages(credentials, max_results=limit_input or None, progress_callback=update_progress)
-            # Cache the raw fetched emails (not just the analysis results) so
-            # switching the algorithm afterwards can re-analyze them directly
-            # without hitting the Gmail API again.
             st.session_state.gmail_scan_emails = emails
             st.session_state.gmail_scan_results = _run_detection(emails, selected_algorithm)
             st.session_state.gmail_last_algorithm = selected_algorithm
@@ -342,9 +281,6 @@ def dashboard() -> None:
         except Exception as e:
             st.error(f"Scan failed: {e}")
 
-    # If the user picks a different algorithm after already scanning once,
-    # automatically re-run detection on the same already-fetched emails -
-    # no need to re-fetch from Gmail just to try a different algorithm.
     cached_emails = st.session_state.get("gmail_scan_emails")
     if cached_emails and st.session_state.get("gmail_last_algorithm") != selected_algorithm:
         with st.spinner(f"Re-analysing {len(cached_emails)} emails with {selected_algorithm}..."):

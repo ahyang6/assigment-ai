@@ -1,7 +1,3 @@
-"""Visual/design layer for Message Guard: colors, CSS, and the reusable
-Streamlit rendering helpers (hero section, theming, page headers, chart
-styling, KPI cards). Kept separate from app.py so styling can be edited
-without touching any application logic."""
 import json
 
 import pandas as pd
@@ -308,16 +304,7 @@ GLOBAL_CSS = """
 """
 
 
-# ---------------------------------------------------------------------------
-# Hero section: dark cybersecurity background + mouse-triggered glitch title
-# Rendered as a self-contained HTML component (own CSS + JS, no Streamlit
-# rerun involved) so the scramble animation is instant and client-side only.
-# The hero now fills the entire viewport (full-bleed, edge-to-edge, no
-# rounded corners) instead of sitting in a small centered card.
-# ---------------------------------------------------------------------------
 def render_hero(title: str = "EMAIL DETECTION", dark: bool = True, component_height: int = 900) -> None:
-    # Theme tokens: plain white surface in light mode, plain black in dark
-    # mode (no gradient wash) so the toggle reads clearly as two states.
     if dark:
         bg = "#000000"
         grid_line = "rgba(255, 255, 255, 0.07)"
@@ -681,6 +668,43 @@ def apply_theme() -> None:
         .stApp { background: #05070a; color: #d7dee8; }
         div[data-testid='stMetric'] { background:#0c1016; border-color: rgba(0, 229, 255, 0.18); }
 
+        /* ---- native input widgets: text area, text input, selectbox,
+           number input, file uploader - these render with Streamlit's
+           default light theme unless explicitly overridden, which reads
+           as a jarring, low-contrast bright box against the rest of the
+           dark UI (placeholder text especially hard to read) ---- */
+        .stTextArea textarea,
+        .stTextInput input,
+        .stNumberInput input,
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="input"] {
+            background-color: #0c1016 !important;
+            color: #d7dee8 !important;
+            border-color: rgba(0, 229, 255, 0.25) !important;
+        }
+        .stTextArea textarea::placeholder,
+        .stTextInput input::placeholder {
+            color: #566373 !important;
+            opacity: 1 !important;
+        }
+        div[data-baseweb="select"] svg { fill: #d7dee8 !important; }
+        /* the dropdown options list itself (rendered in a floating popover) */
+        ul[data-testid="stSelectboxVirtualDropdown"] {
+            background-color: #0c1016 !important;
+        }
+        ul[data-testid="stSelectboxVirtualDropdown"] li {
+            color: #d7dee8 !important;
+        }
+        ul[data-testid="stSelectboxVirtualDropdown"] li:hover {
+            background-color: rgba(0, 229, 255, 0.12) !important;
+        }
+        div[data-testid="stFileUploaderDropzone"] {
+            background-color: #0c1016 !important;
+            border-color: rgba(0, 229, 255, 0.25) !important;
+        }
+        div[data-testid="stFileUploaderDropzone"] * { color: #d7dee8 !important; }
+        label, .stMarkdown p { color: #d7dee8 !important; }
+
         /* ---- sidebar shell ---- */
         section[data-testid="stSidebar"] {
             background: #030405;
@@ -804,9 +828,6 @@ RISK_ICONS = {"low": "✅", "medium": "⚠️", "high": "🚨"}
 
 
 def page_header(icon: str, title: str, subtitle: str, extra_style: str = "") -> None:
-    """Render the consistent terminal-style header used on every inner page.
-    `extra_style` lets a page fold its own scoped <style> tag into this same
-    element instead of issuing a separate, otherwise-empty st.markdown call."""
     st.html(
         f"""
         {extra_style}
@@ -820,7 +841,6 @@ def page_header(icon: str, title: str, subtitle: str, extra_style: str = "") -> 
 
 
 def style_fig(fig):
-    """Apply the dark terminal theme to a Plotly figure so charts blend with the app."""
     fig.update_layout(
         template="plotly_dark",
         paper_bgcolor="rgba(0,0,0,0)",
@@ -833,7 +853,6 @@ def style_fig(fig):
 
 
 def stat_card(value, label: str, color: str = "#00e5ff", value_size: str = "1.5rem") -> None:
-    """Render a compact KPI stat card matching the Analyze page's card language."""
     st.html(
         f"""
         <div class="mg-stat-card cf-fade">
@@ -845,9 +864,6 @@ def stat_card(value, label: str, color: str = "#00e5ff", value_size: str = "1.5r
 
 
 def render_sidebar_algorithm_comparison(info: dict, selected: str | None = None) -> None:
-    """Render a compact horizontal bar chart in the sidebar comparing every
-    trained algorithm's accuracy. The currently selected algorithm (on the
-    Analyze Message page) is highlighted in orange; the rest stay cyan."""
     models = info.get("models", {})
     if not models:
         return
